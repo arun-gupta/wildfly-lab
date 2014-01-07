@@ -7,5 +7,6 @@ This self-paced hands-on lab will introduce you to different WildFly features.
 -- REST API
 -- jboss-cli
 -- Admin console
-- RBAC ?
-- Undertow ?
+- RBAC
+- Auditing
+- Undertow
