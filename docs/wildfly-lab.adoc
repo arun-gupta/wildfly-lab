@@ -21,3 +21,9 @@ include::chapters/realms.adoc[]
 
 include::chapters/jboss-modules.adoc[]
 
+include::chapters/osgi.adoc[]
+
+include::chapters/jruby.adoc[]
+
+include::chapters/forge.adoc[]
+

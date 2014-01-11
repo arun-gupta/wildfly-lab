@@ -422,6 +422,9 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 </ul>
 </li>
 <li><a href="#_jboss_modules">8. JBoss Modules</a></li>
+<li><a href="#_osgi">9. OSGi</a></li>
+<li><a href="#_jruby_on_rails">10. JRuby-on-Rails</a></li>
+<li><a href="#_forge">11. Forge</a></li>
 </ul>
 </div>
 </div>
@@ -437,7 +440,37 @@ This self-paced hands-on lab gets you introduced to the basic features of WildFl
 <div class="sect2">
 <h3 id="_start_and_stop_wildfly">1.1. Start and Stop WildFly</h3>
 <div class="sect3">
-<h4 id="_standalone_and_managed_domain">1.1.1. Standalone and Managed Domain</h4>
+<h4 id="_directory_structure">1.1.1. Directory Structure</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>bin: All scripts</p>
+</li>
+<li>
+<p>standalone: All configuration, deployment, logs, data, etc about standalone instance</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>deployments: directory for filesystem-based deployment</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>domain: All configuration, deployment, logs, data, etc about managed domain</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>servers: directory where details about each server in the managed domain is stored</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_standalone_and_managed_domain">1.1.2. Standalone and Managed Domain</h4>
 <div class="paragraph">
 <p>WildFly 8 can be started in two different modes:</p>
 </div>
@@ -456,13 +489,13 @@ This self-paced hands-on lab gets you introduced to the basic features of WildFl
 </div>
 </div>
 <div class="sect3">
-<h4 id="_web_profile_and_full_platform">1.1.2. Web Profile and Full Platform</h4>
+<h4 id="_web_profile_and_full_platform">1.1.3. Web Profile and Full Platform</h4>
 <div class="paragraph">
 <p>Java EE defines <em>profiles</em> that represent a configuration of the platform suited to a particular class of applications. The Java EE Web Profile is defined as a separate specification in the platform, and is defined as a subset of technologies contained in the platform and targeted toward the developers of modern web applications. WildFly supports both Web Profile and Full Platform by defininig &#8216;configuration profiles&#8217;.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_multiple_instances_on_the_same_machine_with_port_offset">1.1.3. Multiple instances on the same machine (with port offset ?)</h4>
+<h4 id="_multiple_instances_on_the_same_machine_with_port_offset">1.1.4. Multiple instances on the same machine (with port offset ?)</h4>
 
 </div>
 </div>
@@ -554,23 +587,87 @@ This self-paced hands-on lab gets you introduced to the basic features of WildFl
 </div>
 <div class="sect3">
 <h4 id="_non_interactive">2.1.2. Non-interactive</h4>
-
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./bin/jboss-cli.sh --connect --command="deploy javaee7-sample.war --force"</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_admin_console">2.2. Admin Console</h3>
+<div class="paragraph">
+<p>The Admin Console is a web-based administration console and available at <a href="http://localhost:9990/console">http://localhost:9990/console</a>. A new user in the management realm needs to be added before the admin console can be accessed.</p>
+</div>
 <div class="sect3">
 <h4 id="_adding_user_in_management_realm">2.2.1. Adding user in management realm</h4>
-<div class="olist arabic">
-<div class="title">/bin/jboss-cli.sh --connect --command="deploy javaee7-sample.war --force"</div>
-<ol class="arabic">
-<li>
-<p>Interactive</p>
-</li>
-<li>
-<p>Non-interactive</p>
-</li>
-</ol>
+<div class="paragraph">
+<p>A new user can be added in the management realm using <code>bin/add-user.sh</code> script. This can be done non-interactively by giving the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="text language-text">./bin/add-user.sh -u sheldon -p baz1ngaa!</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output of the command looks like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
+Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The directory names &#8216;standalone&#8217; and &#8216;domain&#8217; indicate that the user is added to both standalone instance and managed domain. The file name indicates that it is added to the management realm.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+A user can be added to application realm by including <code>-a</code> switch.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Alternatively, the user can be added interactively by invoking the script and entering the values on the prompt as shown:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./bin/add-user.sh
+
+What type of user do you wish to add?
+ a) Management User (mgmt-users.properties)
+ b) Application User (application-users.properties)
+(a):
+
+Enter the details of the new user to add.
+Using realm 'ManagementRealm' as discovered from the existing property files.
+Username : sheldon
+Password requirements are listed below. To modify these restrictions edit the add-user.properties configuration file.
+ - The password must not be one of the following restricted values {root, admin, administrator}
+ - The password must contain at least 8 characters, 1 alphanumeric character(s), 1 digit(s), 1 non-alphanumeric symbol(s)
+ - The password must be different from the username
+Password : baz1ngaa!
+Re-enter Password : baz1ngaa!
+What groups do you want this user to belong to? (Please enter a comma separated list, or leave blank for none)[  ]:
+About to add user 'sheldon' for realm 'ManagementRealm'
+Is this correct yes/no? *yes*
+Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
+Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
+Added user 'sheldon' with groups  to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-groups.properties'
+Added user 'sheldon' with groups  to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-groups.properties'
+Is this new user going to be used for one AS process to connect to another AS process?
+e.g. for a slave host controller connecting to the master or for a Remoting connection for server to server EJB calls.
+yes/no? no</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now accessing</p>
 </div>
 </div>
 </div>
@@ -598,6 +695,9 @@ This self-paced hands-on lab gets you introduced to the basic features of WildFl
 <div class="sect1">
 <h2 id="_role_based_access_control">4. Role Based Access Control</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Pick up flow from Brian&#8217;s videos</p>
+</div>
 <div class="sect2">
 <h3 id="__simple_and_rbac_realms">4.1. &#8216;simple&#8217; and &#8216;rbac&#8217; realms</h3>
 
@@ -663,11 +763,29 @@ This self-paced hands-on lab gets you introduced to the basic features of WildFl
 
 </div>
 </div>
+<div class="sect1">
+<h2 id="_osgi">9. OSGi</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_jruby_on_rails">10. JRuby-on-Rails</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_forge">11. Forge</h2>
+<div class="sectionbody">
+
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.1<br>
-Last updated 2014-01-10 21:59:58 PST
+Last updated 2014-01-11 16:02:30 CET
 </div>
 </div>
 </body>

@@ -6,6 +6,14 @@ This self-paced hands-on lab gets you introduced to the basic features of WildFl
 
 === Start and Stop WildFly
 
+==== Directory Structure
+
+. bin: All scripts
+. standalone: All configuration, deployment, logs, data, etc about standalone instance
+.. deployments: directory for filesystem-based deployment
+. domain: All configuration, deployment, logs, data, etc about managed domain
+.. servers: directory where details about each server in the managed domain is stored
+
 ==== Standalone and Managed Domain
 
 WildFly 8 can be started in two different modes:
