@@ -1,0 +1,62 @@
+== Deploying Applications to WildFly
+
+=== Command Line Interface (jboss-cli)
+
+What's new in WildFly 8 ?
+
+==== Interactive
+. Default host/port
++
+. Optionally connect to a different host/port
++
+. Tab completion of commands
++
+. Explain ls, tab, :
++
+. Show how to read a simple attribute value using :read-attribute(name=release-version)
++
+. Read the port on which the host is running /socket-binding-group=standard-sockets/socket-binding=http:read-attribute(name=bound-port)
++
+. `deploy` to deploy an application
++
+. `deployment-info` to check the deployment status
++
+. `batch` to batch up create-jdbc-resource, create-jms-resource, and deploy
++
+. Read details about Data Source before/after accessing the application:
++
+[source, shell]
+/subsystem=datasources/data-source=ExampleDS/statistics=pool:read-attribute(name=ActiveCount)
++
+. How to change default HTTP and management port
++
+[source, json]
+----
+/socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name=port,value=8090)
+{
+    "outcome" => "success",
+    "response-headers" => {
+        "operation-requires-reload" => true,
+        "process-state" => "reload-required"
+    }
+}
+----
+
+==== Non-interactive
+
+[source]
+./bin/jboss-cli.sh --connect --command="deploy javaee7-sample.war --force"
+
+=== Admin Console
+
+==== Adding user in management realm
+
+. Interactive
++
+. Non-interactive
+
+=== File system
+
+Copying file to standalone/deployments (talk about marker files ??)
+
+=== Curl

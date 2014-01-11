@@ -1,0 +1,23 @@
+:revnumber: 0.1
+:author: Arun Gupta
+:revdate: Jan 10, 2014
+:toc:
+
+= WildFly 8 Hands-on Lab
+
+include::chapters/introduction.adoc[]
+
+include::chapters/deploy.adoc[]
+
+include::chapters/undertow.adoc[]
+
+include::chapters/rbac.adoc[]
+
+include::chapters/auditlog.adoc[]
+
+include::chapters/clustering.adoc[]
+
+include::chapters/realms.adoc[]
+
+include::chapters/jboss-modules.adoc[]
+
