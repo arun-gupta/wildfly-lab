@@ -1,5 +1,7 @@
 == Role Based Access Control
 
+Pick up flow from Brian's videos
+
 === `simple' and `rbac' realms
 
 === Predefined roles
