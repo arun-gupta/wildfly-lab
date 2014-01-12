@@ -1,61 +1,97 @@
 == Deploying Applications to WildFly
 
-=== Command Line Interface (jboss-cli)
+*Purpose*: This section explains different ways to deploy Java EE 7 applications to WildFly.
 
-`bin/jboss-cli.sh` or `jboss-cli.bat` are Command Line Interface management tools for a standalone server or managed domain. It allows a user to connect to the domain controller or a standalone server and execute management operations.
-
-What's new in WildFly 8 ?
-
-==== Interactive
-. Default host/port
-+
-. Optionally connect to a different host/port
-+
-. Tab completion of commands
-+
-. Explain ls, tab, :
-+
-. Show how to read a simple attribute value using :read-attribute(name=release-version)
-+
-. Read the port on which the host is running /socket-binding-group=standard-sockets/socket-binding=http:read-attribute(name=bound-port)
-+
-. `deploy` to deploy an application
-+
-. `deployment-info` to check the deployment status
-+
-. `batch` to batch up create-jdbc-resource, create-jms-resource, and deploy
-+
-. Read details about Data Source before/after accessing the application:
-+
-[source, shell]
-/subsystem=datasources/data-source=ExampleDS/statistics=pool:read-attribute(name=ActiveCount)
-+
-. How to change default HTTP and management port
-+
-[source, json]
-----
-/socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name=port,value=8090)
-{
-    "outcome" => "success",
-    "response-headers" => {
-        "operation-requires-reload" => true,
-        "process-state" => "reload-required"
-    }
-}
-----
-
-==== Non-interactive
+Make sure to start a WildFly standalone instance for each sub-section unless stated otherwise. A standalone instance can be started as:
 
 [source]
 ----
-./bin/jboss-cli.sh --connect --command="deploy javaee7-sample.war --force"
+./bin/standalone.sh
 ----
+
+=== Command Line Interface
+
+*Purpose*: This section discusses different ways to deploy an application to WildFly using Command Line Interface.
+
+==== jboss-cli
+
+`bin/jboss-cli.sh` or `bin/jboss-cli.bat` is Command Line Interface management tool for a standalone server or managed domain. It allows a user to connect to a standalone server or domain controller and execute management operations.
+
+More details about using jboss-cli for managing the server are available in <<jboss-cli>>.
+
+*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using `jboss-cli'.
+
+`jboss-cli' can be used to deploy applications using the interactive console or in a non-interactive manner.
+
+===== Interactive
+
+. Start jboss-cli and connect with the existing standalone instance by giving the following command:
++
+[source]
+----
+jboss-cli.sh -c
+----
++
+The `-c` switch connects using the default host (`localhost') and management port (`9990').
++
+This opens up the `jboss-cli' interactive console and shows the following prompt:
++
+[source]
+----
+[standalone@localhost:9990 /]
+----
++
+The prompt indicates that `jboss-cli' is connected to a standalone instance's management port.
++
+. Deploy the application using the following command:
++
+[source]
+----
+deploy target/javaee7-1.0-SNAPSHOT.war
+----
++
+The directory name of the war file in the command may be different depending upon how `jboss-cli' was invoked. Verify the server log to ensure that the application was redeployed. Look for specific timestamp in the log entries.
++
+Access the web page at http://localhost:8080/javaee7/EmployeeList and see the output as:
++
+image:images/deploy-javaee7-sample-output.png[Java EE 7 Sample Application Output]
++
+TIP: `--force` switch can be specified to redeploy the application.
++
+. Type `exit` `quit' to exit `jboss-cli' interactive console.
+
+===== Non-interactive
+
+Non-interactive mode allows to support scripts and other types of command line or batch processing.
+
+Deploy the application using the following command:
+[source]
+----
+jboss-cli.sh --connect --command="deploy target/javaee7-sample.war --force"
+----
+
+The directory name of the war file in the command may be different depending upon how `jboss-cli' was invoked. Verify the server log to ensure that the application was redeployed. Look for specific timestamp in the log entries.
+
+==== File system
+
+*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using filesystem commands.
+
+Copying file to standalone/deployments (talk about marker files ??)
+
+==== Curl
+
+*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using curl.
 
 === Admin Console
 
-The Admin Console is a web-based administration console and available at http://localhost:9990/console. A new user in the management realm needs to be added before the admin console can be accessed.
+The Admin Console is a web-based administration console and available at http://localhost:9990/console.
+
+*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using web-based Administration Console.
+
 
 ==== Adding user in management realm
+
+A new user in the management realm needs to be added before the admin console can be accessed.
 
 A new user can be added in the management realm using `bin/add-user.sh` script. This can be done non-interactively by giving the following command:
 [source, text]
@@ -111,8 +147,56 @@ Now accessing the console at http://localhost:9990/console shows the web page:
 
 image:images/deploy-admin-console.png[Admin Console]
 
-=== File system
+=== Maven plugin
 
-Copying file to standalone/deployments (talk about marker files ??)
+The wildfly-maven-plugin is used to deploy, redeploy, undeploy or run your application. You can also deploy or undeploy artifacts, such as JDBC drivers, and add or remove resources. There is also the ability to execute CLI commands.
 
-=== Curl
+*Purpose*: This section explains how to deploy Java EE 7 applications to WildFly use the maven plugin.
+
+. Add the following fragment to samples/javaee7/pom.xml:
++
+[source, xml]
+----
+<plugin>
+    <groupId>org.wildfly.plugins</groupId>
+    <artifactId>wildfly-maven-plugin</artifactId>
+    <version>1.0.0.Beta1</version>
+    <executions>
+        <execution>
+            <phase>install</phase>
+            <goals>
+                <goal>deploy</goal>
+            </goals>
+        </execution>
+    </executions>
+</plugin>
+----
+along with other <plugin> elements.
++
+This adds the `wildfly-maven-plugin' description to `pom.xml'. It also invokes the plugin `deploy' target during the standard maven `install' phase.
++
+. Start a WildFly instance as:
++
+[source]
+----
+./bin/standalone.sh
+----
++
+. Deploy the application by giving the command:
++
+[source]
+----
+mvn wildfly:deploy
+----
++
+or
++
+[source]
+----
+mvn install
+----
++
+. Access the web page at http://localhost:8080/javaee7/TestServlet and see the output as:
++
+image:images/deploy-javaee7-sample-output.png[Java EE 7 Sample Application Output]
+

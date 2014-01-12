@@ -379,10 +379,9 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_deploying_applications_to_wildfly">2. Deploying Applications to WildFly</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#_command_line_interface_jboss_cli">2.1. Command Line Interface (jboss-cli)</a></li>
+<li><a href="#_command_line_interface">2.1. Command Line Interface</a></li>
 <li><a href="#_admin_console">2.2. Admin Console</a></li>
-<li><a href="#_file_system">2.3. File system</a></li>
-<li><a href="#_curl">2.4. Curl</a></li>
+<li><a href="#_maven_plugin">2.3. Maven plugin</a></li>
 </ul>
 </li>
 <li><a href="#_undertow">3. Undertow</a></li>
@@ -407,24 +406,25 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_custom_formatter">5.3. Custom formatter</a></li>
 </ul>
 </li>
-<li><a href="#clustering">6. Clustering, Replication and Failover</a></li>
+<li><a href="#jboss-cli">6. JBoss Command Line Interface (jboss-cli)</a></li>
+<li><a href="#clustering">7. Clustering, Replication and Failover</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#_http">6.1. HTTP</a></li>
-<li><a href="#_ejb">6.2. EJB</a></li>
+<li><a href="#_http">7.1. HTTP</a></li>
+<li><a href="#_ejb">7.2. EJB</a></li>
 </ul>
 </li>
-<li><a href="#_realms">7. Realms</a></li>
+<li><a href="#_realms">8. Realms</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#_jdbc">7.1. JDBC</a></li>
-<li><a href="#_security">7.2. Security</a></li>
+<li><a href="#_jdbc">8.1. JDBC</a></li>
+<li><a href="#_security">8.2. Security</a></li>
 </ul>
 </li>
-<li><a href="#_jboss_modules">8. JBoss Modules</a></li>
-<li><a href="#_osgi">9. OSGi</a></li>
-<li><a href="#_jruby_on_rails">10. JRuby-on-Rails</a></li>
-<li><a href="#_forge">11. Forge</a></li>
+<li><a href="#_jboss_modules">9. JBoss Modules</a></li>
+<li><a href="#_osgi">10. OSGi</a></li>
+<li><a href="#_jruby_on_rails">11. JRuby-on-Rails</a></li>
+<li><a href="#_forge">12. Forge</a></li>
 </ul>
 </div>
 </div>
@@ -589,7 +589,10 @@ This document is a work in progress.
 <div class="sect3">
 <h4 id="_multiple_instances_on_the_same_machine">1.1.3. Multiple instances on the same machine</h4>
 <div class="paragraph">
-<p>Multiple instances of standalone server can be started on the same machine by specifying a port offset.</p>
+<p>Multiple instances of standalone server can be started on the same machine by specifying a port offset to the <code>standalone.sh</code> script.</p>
+</div>
+<div class="paragraph">
+<p>Lets start another instance of standalone server at port 9080 using the following command:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -597,7 +600,10 @@ This document is a work in progress.
 </div>
 </div>
 <div class="paragraph">
-<p>This will start another instance of standalone server at port 9080 and show a similar welcome page as for port 8080.</p>
+<p>After the server is stated the welcome page is now accessible at <a href="http://localhost:9080">http://localhost:9080</a>.</p>
+</div>
+<div class="paragraph">
+<p>Use Ctrl+C to stop the running server.</p>
 </div>
 </div>
 </div>
@@ -625,87 +631,144 @@ This document is a work in progress.
 <div class="sect1">
 <h2 id="_deploying_applications_to_wildfly">2. Deploying Applications to WildFly</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_command_line_interface_jboss_cli">2.1. Command Line Interface (jboss-cli)</h3>
 <div class="paragraph">
-<p><code>bin/jboss-cli.sh</code> or <code>jboss-cli.bat</code> are Command Line Interface management tools for a standalone server or managed domain. It allows a user to connect to the domain controller or a standalone server and execute management operations.</p>
+<p><strong>Purpose</strong>: This section explains different ways to deploy Java EE 7 applications to WildFly.</p>
 </div>
 <div class="paragraph">
-<p>What&#8217;s new in WildFly 8 ?</p>
+<p>Make sure to start a WildFly standalone instance for each sub-section unless stated otherwise. A standalone instance can be started as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./bin/standalone.sh</code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_command_line_interface">2.1. Command Line Interface</h3>
+<div class="paragraph">
+<p><strong>Purpose</strong>: This section discusses different ways to deploy an application to WildFly using Command Line Interface.</p>
 </div>
 <div class="sect3">
-<h4 id="_interactive">2.1.1. Interactive</h4>
+<h4 id="_jboss_cli">2.1.1. jboss-cli</h4>
+<div class="paragraph">
+<p><code>bin/jboss-cli.sh</code> or <code>bin/jboss-cli.bat</code> is Command Line Interface management tool for a standalone server or managed domain. It allows a user to connect to a standalone server or domain controller and execute management operations.</p>
+</div>
+<div class="paragraph">
+<p>More details about using jboss-cli for managing the server are available in <a href="#jboss-cli">JBoss Command Line Interface (jboss-cli)</a>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using &#8216;jboss-cli&#8217;.</p>
+</div>
+<div class="paragraph">
+<p>&#8216;jboss-cli&#8217; can be used to deploy applications using the interactive console or in a non-interactive manner.</p>
+</div>
+<div class="sect4">
+<h5 id="_interactive">Interactive</h5>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Default host/port</p>
-</li>
-<li>
-<p>Optionally connect to a different host/port</p>
-</li>
-<li>
-<p>Tab completion of commands</p>
-</li>
-<li>
-<p>Explain ls, tab, :</p>
-</li>
-<li>
-<p>Show how to read a simple attribute value using :read-attribute(name=release-version)</p>
-</li>
-<li>
-<p>Read the port on which the host is running /socket-binding-group=standard-sockets/socket-binding=http:read-attribute(name=bound-port)</p>
-</li>
-<li>
-<p><code>deploy</code> to deploy an application</p>
-</li>
-<li>
-<p><code>deployment-info</code> to check the deployment status</p>
-</li>
-<li>
-<p><code>batch</code> to batch up create-jdbc-resource, create-jms-resource, and deploy</p>
-</li>
-<li>
-<p>Read details about Data Source before/after accessing the application:</p>
+<p>Start jboss-cli and connect with the existing standalone instance by giving the following command:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="shell language-shell">/subsystem=datasources/data-source=ExampleDS/statistics=pool:read-attribute(name=ActiveCount)</code></pre>
+<pre class="highlight"><code>jboss-cli.sh -c</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The <code>-c</code> switch connects using the default host (&#8216;localhost&#8217;) and management port (&#8216;9990&#8217;).</p>
+</div>
+<div class="paragraph">
+<p>This opens up the &#8216;jboss-cli&#8217; interactive console and shows the following prompt:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The prompt indicates that &#8216;jboss-cli&#8217; is connected to a standalone instance&#8217;s management port.</p>
 </div>
 </li>
 <li>
-<p>How to change default HTTP and management port</p>
+<p>Deploy the application using the following command:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="json language-json">/socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name=port,value=8090)
-{
-    "outcome" =&gt; "success",
-    "response-headers" =&gt; {
-        "operation-requires-reload" =&gt; true,
-        "process-state" =&gt; "reload-required"
-    }
-}</code></pre>
+<pre class="highlight"><code>deploy target/javaee7-1.0-SNAPSHOT.war</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>The directory name of the war file in the command may be different depending upon how &#8216;jboss-cli&#8217; was invoked. Verify the server log to ensure that the application was redeployed. Look for specific timestamp in the log entries.</p>
+</div>
+<div class="paragraph">
+<p>Access the web page at <a href="http://localhost:8080/javaee7/EmployeeList">http://localhost:8080/javaee7/EmployeeList</a> and see the output as:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="images/deploy-javaee7-sample-output.png" alt="Java EE 7 Sample Application Output"></span></p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<code>--force</code> switch can be specified to redeploy the application.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Type <code>exit</code> &#8216;quit&#8217; to exit &#8216;jboss-cli&#8217; interactive console.</p>
 </li>
 </ol>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_non_interactive">2.1.2. Non-interactive</h4>
+<div class="sect4">
+<h5 id="_non_interactive">Non-interactive</h5>
+<div class="paragraph">
+<p>Non-interactive mode allows to support scripts and other types of command line or batch processing.</p>
+</div>
+<div class="paragraph">
+<p>Deploy the application using the following command:</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./bin/jboss-cli.sh --connect --command="deploy javaee7-sample.war --force"</code></pre>
+<pre class="highlight"><code>jboss-cli.sh --connect --command="deploy target/javaee7-sample.war --force"</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>The directory name of the war file in the command may be different depending upon how &#8216;jboss-cli&#8217; was invoked. Verify the server log to ensure that the application was redeployed. Look for specific timestamp in the log entries.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_file_system">2.1.2. File system</h4>
+<div class="paragraph">
+<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using filesystem commands.</p>
+</div>
+<div class="paragraph">
+<p>Copying file to standalone/deployments (talk about marker files ??)</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_curl">2.1.3. Curl</h4>
+<div class="paragraph">
+<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using curl.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_admin_console">2.2. Admin Console</h3>
 <div class="paragraph">
-<p>The Admin Console is a web-based administration console and available at <a href="http://localhost:9990/console">http://localhost:9990/console</a>. A new user in the management realm needs to be added before the admin console can be accessed.</p>
+<p>The Admin Console is a web-based administration console and available at <a href="http://localhost:9990/console">http://localhost:9990/console</a>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using web-based Administration Console.</p>
 </div>
 <div class="sect3">
 <h4 id="_adding_user_in_management_realm">2.2.1. Adding user in management realm</h4>
+<div class="paragraph">
+<p>A new user in the management realm needs to be added before the admin console can be accessed.</p>
+</div>
 <div class="paragraph">
 <p>A new user can be added in the management realm using <code>bin/add-user.sh</code> script. This can be done non-interactively by giving the following command:</p>
 </div>
@@ -780,14 +843,73 @@ yes/no? no</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_file_system">2.3. File system</h3>
+<h3 id="_maven_plugin">2.3. Maven plugin</h3>
 <div class="paragraph">
-<p>Copying file to standalone/deployments (talk about marker files ??)</p>
+<p>The wildfly-maven-plugin is used to deploy, redeploy, undeploy or run your application. You can also deploy or undeploy artifacts, such as JDBC drivers, and add or remove resources. There is also the ability to execute CLI commands.</p>
+</div>
+<div class="paragraph">
+<p><strong>Purpose</strong>: This section explains how to deploy Java EE 7 applications to WildFly use the maven plugin.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add the following fragment to samples/javaee7/pom.xml:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="xml language-xml">&lt;plugin&gt;
+    &lt;groupId&gt;org.wildfly.plugins&lt;/groupId&gt;
+    &lt;artifactId&gt;wildfly-maven-plugin&lt;/artifactId&gt;
+    &lt;version&gt;1.0.0.Beta1&lt;/version&gt;
+    &lt;executions&gt;
+        &lt;execution&gt;
+            &lt;phase&gt;install&lt;/phase&gt;
+            &lt;goals&gt;
+                &lt;goal&gt;deploy&lt;/goal&gt;
+            &lt;/goals&gt;
+        &lt;/execution&gt;
+    &lt;/executions&gt;
+&lt;/plugin&gt;</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_curl">2.4. Curl</h3>
-
+<div class="paragraph">
+<p>along with other &lt;plugin&gt; elements.</p>
+</div>
+<div class="paragraph">
+<p>This adds the &#8216;wildfly-maven-plugin&#8217; description to &#8216;pom.xml&#8217;. It also invokes the plugin &#8216;deploy&#8217; target during the standard maven &#8216;install&#8217; phase.</p>
+</div>
+</li>
+<li>
+<p>Start a WildFly instance as:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./bin/standalone.sh</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Deploy the application by giving the command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mvn wildfly:deploy</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>or</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mvn install</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Access the web page at <a href="http://localhost:8080/javaee7/TestServlet">http://localhost:8080/javaee7/TestServlet</a> and see the output as:</p>
+<div class="paragraph">
+<p><span class="image"><img src="images/deploy-javaee7-sample-output.png" alt="Java EE 7 Sample Application Output"></span></p>
+</div>
+</li>
+</ol>
+</div>
 </div>
 </div>
 </div>
@@ -840,36 +962,107 @@ yes/no? no</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="clustering">6. Clustering, Replication and Failover</h2>
+<h2 id="jboss-cli">6. JBoss Command Line Interface (jboss-cli)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>+
+. Optionally connect to a different host/port</p>
+</div>
+<div class="paragraph">
+<p>+
+. Tab completion of commands</p>
+</div>
+<div class="paragraph">
+<p>+
+. Explain ls, tab, :</p>
+</div>
+<div class="paragraph">
+<p>+
+. Show how to read a simple attribute value using :read-attribute(name=release-version)</p>
+</div>
+<div class="paragraph">
+<p>+
+. Read the port on which the host is running /socket-binding-group=standard-sockets/socket-binding=http:read-attribute(name=bound-port)</p>
+</div>
+<div class="paragraph">
+<p>+
+. <code>deploy</code> to deploy an application</p>
+</div>
+<div class="paragraph">
+<p>+
+. <code>deployment-info</code> to check the deployment status</p>
+</div>
+<div class="paragraph">
+<p>+
+. <code>batch</code> to batch up create-jdbc-resource, create-jms-resource, and deploy</p>
+</div>
+<div class="paragraph">
+<p>+
+. Read details about Data Source before/after accessing the application:</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="shell language-shell">/subsystem=datasources/data-source=ExampleDS/statistics=pool:read-attribute(name=ActiveCount)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>+
+. How to change default HTTP and management port</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="paragraph">
+<p>+</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code class="json language-json">/socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name=port,value=8090)
+{
+    "outcome" =&gt; "success",
+    "response-headers" =&gt; {
+        "operation-requires-reload" =&gt; true,
+        "process-state" =&gt; "reload-required"
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="clustering">7. Clustering, Replication and Failover</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Domains can span multiple physical (or virtual) machines with all WildFly instances on a given host under the control of a Host Controller process. The Host Controllers interact with the Domain Controller to control the lifecycle of the WildFly instances running on that host and to assist the Domain Controller in managing them.</p>
 </div>
 <div class="sect2">
-<h3 id="_http">6.1. HTTP</h3>
+<h3 id="_http">7.1. HTTP</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_ejb">6.2. EJB</h3>
+<h3 id="_ejb">7.2. EJB</h3>
 
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_realms">7. Realms</h2>
+<h2 id="_realms">8. Realms</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_jdbc">7.1. JDBC</h3>
+<h3 id="_jdbc">8.1. JDBC</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_security">7.2. Security</h3>
+<h3 id="_security">8.2. Security</h3>
 
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_jboss_modules">8. JBoss Modules</h2>
+<h2 id="_jboss_modules">9. JBoss Modules</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>JBoss Modules is a standalone implementation of a modular (non-hierarchical) class loading and execution environment for Java.</p>
@@ -877,7 +1070,7 @@ yes/no? no</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_osgi">9. OSGi</h2>
+<h2 id="_osgi">10. OSGi</h2>
 <div class="sectionbody">
 <div class="olist arabic">
 <ol class="arabic">
@@ -898,13 +1091,13 @@ yes/no? no</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_jruby_on_rails">10. JRuby-on-Rails</h2>
+<h2 id="_jruby_on_rails">11. JRuby-on-Rails</h2>
 <div class="sectionbody">
 
 </div>
 </div>
 <div class="sect1">
-<h2 id="_forge">11. Forge</h2>
+<h2 id="_forge">12. Forge</h2>
 <div class="sectionbody">
 
 </div>
@@ -913,7 +1106,7 @@ yes/no? no</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.1<br>
-Last updated 2014-01-12 10:57:08 CET
+Last updated 2014-01-12 16:16:41 CET
 </div>
 </div>
 </body>

@@ -113,6 +113,8 @@ Lets start another instance of standalone server at port 9080 using the followin
 
 After the server is stated the welcome page is now accessible at http://localhost:9080.
 
+Use Ctrl+C to stop the running server.
+
 === Configure Logging
 
 . Change log levels of existing subsystems
