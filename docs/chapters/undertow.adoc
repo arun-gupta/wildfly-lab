@@ -1,4 +1,14 @@
 == Undertow
 
+Undertow is the default web server in the Wildfly Application Server.
+
+Undertow is a flexible performant web server written in java, providing both blocking and non-blocking API’s based on NIO.
+
+Undertow has a composition based architecture that allows you to build a web server by combining small single purpose handlers. The gives you the flexibility to choose between a full Java EE servlet 3.1 container, or a low level non-blocking handler, to anything in between.
+
+Undertow is designed to be fully embeddable, with easy to use fluent builder APIs. Undertow’s lifecycle is completely controlled by the embeding application.
+
+*Purpose*: This section explains how to build applications using Undertow.
+
 === Configure multipe handlers
 

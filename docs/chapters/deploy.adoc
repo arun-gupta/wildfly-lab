@@ -15,7 +15,7 @@ Make sure to start a WildFly standalone instance for each sub-section unless sta
 
 ==== jboss-cli
 
-`bin/jboss-cli.sh` or `bin/jboss-cli.bat` is Command Line Interface management tool for a standalone server or managed domain. It allows a user to connect to a standalone server or domain controller and execute management operations.
+`bin/jboss-cli.sh` or `bin/jboss-cli.bat` is Command Line Interface management tool for a standalone server or a managed domain. It allows a user to connect to a standalone server or domain controller and execute management operations.
 
 More details about using jboss-cli for managing the server are available in <<jboss-cli>>.
 
@@ -25,7 +25,7 @@ More details about using jboss-cli for managing the server are available in <<jb
 
 ===== Interactive
 
-. Start jboss-cli and connect with the existing standalone instance by giving the following command:
+. Use jboss-cli to connect with the existing standalone instance by giving the following command:
 +
 [source]
 ----
@@ -43,7 +43,7 @@ This opens up the `jboss-cli' interactive console and shows the following prompt
 +
 The prompt indicates that `jboss-cli' is connected to a standalone instance's management port.
 +
-. Deploy the application using the following command:
+. Deploy the application by giving the following command in console:
 +
 [source]
 ----
@@ -56,7 +56,29 @@ Access the web page at http://localhost:8080/javaee7/EmployeeList and see the ou
 +
 image:images/deploy-javaee7-sample-output.png[Java EE 7 Sample Application Output]
 +
-TIP: `--force` switch can be specified to redeploy the application.
+TIP: `--force` switch can be included in the command to redeploy the application.
++
+. Verify the deployment status by typing the following command `deployment-info` in the console:
++
+[source]
+----
+deployment-info
+----
++
+and see the output as:
++
+[source]
+----
+NAME                     RUNTIME-NAME             PERSISTENT ENABLED STATUS 
+javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK   
+----
++
+. Undeploy the application by giving the following command:
++
+[source]
+----
+undeploy javaee7-1.0-SNAPSHOT.war
+----
 +
 . Type `exit` `quit' to exit `jboss-cli' interactive console.
 
@@ -64,23 +86,61 @@ TIP: `--force` switch can be specified to redeploy the application.
 
 Non-interactive mode allows to support scripts and other types of command line or batch processing.
 
-Deploy the application using the following command:
+. Deploy the application using the following command:
++
 [source]
 ----
-jboss-cli.sh --connect --command="deploy target/javaee7-sample.war --force"
+jboss-cli.sh --connect --command="deploy target/javaee7-1.0-SNAPSHOT.war --force"
 ----
-
++
 The directory name of the war file in the command may be different depending upon how `jboss-cli' was invoked. Verify the server log to ensure that the application was redeployed. Look for specific timestamp in the log entries.
++
+Verify the deployed application at http://localhost:8080/javaee7/EmployeeList and look for a similar output.
++
+. Verify the deployment status by giving the following command:
++
+[source]
+----
+./bin/jboss-cli.sh --connect --command=deployment-info
+----
++
+. Undeploy the application by giving the following command:
++
+[source]
+----
+./bin/jboss-cli.sh --connect --command="undeploy javaee7-1.0-SNAPSHOT.war"
+----
 
 ==== File system
 
 *Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using filesystem commands.
 
-Copying file to standalone/deployments (talk about marker files ??)
+Any archive (e.g. war, ear, jar, and sar files) can be placed in the `standalone/deployments` directory in order to be automatically deployed to the server.
+
+CAUTION: This deployment mode is only intended to be used during development phase. Other modes are recommended if running production systems
+
+Copy the war file to `standalone/deployments` directory using the following command:
+
+[source]
+----
+cp target/javaee7-1.0-SNAPSHOT.war /Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/deployments
+----
+
+Verify the server log to ensure that the application was redeployed. Look for specific timestamp in the log entries.
+
+Once again, verify the deployed application at http://localhost:8080/javaee7/EmployeeList and look for a similar output.
 
 ==== Curl
 
+curl is a free and popular command line tool for transfering data using URL syntax. If you don't have it installed on your machine then it can be downloaded from http://curl.haxx.se/download.html.
+
 *Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using curl.
+
+==== HTTP APIs
+
+http://localhost:9990/management?operation=deploy
+
+*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using HTTP API.
 
 === Admin Console
 
@@ -88,31 +148,29 @@ The Admin Console is a web-based administration console and available at http://
 
 *Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using web-based Administration Console.
 
-
-==== Adding user in management realm
-
-A new user in the management realm needs to be added before the admin console can be accessed.
-
+. A new user in the management realm needs to be added before the admin console can be accessed.
++
 A new user can be added in the management realm using `bin/add-user.sh` script. This can be done non-interactively by giving the following command:
-[source, text]
++
+[source]
 ----
-./bin/add-user.sh -u sheldon -p baz1ngaa!
+./bin/add-user.sh -u sheldon -p baz^ngaA
 ----
-
++
 The output of the command looks like:
-
++
 [source]
 ----
 Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
 Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
 ----
-
++
 The directory names `standalone' and `domain' indicate that the user is added to both standalone instance and managed domain. The file name indicates that it is added to the management realm.
-
++
 TIP: A user can be added to application realm by including `-a` switch.
-
++
 Alternatively, the user can be added interactively by invoking the script and entering the values on the prompt as shown:
-
++
 [source]
 ----
 ./bin/add-user.sh
@@ -142,10 +200,26 @@ Is this new user going to be used for one AS process to connect to another AS pr
 e.g. for a slave host controller connecting to the master or for a Remoting connection for server to server EJB calls.
 yes/no? no
 ----
-
-Now accessing the console at http://localhost:9990/console shows the web page:
-
++
+Now accessing the console at http://localhost:9990/console prompts for a username and password. Enter the username `sheldon' and password `baz^ngaA' and then the console is shown as:
++
 image:images/deploy-admin-console.png[Admin Console]
++
+. Click on `Manage Deployments' to see the output as:
++
+image:images/deploy-admin-console-deployments-first.png[Admin Console Deployments]
++
+. Click on `Add' button to see:
++
+image:images/deploy-admin-console-add-first.png[Add a Deployment]
++
+. Click on `Choose File' button and select the war file.
++
+Click on `Next' button.
++
+. What names to choose here ?
++
+Deploying through admin console is giving 404 at http://localhost:8080/javaee7-1.0-SNAPSHOT.war/EmployeeList
 
 === Maven plugin
 

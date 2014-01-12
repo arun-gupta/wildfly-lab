@@ -117,6 +117,10 @@ Use Ctrl+C to stop the running server.
 
 === Configure Logging
 
+WildFly provides comprehensive logging output from different subsystems. Same framework can be used to enable logging from user applications as well.
+
+*Purpose*: This section explains how to use and configure logging in WildFly.
+
 . Change log levels of existing subsystems
 +
 . Change logging format of existing logger

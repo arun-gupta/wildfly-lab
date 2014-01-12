@@ -1,12 +1,68 @@
 [[jboss-cli]]
-== JBoss Command Line Interface (jboss-cli)
+== Management using Command Line Interface (jboss-cli)
 
+WildFly comes with a Command Line Interface management tool for a standalone server or a managed domain. It allows a user to connect to a standalone server or domain controller and execute management operations available through the management model. The resources, attributes, and operations that make up the management model can be queried using global operations that applied to every resource.
+
+*Purpose*: This section explains how to manage WildFly using jboss-cli.
+
+. Start a WildFly standalone server, if not already running, using the following command:
 +
-. Optionally connect to a different host/port
+[source]
+----
+standalone.sh
+----
++
+. Use `jboss-cli' to connect with this instance by giving the following command:
++
+[source]
+----
+jboss-cli.sh -c
+----
++
+The `-c` switch connects using the default host (`localhost') and management port (`9990').
++
+This opens up the `jboss-cli' interactive console and shows the following prompt:
++
+[source]
+----
+[standalone@localhost:9990 /]
+----
++
+The prompt indicates that `jboss-cli' is connected to a standalone instance's default management port.
++
+. If WildFly instance is running on a different host and/or port, then `--controller` switch can be used to specify that information.
++
+.. In another shell, start another WildFly instance on a different port using the following command:
++
+[source]
+----
+./bin/standalone.sh -Djboss.socket.binding.port-offset=10000
+----
++
+This will start another WildFly standalone instance on application port 18080 and management port 19090.
++
+.. Use `jboss-cli' to connect with this instance by giving the following command:
++
+[source]
+----
+jboss-cli.sh -c --controller localhost:19990
+----
++
+This opens up the `jboss-cli' interactive console and shows the following prompt:
++
+[source]
+----
+[standalone@localhost:19990 /]
+----
++
+The prompt indicates that `jboss-cli' is connected to a standalone instance on port `19990'.
++
+. Type `exit' or `quit' in the console to exit out of it.
+
 +
 . Tab completion of commands
 +
-. Explain ls, tab, :
+. Tab or help --commands shows the list of commands available in a given context. Explain ls, tab, :
 +
 . Show how to read a simple attribute value using :read-attribute(name=release-version)
 +
@@ -37,4 +93,7 @@
     }
 }
 ----
+
+curl --digest -D - http://admin:admin123@localhost:9990/management/ -d '{"operation":"read-resource", "include-runtime":"true", "address":[{"core-service":"server-environment"}], "json.pretty":1}' -HContent-Type:application/json
+
 
