@@ -1,2 +1,4 @@
 == JBoss Modules
 
+JBoss Modules is a standalone implementation of a modular (non-hierarchical) class loading and execution environment for Java.
+

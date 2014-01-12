@@ -2,6 +2,8 @@
 
 === Command Line Interface (jboss-cli)
 
+`bin/jboss-cli.sh` or `jboss-cli.bat` are Command Line Interface management tools for a standalone server or managed domain. It allows a user to connect to the domain controller or a standalone server and execute management operations.
+
 What's new in WildFly 8 ?
 
 ==== Interactive
@@ -105,7 +107,9 @@ e.g. for a slave host controller connecting to the master or for a Remoting conn
 yes/no? no
 ----
 
-Now accessing 
+Now accessing the console at http://localhost:9990/console shows the web page:
+
+image:images/deploy-admin-console.png[Admin Console]
 
 === File system
 

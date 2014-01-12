@@ -1,4 +1,7 @@
+[[clustering]]
 == Clustering, Replication and Failover
+
+Domains can span multiple physical (or virtual) machines with all WildFly instances on a given host under the control of a Host Controller process. The Host Controllers interact with the Domain Controller to control the lifecycle of the WildFly instances running on that host and to assist the Domain Controller in managing them.
 
 === HTTP
 

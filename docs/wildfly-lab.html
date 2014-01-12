@@ -372,7 +372,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_introduction">1. Introduction</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#_start_and_stop_wildfly">1.1. Start and Stop WildFly</a></li>
+<li><a href="#_getting_started">1.1. Getting Started</a></li>
 <li><a href="#_configure_logging">1.2. Configure Logging</a></li>
 </ul>
 </li>
@@ -407,7 +407,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_custom_formatter">5.3. Custom formatter</a></li>
 </ul>
 </li>
-<li><a href="#_clustering_replication_and_failover">6. Clustering, Replication and Failover</a></li>
+<li><a href="#clustering">6. Clustering, Replication and Failover</a></li>
 <li>
 <ul class="sectlevel2">
 <li><a href="#_http">6.1. HTTP</a></li>
@@ -433,44 +433,92 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <h2 id="_introduction">1. Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>WildFly 8 (nee JBoss Application Server 7) is lightweight, flexible,
-Java EE 7 compliant, polyglot, and open source application server.
-This self-paced hands-on lab gets you introduced to the basic features of WildFly 8.</p>
+<p>WildFly 8 (nee JBoss Application Server 7) is a lightweight, flexible, Java EE 7 compliant, polyglot, and open source application server.</p>
+</div>
+<div class="paragraph">
+<p>This self-paced hands-on lab gets you introduced to the basic features of WildFly 8.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+This document is a work in progress.
+</td>
+</tr>
+</table>
 </div>
 <div class="sect2">
-<h3 id="_start_and_stop_wildfly">1.1. Start and Stop WildFly</h3>
+<h3 id="_getting_started">1.1. Getting Started</h3>
+<div class="paragraph">
+<p>Download the WildFly 8 &#8216;Application Server Distribution&#8217; zip file from <a href="http://wildfly.org/downloads/">http://wildfly.org/downloads/</a> and unzip.</p>
+</div>
+<div class="paragraph">
+<p>Lets get familiar with the directory structure.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width:100%; ">
+<colgroup>
+<col style="width:20%;">
+<col style="width:80%;"> 
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Directory</th>
+<th class="tableblock halign-left valign-top">Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">appclient</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration files, deployment content, log files, and writeable areas used by the application client from this installation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bin</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Startup scripts, startup configuration files and other command line utilities</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">docs</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Documentation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">domain</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration files, deployment content, log files, and writeable areas used by the managed domain from this installation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">domain/lib/ext</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Directory for installed library jars referenced by applications using the Extension-List mechanism for this domain</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">domain/servers</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Writable area for each application server instance that runs in this domain. Each server has its own directory., created when the server is started.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">modules</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Various modules used in the server</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">standalone</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Configuration files, deployment content, log files, and writeable areas used by the single standalone server from this installation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">standalone/deployments</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Directory for filesystem-based automatic deployment</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">standalone/lib/ext</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Directory for installed library jars referenced by applications using the Extension-List mechanism for this instance</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">welcome-content</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Default welcome page content</p></td>
+</tr>
+</tbody>
+</table>
+
 <div class="sect3">
-<h4 id="_directory_structure">1.1.1. Directory Structure</h4>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>bin: All scripts</p>
-</li>
-<li>
-<p>standalone: All configuration, deployment, logs, data, etc about standalone instance</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>deployments: directory for filesystem-based deployment</p>
-</li>
-</ol>
-</div>
-</li>
-<li>
-<p>domain: All configuration, deployment, logs, data, etc about managed domain</p>
-<div class="olist loweralpha">
-<ol class="loweralpha" type="a">
-<li>
-<p>servers: directory where details about each server in the managed domain is stored</p>
-</li>
-</ol>
-</div>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_standalone_and_managed_domain">1.1.2. Standalone and Managed Domain</h4>
+<h4 id="_standalone_and_managed_domain">1.1.1. Standalone and Managed Domain</h4>
 <div class="paragraph">
 <p>WildFly 8 can be started in two different modes:</p>
 </div>
@@ -482,21 +530,75 @@ This self-paced hands-on lab gets you introduced to the basic features of WildFl
 <li>
 <p>A <em>managed domain</em> that allows you to run and manage a multi-server topology and manage multiple WildFly instances from a single control point. It can be started using <code>bin/domain.sh</code> or <code>bin/domain.bat</code> launch scripts.</p>
 <div class="paragraph">
-<p>A Domain Controller is the central management control point for the collection of servers in the &#8216;domain&#8217;.</p>
+<p>A Domain Controller is the central management control point for the collection of servers in the &#8216;domain&#8217;. More details about starting WildFly in managed domain mode, server topology and central management is explained in <a href="#clustering">Clustering, Replication and Failover</a>.</p>
 </div>
 </li>
 </ol>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_web_profile_and_full_platform">1.1.3. Web Profile and Full Platform</h4>
+<h4 id="_web_profile_and_full_platform">1.1.2. Web Profile and Full Platform</h4>
 <div class="paragraph">
-<p>Java EE defines <em>profiles</em> that represent a configuration of the platform suited to a particular class of applications. The Java EE Web Profile is defined as a separate specification in the platform, and is defined as a subset of technologies contained in the platform and targeted toward the developers of modern web applications. WildFly supports both Web Profile and Full Platform by defininig &#8216;configuration profiles&#8217;.</p>
+<p>Java EE defines <em>profiles</em> that represent a configuration of the full platform suited to a particular class of applications. The Java EE Web Profile is defined as a separate specification in the platform, and is defined as a subset of technologies contained in the platform and targeted toward the developers of modern web applications. WildFly supports both Web Profile and Full Platform by defininig &#8216;configuration profiles&#8217;.</p>
+</div>
+<div class="paragraph">
+<p>The default startup mode for the standalone server is web profile. So if you start as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./bin/standalone.sh</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>then this starts WildFly single instance server in web profile.</p>
+</div>
+<div class="paragraph">
+<p>Alternatively, it can be started in full platform by specifying the configuration as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./bin/standalone.sh -c standalone-full.xml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The name of the exact configuration file (one of <code>*.xml</code> files) from the &#8216;standalone/configuration&#8217; directory is specified as the parameter.</p>
+</div>
+<div class="paragraph">
+<p>A standalone server can be started with full platform and clustering capabilities using:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./bin/standalone.sh -c standalone-full-ha.xml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This lab will mostly use standalone server in default profile. Lets start the server as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./bin/standalone.sh</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Access <a href="http://localhost:8080">http://localhost:8080</a> and see the following page to make sure the server is running correctly.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="images/intro-wildfly-welcome.png" alt="intro-wildfly-welcome"></span></p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_multiple_instances_on_the_same_machine_with_port_offset">1.1.4. Multiple instances on the same machine (with port offset ?)</h4>
-
+<h4 id="_multiple_instances_on_the_same_machine">1.1.3. Multiple instances on the same machine</h4>
+<div class="paragraph">
+<p>Multiple instances of standalone server can be started on the same machine by specifying a port offset.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./bin/standalone.sh -Djboss.socket.binding.port-offset=1000</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will start another instance of standalone server at port 9080 and show a similar welcome page as for port 8080.</p>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -525,6 +627,9 @@ This self-paced hands-on lab gets you introduced to the basic features of WildFl
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_command_line_interface_jboss_cli">2.1. Command Line Interface (jboss-cli)</h3>
+<div class="paragraph">
+<p><code>bin/jboss-cli.sh</code> or <code>jboss-cli.bat</code> are Command Line Interface management tools for a standalone server or managed domain. It allows a user to connect to the domain controller or a standalone server and execute management operations.</p>
+</div>
 <div class="paragraph">
 <p>What&#8217;s new in WildFly 8 ?</p>
 </div>
@@ -667,7 +772,10 @@ yes/no? no</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now accessing</p>
+<p>Now accessing the console at <a href="http://localhost:9990/console">http://localhost:9990/console</a> shows the web page:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="images/deploy-admin-console.png" alt="Admin Console"></span></p>
 </div>
 </div>
 </div>
@@ -732,8 +840,11 @@ yes/no? no</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_clustering_replication_and_failover">6. Clustering, Replication and Failover</h2>
+<h2 id="clustering">6. Clustering, Replication and Failover</h2>
 <div class="sectionbody">
+<div class="paragraph">
+<p>Domains can span multiple physical (or virtual) machines with all WildFly instances on a given host under the control of a Host Controller process. The Host Controllers interact with the Domain Controller to control the lifecycle of the WildFly instances running on that host and to assist the Domain Controller in managing them.</p>
+</div>
 <div class="sect2">
 <h3 id="_http">6.1. HTTP</h3>
 
@@ -760,13 +871,30 @@ yes/no? no</code></pre>
 <div class="sect1">
 <h2 id="_jboss_modules">8. JBoss Modules</h2>
 <div class="sectionbody">
-
+<div class="paragraph">
+<p>JBoss Modules is a standalone implementation of a modular (non-hierarchical) class loading and execution environment for Java.</p>
+</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="_osgi">9. OSGi</h2>
 <div class="sectionbody">
-
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>How to configure OSGi in WildFly ?</p>
+</li>
+<li>
+<p>Deploying an OSGi bundle to WildFly</p>
+</li>
+<li>
+<p>Deploy a WAB</p>
+</li>
+<li>
+<p>OSGi console in WildFly</p>
+</li>
+</ol>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -785,7 +913,7 @@ yes/no? no</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version 0.1<br>
-Last updated 2014-01-11 16:02:30 CET
+Last updated 2014-01-12 10:57:08 CET
 </div>
 </div>
 </body>

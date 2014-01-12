@@ -1,18 +1,54 @@
 == Introduction
 
-WildFly 8 (nee JBoss Application Server 7) is lightweight, flexible,
-Java EE 7 compliant, polyglot, and open source application server.
+WildFly 8 (nee JBoss Application Server 7) is a lightweight, flexible, Java EE 7 compliant, polyglot, and open source application server.
+
 This self-paced hands-on lab gets you introduced to the basic features of WildFly 8.
 
-=== Start and Stop WildFly
+NOTE: This document is a work in progress.
 
-==== Directory Structure
+=== Getting Started
 
-. bin: All scripts
-. standalone: All configuration, deployment, logs, data, etc about standalone instance
-.. deployments: directory for filesystem-based deployment
-. domain: All configuration, deployment, logs, data, etc about managed domain
-.. servers: directory where details about each server in the managed domain is stored
+Download the WildFly 8 `Application Server Distribution' zip file from http://wildfly.org/downloads/ and unzip.
+
+Lets get familiar with the directory structure.
+
+[cols="2,8", options="header"]
+|===
+| Directory | Purpose
+
+| appclient
+| Configuration files, deployment content, log files, and writeable areas used by the application client from this installation
+
+| bin
+| Startup scripts, startup configuration files and other command line utilities
+
+| docs
+| Documentation
+
+| domain
+| Configuration files, deployment content, log files, and writeable areas used by the managed domain from this installation
+
+| domain/lib/ext
+| Directory for installed library jars referenced by applications using the Extension-List mechanism for this domain
+
+| domain/servers
+| Writable area for each application server instance that runs in this domain. Each server has its own directory., created when the server is started.
+
+| modules
+| Various modules used in the server
+
+| standalone
+| Configuration files, deployment content, log files, and writeable areas used by the single standalone server from this installation
+
+| standalone/deployments
+| Directory for filesystem-based automatic deployment
+
+| standalone/lib/ext
+| Directory for installed library jars referenced by applications using the Extension-List mechanism for this instance
+
+| welcome-content
+| Default welcome page content
+|===
 
 ==== Standalone and Managed Domain
 
@@ -22,13 +58,60 @@ WildFly 8 can be started in two different modes:
 +
 . A _managed domain_ that allows you to run and manage a multi-server topology and manage multiple WildFly instances from a single control point. It can be started using `bin/domain.sh` or `bin/domain.bat` launch scripts.
 +
-A Domain Controller is the central management control point for the collection of servers in the `domain'.
+A Domain Controller is the central management control point for the collection of servers in the `domain'. More details about starting WildFly in managed domain mode, server topology and central management is explained in <<clustering>>.
 
 ==== Web Profile and Full Platform
 
-Java EE defines _profiles_ that represent a configuration of the platform suited to a particular class of applications. The Java EE Web Profile is defined as a separate specification in the platform, and is defined as a subset of technologies contained in the platform and targeted toward the developers of modern web applications. WildFly supports both Web Profile and Full Platform by defininig `configuration profiles'. 
+Java EE defines _profiles_ that represent a configuration of the full platform suited to a particular class of applications. The Java EE Web Profile is defined as a separate specification in the platform, and is defined as a subset of technologies contained in the platform and targeted toward the developers of modern web applications. WildFly supports both Web Profile and Full Platform by defininig `configuration profiles'.
 
-==== Multiple instances on the same machine (with port offset ?)
+The default startup mode for the standalone server is web profile. So if you start as:
+
+[source]
+----
+./bin/standalone.sh
+----
+
+then this starts WildFly single instance server in web profile.
+
+Alternatively, it can be started in full platform by specifying the configuration as:
+
+[source]
+----
+./bin/standalone.sh -c standalone-full.xml
+----
+
+The name of the exact configuration file (one of `*.xml` files) from the `standalone/configuration' directory is specified as the parameter.
+
+A standalone server can be started with full platform and clustering capabilities using:
+
+[source]
+----
+./bin/standalone.sh -c standalone-full-ha.xml
+----
+
+This lab will mostly use standalone server in default profile. Lets start the server as:
+
+[source]
+----
+./bin/standalone.sh
+----
+
+Access http://localhost:8080 and see the following page to make sure the server is running correctly.
+
+image:images/intro-wildfly-welcome.png[]
+
+==== Multiple instances on the same machine
+
+Multiple instances of standalone server can be started on the same machine by specifying a port offset to the `standalone.sh` script.
+
+Lets start another instance of standalone server at port 9080 using the following command:
+
+[source]
+----
+./bin/standalone.sh -Djboss.socket.binding.port-offset=1000
+----
+
+After the server is stated the welcome page is now accessible at http://localhost:9080.
 
 === Configure Logging
 
