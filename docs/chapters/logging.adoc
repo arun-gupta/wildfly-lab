@@ -1,0 +1,14 @@
+== Configuring Logging
+
+WildFly provides comprehensive logging output from different subsystems. User applications can also leverage the same framework to generate logging output.
+
+*Purpose*: This section explains how to use and configure logging in WildFly.
+
+. Change log levels of existing subsystems
++
+. Change logging format of existing logger
++
+. Create custom logger
++
+. Where to copy custom logging handler ? (class loading)
+
