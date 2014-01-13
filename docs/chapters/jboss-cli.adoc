@@ -428,16 +428,84 @@ Alternatively, the file may be loaded and executed in one command:
 [standalone@localhost:9990 /] run-batch --file=myScript.txt
 ----
 
-=== Environment variables (.jbossclirc)
+=== Environment variables
 
-Not persisted
+CLI supports variables and are resolved during command line parsing phase. They are useful to store frequently used nodepaths, complex commands or operations, or any other text that needs a shorter and easy to use name.
 
-=== Non-interactive mode to set system properties
+Variables set during a CLI session are not persisted when the session is terminated. The variables may be stored in `.jbossclirc` in which case they are persisted across different sessions.
 
-https://community.jboss.org/wiki/SystemPropertiesInOperationParameterValuesAndCommandArguments
+==== Non-persistent Variables
+
+. Set a new variable as:
++
+[source]
+----
+[standalone@localhost:9990 /] set default_port=/socket-binding-group=standard-sockets/socket-binding=http:read-attribute(name=bound-port)
+----
++
+This code defines a new variable `default_port` and sets its value to the default application port. Variable names are expected to follow Java identifier format.
++
+. Use this variable in CLI:
++
+[source]
+----
+[standalone@localhost:9990 /] $default_port
+----
++
+to see the output as:
++
+[source]
+----
+{
+    "outcome" => "success",
+    "result" => 8090,
+    "response-headers" => {"process-state" => "reload-required"}
+}
+----
+
+==== Persistent Variables
+
+Persistent variables are stored in `.jbossclirc` file. The location of this file is checked in the following order:
+
+. value of system property `jboss.cli.rc`
+. user's working directory (as defined by `user.dir` system property)
+. `bin` directory
+
+A default `.jbossclirc` is already included in the `bin` directory and can be used as a template for user-specific environment setup.
+
+The file contains `set' commands to define the variables, such as:
+[source]
+----
+set default_port=/socket-binding-group=standard-sockets/socket-binding=http:read-attribute(name=bound-port)
+----
 
 === GUI
 
---gui
+CLI can be started with a GUI instead of a command line. It allows you to browse through different nodes and commands and operations supported on a node. Commands are automatically created and can be submitted to the server. Applications can be deployed and undeployed as well.
+
+. Type the following command to start CLI with GUI:
++
+[source]
+----
+standalone.sh --gui
+----
++
+The complete domain model is shown in a separate window as:
++
+image:images/jboss-cli-gui.png[jboss-cli GUI]
++
+. Right-click on any node to see the list of supported operations as shown:
++
+image:images/jboss-cli-gui-operations.png[Operations on Nodes]
++
+The command is dynamically created and populated in the `cmd>' text box.
++
+. This command can be submitted to the server by clicking on `Submit' button. Command output is shown:
++
+image:images/jboss-cli-gui-output.png[GUI Output]
++
+. Type `serv' in `Filter' box to search for any nodes and attributes that contains this phrase. The output is shown as:
++
+image:images/jboss-cli-gui-filter.png[Filter]
 
 

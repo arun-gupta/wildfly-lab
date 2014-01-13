@@ -390,9 +390,8 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_connecting_to_a_server">3.1. Connecting to a server</a></li>
 <li><a href="#_resources_operations_and_commands">3.2. Resources, Operations, and Commands</a></li>
 <li><a href="#_batch">3.3. Batch</a></li>
-<li><a href="#_environment_variables_jbossclirc">3.4. Environment variables (.jbossclirc)</a></li>
-<li><a href="#_non_interactive_mode_to_set_system_properties">3.5. Non-interactive mode to set system properties</a></li>
-<li><a href="#_gui">3.6. GUI</a></li>
+<li><a href="#_environment_variables">3.4. Environment variables</a></li>
+<li><a href="#_gui">3.5. GUI</a></li>
 </ul>
 </li>
 <li><a href="#_role_based_access_control">4. Role Based Access Control</a></li>
@@ -1568,21 +1567,125 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 </div>
 </div>
 <div class="sect2">
-<h3 id="_environment_variables_jbossclirc">3.4. Environment variables (.jbossclirc)</h3>
+<h3 id="_environment_variables">3.4. Environment variables</h3>
 <div class="paragraph">
-<p>Not persisted</p>
+<p>CLI supports variables and are resolved during command line parsing phase. They are useful to store frequently used nodepaths, complex commands or operations, or any other text that needs a shorter and easy to use name.</p>
+</div>
+<div class="paragraph">
+<p>Variables set during a CLI session are not persisted when the session is terminated. The variables may be stored in <code>.jbossclirc</code> in which case they are persisted across different sessions.</p>
+</div>
+<div class="sect3">
+<h4 id="_non_persistent_variables">3.4.1. Non-persistent Variables</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Set a new variable as:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] set default_port=/socket-binding-group=standard-sockets/socket-binding=http:read-attribute(name=bound-port)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This code defines a new variable <code>default_port</code> and sets its value to the default application port. Variable names are expected to follow Java identifier format.</p>
+</div>
+</li>
+<li>
+<p>Use this variable in CLI:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] $default_port</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to see the output as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>{
+    "outcome" =&gt; "success",
+    "result" =&gt; 8090,
+    "response-headers" =&gt; {"process-state" =&gt; "reload-required"}
+}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_persistent_variables">3.4.2. Persistent Variables</h4>
+<div class="paragraph">
+<p>Persistent variables are stored in <code>.jbossclirc</code> file. The location of this file is checked in the following order:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>value of system property <code>jboss.cli.rc</code></p>
+</li>
+<li>
+<p>user&#8217;s working directory (as defined by <code>user.dir</code> system property)</p>
+</li>
+<li>
+<p><code>bin</code> directory</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>A default <code>.jbossclirc</code> is already included in the <code>bin</code> directory and can be used as a template for user-specific environment setup.</p>
+</div>
+<div class="paragraph">
+<p>The file contains &#8216;set&#8217; commands to define the variables, such as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>set default_port=/socket-binding-group=standard-sockets/socket-binding=http:read-attribute(name=bound-port)</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_non_interactive_mode_to_set_system_properties">3.5. Non-interactive mode to set system properties</h3>
+<h3 id="_gui">3.5. GUI</h3>
 <div class="paragraph">
-<p><a href="https://community.jboss.org/wiki/SystemPropertiesInOperationParameterValuesAndCommandArguments">https://community.jboss.org/wiki/SystemPropertiesInOperationParameterValuesAndCommandArguments</a></p>
+<p>CLI can be started with a GUI instead of a command line. It allows you to browse through different nodes and commands and operations supported on a node. Commands are automatically created and can be submitted to the server. Applications can be deployed and undeployed as well.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Type the following command to start CLI with GUI:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>standalone.sh --gui</code></pre>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_gui">3.6. GUI</h3>
 <div class="paragraph">
-<p>--gui</p>
+<p>The complete domain model is shown in a separate window as:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="images/jboss-cli-gui.png" alt="jboss-cli GUI"></span></p>
+</div>
+</li>
+<li>
+<p>Right-click on any node to see the list of supported operations as shown:</p>
+<div class="paragraph">
+<p><span class="image"><img src="images/jboss-cli-gui-operations.png" alt="Operations on Nodes"></span></p>
+</div>
+<div class="paragraph">
+<p>The command is dynamically created and populated in the &#8216;cmd&gt;&#8217; text box.</p>
+</div>
+</li>
+<li>
+<p>This command can be submitted to the server by clicking on &#8216;Submit&#8217; button. Command output is shown:</p>
+<div class="paragraph">
+<p><span class="image"><img src="images/jboss-cli-gui-output.png" alt="GUI Output"></span></p>
+</div>
+</li>
+<li>
+<p>Type &#8216;serv&#8217; in &#8216;Filter&#8217; box to search for any nodes and attributes that contains this phrase. The output is shown as:</p>
+<div class="paragraph">
+<p><span class="image"><img src="images/jboss-cli-gui-filter.png" alt="Filter"></span></p>
+</div>
+</li>
+</ol>
 </div>
 </div>
 </div>
