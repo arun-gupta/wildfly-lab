@@ -373,15 +373,15 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li>
 <ul class="sectlevel2">
 <li><a href="#_getting_started">1.1. Getting Started</a></li>
-<li><a href="#_configure_logging">1.2. Configure Logging</a></li>
 </ul>
 </li>
 <li><a href="#_deploying_applications_to_wildfly">2. Deploying Applications to WildFly</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#_command_line_interface">2.1. Command Line Interface</a></li>
-<li><a href="#_admin_console">2.2. Admin Console</a></li>
-<li><a href="#_maven_plugin">2.3. Maven plugin</a></li>
+<li><a href="#_file_system">2.1. File system</a></li>
+<li><a href="#_command_line_interface">2.2. Command Line Interface</a></li>
+<li><a href="#_admin_console">2.3. Admin Console</a></li>
+<li><a href="#_maven_plugin">2.4. Maven plugin</a></li>
 </ul>
 </li>
 <li><a href="#_undertow">3. Undertow</a></li>
@@ -393,7 +393,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_role_based_access_control">4. Role Based Access Control</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#__simple_and_rbac_realms">4.1. &#8216;simple&#8217; and &#8216;rbac&#8217; realms</a></li>
+<li><a href="#__simple_and_rbac_providers">4.1. &#8216;simple&#8217; and &#8216;rbac&#8217; providers</a></li>
 <li><a href="#_predefined_roles">4.2. Predefined roles</a></li>
 <li><a href="#_run_as">4.3. Run as</a></li>
 </ul>
@@ -414,17 +414,19 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_ejb">7.2. EJB</a></li>
 </ul>
 </li>
-<li><a href="#_realms">8. Realms</a></li>
+<li><a href="#_configuring_logging">8. Configuring Logging</a></li>
+<li><a href="#_realms">9. Realms</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#_jdbc">8.1. JDBC</a></li>
-<li><a href="#_security">8.2. Security</a></li>
+<li><a href="#_jdbc">9.1. JDBC</a></li>
+<li><a href="#_security">9.2. Security</a></li>
 </ul>
 </li>
-<li><a href="#_jboss_modules">9. JBoss Modules</a></li>
-<li><a href="#_osgi">10. OSGi</a></li>
-<li><a href="#_jruby_on_rails">11. JRuby-on-Rails</a></li>
-<li><a href="#_forge">12. Forge</a></li>
+<li><a href="#_jboss_modules">10. JBoss Modules</a></li>
+<li><a href="#_osgi">11. OSGi</a></li>
+<li><a href="#_jruby_on_rails">12. JRuby-on-Rails</a></li>
+<li><a href="#_forge">13. Forge</a></li>
+<li><a href="#_acknowledgements">14. Acknowledgements</a></li>
 </ul>
 </div>
 </div>
@@ -480,7 +482,7 @@ This document is a work in progress.
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">docs</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Documentation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">XML Schema definition files and sample configurations</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">domain</p></td>
@@ -525,10 +527,10 @@ This document is a work in progress.
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>A <em>standalone</em> server is an independent instance. It can be started using <code>bin/standalone.sh</code> or <code>bin/standalone.bat</code> launch scripts.</p>
+<p>A <em>standalone</em> server is an independent instance. It can be started using <code>bin/standalone.sh</code> launch script on Unix-variety of machines and <code>bin/standalone.bat</code> on Windows.</p>
 </li>
 <li>
-<p>A <em>managed domain</em> that allows you to run and manage a multi-server topology and manage multiple WildFly instances from a single control point. It can be started using <code>bin/domain.sh</code> or <code>bin/domain.bat</code> launch scripts.</p>
+<p>A <em>managed domain</em> that allows you to run and manage a multi-server topology and manage multiple WildFly instances from a single control point. It can be started using <code>bin/domain.sh</code> launch script on Unix-variety of machines and <code>bin/domain.bat</code> on Windows.</p>
 <div class="paragraph">
 <p>A Domain Controller is the central management control point for the collection of servers in the &#8216;domain&#8217;. More details about starting WildFly in managed domain mode, server topology and central management is explained in <a href="#clustering">Clustering, Replication and Failover</a>.</p>
 </div>
@@ -539,45 +541,22 @@ This document is a work in progress.
 <div class="sect3">
 <h4 id="_web_profile_and_full_platform">1.1.2. Web Profile and Full Platform</h4>
 <div class="paragraph">
-<p>Java EE defines <em>profiles</em> that represent a configuration of the full platform suited to a particular class of applications. The Java EE Web Profile is defined as a separate specification in the platform, and is defined as a subset of technologies contained in the platform and targeted toward the developers of modern web applications. WildFly supports both Web Profile and Full Platform by defininig &#8216;configuration profiles&#8217;.</p>
+<p>Java EE defines <em>profiles</em> that represent a configuration of the full platform suited to a particular class of applications. The Java EE Web Profile is defined as a separate specification in the platform, and is defined as a subset of technologies contained in the platform and targeted toward the developers of modern web applications.</p>
 </div>
 <div class="paragraph">
-<p>The default startup mode for the standalone server is web profile. So if you start as:</p>
+<p>WildFly supports both Web Profile and Full Platform by defininig &#8216;configuration profiles&#8217; in different files. These profiles are defined in &#8216;standalone/configuration/*.xml&#8217; files for standalone instance and &#8216;domain/configuration/domain.xml&#8217; for managed domain.</p>
 </div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Start a WildFly instance in web profile</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>./bin/standalone.sh</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>then this starts WildFly single instance server in web profile.</p>
-</div>
-<div class="paragraph">
-<p>Alternatively, it can be started in full platform by specifying the configuration as:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>./bin/standalone.sh -c standalone-full.xml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The name of the exact configuration file (one of <code>*.xml</code> files) from the &#8216;standalone/configuration&#8217; directory is specified as the parameter.</p>
-</div>
-<div class="paragraph">
-<p>A standalone server can be started with full platform and clustering capabilities using:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>./bin/standalone.sh -c standalone-full-ha.xml</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>This lab will mostly use standalone server in default profile. Lets start the server as:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>./bin/standalone.sh</code></pre>
-</div>
+<p>This starts WildFly standalone instance server in web profile. By default it refers to <code>standalone\configuration\standalone.xml</code> configuration file which offers more capabilities than just web profile.</p>
 </div>
 <div class="paragraph">
 <p>Access <a href="http://localhost:8080">http://localhost:8080</a> and see the following page to make sure the server is running correctly.</p>
@@ -585,19 +564,43 @@ This document is a work in progress.
 <div class="paragraph">
 <p><span class="image"><img src="images/intro-wildfly-welcome.png" alt="intro-wildfly-welcome"></span></p>
 </div>
+<div class="paragraph">
+<p>Use Ctrl+C to stop the running server.</p>
+</div>
+</li>
+<li>
+<p>Start in full platform by specifying the configuration as:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./bin/standalone.sh -c standalone-full.xml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The name of the exact configuration file from &#8216;standalone/configuration&#8217; directory is specified as the parameter.</p>
+</div>
+<div class="paragraph">
+<p>Use Ctrl+C to stop the running server.</p>
+</div>
+</li>
+</ol>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_multiple_instances_on_the_same_machine">1.1.3. Multiple instances on the same machine</h4>
 <div class="paragraph">
-<p>Multiple instances of standalone server can be started on the same machine by specifying a port offset to the <code>standalone.sh</code> script.</p>
+<p>Multiple instances of standalone server can be started on the same machine by specifying a port offset option to the <code>standalone.sh</code> or <code>standalone.bat</code> script.</p>
 </div>
-<div class="paragraph">
-<p>Lets start another instance of standalone server at port 9080 using the following command:</p>
-</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Start another instance of standalone server at port 9080 using the following command:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>./bin/standalone.sh -Djboss.socket.binding.port-offset=1000</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>This will start another standalone instance server on port 9080 (=8080 + 1000) as the default application port and 10990 (=9990 + 1000) as the default management port. These port numbers would differ if non-default ports were used.</p>
 </div>
 <div class="paragraph">
 <p>After the server is stated the welcome page is now accessible at <a href="http://localhost:9080">http://localhost:9080</a>.</p>
@@ -605,31 +608,9 @@ This document is a work in progress.
 <div class="paragraph">
 <p>Use Ctrl+C to stop the running server.</p>
 </div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_configure_logging">1.2. Configure Logging</h3>
-<div class="paragraph">
-<p>WildFly provides comprehensive logging output from different subsystems. Same framework can be used to enable logging from user applications as well.</p>
-</div>
-<div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to use and configure logging in WildFly.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Change log levels of existing subsystems</p>
-</li>
-<li>
-<p>Change logging format of existing logger</p>
-</li>
-<li>
-<p>Create custom logger</p>
-</li>
-<li>
-<p>Where to copy custom logging handler ? (class loading)</p>
 </li>
 </ol>
+</div>
 </div>
 </div>
 </div>
@@ -649,12 +630,47 @@ This document is a work in progress.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_command_line_interface">2.1. Command Line Interface</h3>
+<h3 id="_file_system">2.1. File system</h3>
+<div class="paragraph">
+<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using filesystem commands.</p>
+</div>
+<div class="paragraph">
+<p>Any archive (e.g. war, ear, jar, and sar files) can be placed in the <code>standalone/deployments</code> directory in order to be automatically deployed to the server.</p>
+</div>
+<div class="admonitionblock caution">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Caution</div>
+</td>
+<td class="content">
+This deployment mode is only intended to be used during development phase. Other modes are recommended if running production systems.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Copy the war file to <code>standalone/deployments</code> directory using the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>cp target/javaee7-1.0-SNAPSHOT.war /Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/deployments</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Verify the deployed application by accessing the webpage <a href="http://localhost:8080/javaee7-1.0-SNAPSHOT/EmployeeList">http://localhost:8080/javaee7-1.0-SNAPSHOT/EmployeeList</a> and see the output as:</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="images/deploy-javaee7-sample-output.png" alt="Java EE 7 Sample Application Output"></span></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_command_line_interface">2.2. Command Line Interface</h3>
 <div class="paragraph">
 <p><strong>Purpose</strong>: This section discusses different ways to deploy an application to WildFly using Command Line Interface.</p>
 </div>
 <div class="sect3">
-<h4 id="_jboss_cli">2.1.1. jboss-cli</h4>
+<h4 id="_jboss_cli">2.2.1. jboss-cli</h4>
 <div class="paragraph">
 <p><code>bin/jboss-cli.sh</code> or <code>bin/jboss-cli.bat</code> is Command Line Interface management tool for a standalone server or a managed domain. It allows a user to connect to a standalone server or domain controller and execute management operations.</p>
 </div>
@@ -679,7 +695,7 @@ This document is a work in progress.
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>-c</code> switch connects using the default host (&#8216;localhost&#8217;) and management port (&#8216;9990&#8217;).</p>
+<p>The <code>-c</code> switch connects using the default host (&#8216;localhost&#8217;) and management port (&#8216;9990&#8217;). These values are specified in &#8216;bin/jboss-cli.xml&#8217; and can be updated.</p>
 </div>
 <div class="paragraph">
 <p>This opens up the &#8216;jboss-cli&#8217; interactive console and shows the following prompt:</p>
@@ -702,12 +718,6 @@ This document is a work in progress.
 </div>
 <div class="paragraph">
 <p>The directory name of the war file in the command may be different depending upon how &#8216;jboss-cli&#8217; was invoked. Verify the server log to ensure that the application was redeployed. Look for specific timestamp in the log entries.</p>
-</div>
-<div class="paragraph">
-<p>Access the web page at <a href="http://localhost:8080/javaee7/EmployeeList">http://localhost:8080/javaee7/EmployeeList</a> and see the output as:</p>
-</div>
-<div class="paragraph">
-<p><span class="image"><img src="images/deploy-javaee7-sample-output.png" alt="Java EE 7 Sample Application Output"></span></p>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -737,6 +747,9 @@ This document is a work in progress.
 <pre class="highlight"><code>NAME                     RUNTIME-NAME             PERSISTENT ENABLED STATUS
 javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Verify the server log to ensure that the application was deployed. Look for specific timestamp in the log entries.</p>
 </div>
 </li>
 <li>
@@ -795,42 +808,7 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </div>
 </div>
 <div class="sect3">
-<h4 id="_file_system">2.1.2. File system</h4>
-<div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using filesystem commands.</p>
-</div>
-<div class="paragraph">
-<p>Any archive (e.g. war, ear, jar, and sar files) can be placed in the <code>standalone/deployments</code> directory in order to be automatically deployed to the server.</p>
-</div>
-<div class="admonitionblock caution">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Caution</div>
-</td>
-<td class="content">
-This deployment mode is only intended to be used during development phase. Other modes are recommended if running production systems
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Copy the war file to <code>standalone/deployments</code> directory using the following command:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>cp target/javaee7-1.0-SNAPSHOT.war /Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/deployments</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Verify the server log to ensure that the application was redeployed. Look for specific timestamp in the log entries.</p>
-</div>
-<div class="paragraph">
-<p>Once again, verify the deployed application at <a href="http://localhost:8080/javaee7/EmployeeList">http://localhost:8080/javaee7/EmployeeList</a> and look for a similar output.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_curl">2.1.3. Curl</h4>
+<h4 id="_curl">2.2.2. Curl</h4>
 <div class="paragraph">
 <p>curl is a free and popular command line tool for transfering data using URL syntax. If you don&#8217;t have it installed on your machine then it can be downloaded from <a href="http://curl.haxx.se/download.html">http://curl.haxx.se/download.html</a>.</p>
 </div>
@@ -839,7 +817,7 @@ This deployment mode is only intended to be used during development phase. Other
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_apis">2.1.4. HTTP APIs</h4>
+<h4 id="_http_apis">2.2.3. HTTP APIs</h4>
 <div class="paragraph">
 <p><a href="http://localhost:9990/management?operation=deploy">http://localhost:9990/management?operation=deploy</a></p>
 </div>
@@ -849,7 +827,7 @@ This deployment mode is only intended to be used during development phase. Other
 </div>
 </div>
 <div class="sect2">
-<h3 id="_admin_console">2.2. Admin Console</h3>
+<h3 id="_admin_console">2.3. Admin Console</h3>
 <div class="paragraph">
 <p>The Admin Console is a web-based administration console and available at <a href="http://localhost:9990/console">http://localhost:9990/console</a>.</p>
 </div>
@@ -960,7 +938,7 @@ yes/no? no</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_maven_plugin">2.3. Maven plugin</h3>
+<h3 id="_maven_plugin">2.4. Maven plugin</h3>
 <div class="paragraph">
 <p>The wildfly-maven-plugin is used to deploy, redeploy, undeploy or run your application. You can also deploy or undeploy artifacts, such as JDBC drivers, and add or remove resources. There is also the ability to execute CLI commands.</p>
 </div>
@@ -1061,7 +1039,7 @@ yes/no? no</code></pre>
 <p>Pick up flow from Brian&#8217;s videos</p>
 </div>
 <div class="sect2">
-<h3 id="__simple_and_rbac_realms">4.1. &#8216;simple&#8217; and &#8216;rbac&#8217; realms</h3>
+<h3 id="__simple_and_rbac_providers">4.1. &#8216;simple&#8217; and &#8216;rbac&#8217; providers</h3>
 
 </div>
 <div class="sect2">
@@ -1120,7 +1098,7 @@ yes/no? no</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>-c</code> switch connects using the default host (&#8216;localhost&#8217;) and management port (&#8216;9990&#8217;).</p>
+<p>The <code>-c</code> switch connects using the default host (&#8216;localhost&#8217;) and management port (&#8216;9990&#8217;). These values are specified in &#8216;bin/jboss-cli.xml&#8217; and can be updated.</p>
 </div>
 <div class="paragraph">
 <p>This opens up the &#8216;jboss-cli&#8217; interactive console and shows the following prompt:</p>
@@ -1170,6 +1148,9 @@ yes/no? no</code></pre>
 </li>
 </ol>
 </div>
+</li>
+<li>
+<p>Type &#8216;exit&#8217; or &#8216;quit&#8217; in the console to exit out of it.</p>
 </li>
 <li>
 <p>Tab completion of commands</p>
@@ -1242,20 +1223,47 @@ yes/no? no</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_realms">8. Realms</h2>
+<h2 id="_configuring_logging">8. Configuring Logging</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>WildFly provides comprehensive logging output from different subsystems. User applications can also leverage the same framework to generate logging output.</p>
+</div>
+<div class="paragraph">
+<p><strong>Purpose</strong>: This section explains how to use and configure logging in WildFly.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Change log levels of existing subsystems</p>
+</li>
+<li>
+<p>Change logging format of existing logger</p>
+</li>
+<li>
+<p>Create custom logger</p>
+</li>
+<li>
+<p>Where to copy custom logging handler ? (class loading)</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_realms">9. Realms</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_jdbc">8.1. JDBC</h3>
+<h3 id="_jdbc">9.1. JDBC</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_security">8.2. Security</h3>
+<h3 id="_security">9.2. Security</h3>
 
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_jboss_modules">9. JBoss Modules</h2>
+<h2 id="_jboss_modules">10. JBoss Modules</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>JBoss Modules is a standalone implementation of a modular (non-hierarchical) class loading and execution environment for Java.</p>
@@ -1263,7 +1271,7 @@ yes/no? no</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_osgi">10. OSGi</h2>
+<h2 id="_osgi">11. OSGi</h2>
 <div class="sectionbody">
 <div class="olist arabic">
 <ol class="arabic">
@@ -1284,22 +1292,40 @@ yes/no? no</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_jruby_on_rails">11. JRuby-on-Rails</h2>
+<h2 id="_jruby_on_rails">12. JRuby-on-Rails</h2>
 <div class="sectionbody">
 
 </div>
 </div>
 <div class="sect1">
-<h2 id="_forge">12. Forge</h2>
+<h2 id="_forge">13. Forge</h2>
 <div class="sectionbody">
 
+</div>
+</div>
+<div class="sect1">
+<h2 id="_acknowledgements">14. Acknowledgements</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>The following JBoss community members graciously reviewed and contributed to this hands-on lab:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Jorge Solórzano (twitter handle ?)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Thank you very much for providing the valuable feedback!</p>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.1<br>
-Last updated 2014-01-12 16:16:41 CET
+Last updated 2014-01-13 04:30:47 CET
 </div>
 </div>
 </body>

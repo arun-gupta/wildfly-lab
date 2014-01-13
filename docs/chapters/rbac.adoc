@@ -2,7 +2,7 @@
 
 Pick up flow from Brian's videos
 
-=== `simple' and `rbac' realms
+=== `simple' and `rbac' providers
 
 === Predefined roles
 

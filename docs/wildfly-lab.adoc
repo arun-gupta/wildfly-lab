@@ -19,6 +19,8 @@ include::chapters/jboss-cli.adoc[]
 
 include::chapters/clustering.adoc[]
 
+include::chapters/logging.adoc[]
+
 include::chapters/realms.adoc[]
 
 include::chapters/jboss-modules.adoc[]
@@ -28,4 +30,6 @@ include::chapters/osgi.adoc[]
 include::chapters/jruby.adoc[]
 
 include::chapters/forge.adoc[]
+
+include::chapters/acks.adoc[]
 

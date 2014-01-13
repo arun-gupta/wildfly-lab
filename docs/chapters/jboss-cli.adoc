@@ -19,7 +19,7 @@ standalone.sh
 jboss-cli.sh -c
 ----
 +
-The `-c` switch connects using the default host (`localhost') and management port (`9990').
+The `-c` switch connects using the default host (`localhost') and management port (`9990'). These values are specified in `bin/jboss-cli.xml' and can be updated.
 +
 This opens up the `jboss-cli' interactive console and shows the following prompt:
 +

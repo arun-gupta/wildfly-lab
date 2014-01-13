@@ -9,6 +9,25 @@ Make sure to start a WildFly standalone instance for each sub-section unless sta
 ./bin/standalone.sh
 ----
 
+=== File system
+
+*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using filesystem commands.
+
+Any archive (e.g. war, ear, jar, and sar files) can be placed in the `standalone/deployments` directory in order to be automatically deployed to the server.
+
+CAUTION: This deployment mode is only intended to be used during development phase. Other modes are recommended if running production systems.
+
+Copy the war file to `standalone/deployments` directory using the following command:
+
+[source]
+----
+cp target/javaee7-1.0-SNAPSHOT.war /Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/deployments
+----
+
+Verify the deployed application by accessing the webpage http://localhost:8080/javaee7-1.0-SNAPSHOT/EmployeeList and see the output as:
+
+image:images/deploy-javaee7-sample-output.png[Java EE 7 Sample Application Output]
+
 === Command Line Interface
 
 *Purpose*: This section discusses different ways to deploy an application to WildFly using Command Line Interface.
@@ -32,7 +51,7 @@ More details about using jboss-cli for managing the server are available in <<jb
 jboss-cli.sh -c
 ----
 +
-The `-c` switch connects using the default host (`localhost') and management port (`9990').
+The `-c` switch connects using the default host (`localhost') and management port (`9990'). These values are specified in `bin/jboss-cli.xml' and can be updated.
 +
 This opens up the `jboss-cli' interactive console and shows the following prompt:
 +
@@ -52,10 +71,6 @@ deploy target/javaee7-1.0-SNAPSHOT.war
 +
 The directory name of the war file in the command may be different depending upon how `jboss-cli' was invoked. Verify the server log to ensure that the application was redeployed. Look for specific timestamp in the log entries.
 +
-Access the web page at http://localhost:8080/javaee7/EmployeeList and see the output as:
-+
-image:images/deploy-javaee7-sample-output.png[Java EE 7 Sample Application Output]
-+
 TIP: `--force` switch can be included in the command to redeploy the application.
 +
 . Verify the deployment status by typing the following command `deployment-info` in the console:
@@ -72,6 +87,8 @@ and see the output as:
 NAME                     RUNTIME-NAME             PERSISTENT ENABLED STATUS 
 javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK   
 ----
++
+Verify the server log to ensure that the application was deployed. Look for specific timestamp in the log entries.
 +
 . Undeploy the application by giving the following command:
 +
@@ -110,25 +127,6 @@ Verify the deployed application at http://localhost:8080/javaee7/EmployeeList an
 ----
 ./bin/jboss-cli.sh --connect --command="undeploy javaee7-1.0-SNAPSHOT.war"
 ----
-
-==== File system
-
-*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using filesystem commands.
-
-Any archive (e.g. war, ear, jar, and sar files) can be placed in the `standalone/deployments` directory in order to be automatically deployed to the server.
-
-CAUTION: This deployment mode is only intended to be used during development phase. Other modes are recommended if running production systems
-
-Copy the war file to `standalone/deployments` directory using the following command:
-
-[source]
-----
-cp target/javaee7-1.0-SNAPSHOT.war /Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/deployments
-----
-
-Verify the server log to ensure that the application was redeployed. Look for specific timestamp in the log entries.
-
-Once again, verify the deployed application at http://localhost:8080/javaee7/EmployeeList and look for a similar output.
 
 ==== Curl
 

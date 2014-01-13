@@ -1,0 +1,9 @@
+== Acknowledgements
+
+The following JBoss community members graciously reviewed and contributed to this hands-on lab:
+
+* Jorge Solórzano (twitter handle ?)
+
+Thank you very much for providing the valuable feedback!
+
+
