@@ -74,9 +74,75 @@ Each resource may support child resources.
 
 All resources expose metadata that describes their attributes, operations, and child types. This metadata can be queried by invoking one or more of the _global operations_ supported by the resource.
 
-==== Global Operations
+==== Basic Operations
 
-Global operations are operations that apply to every resource.
+. Type `:` at the prompt and press tab key to see a complete list of operations. This will show the following output:
++
+[source]
+----
+add-namespace                read-operation-names         take-snapshot                
+add-schema-location          read-resource                undefine-attribute           
+delete-snapshot              read-resource-description    upload-deployment-bytes      
+full-replace-deployment      reload                       upload-deployment-stream     
+list-snapshots               remove-namespace             upload-deployment-url        
+read-attribute               remove-schema-location       validate-address             
+read-children-names          replace-deployment           validate-operation           
+read-children-resources      resolve-expression           whoami                       
+read-children-types          resolve-internet-address     write-attribute              
+read-config-as-xml           server-set-restart-required  
+read-operation-description   shutdown 
+----
++
+TIP: Operations can be auto completed by using the tab key. For example, type `:r` at the prompt and press tab key to see the list of operations beginning with that letter.
++
+. Read the complete list of operations supported by a resource by typing `read-operation-names` at the prompt and seeing the output as:
++
+[source]
+----
+[standalone@localhost:9990 /] :read-operation-names
+{
+    "outcome" => "success",
+    "result" => [
+        "add-namespace",
+        "add-schema-location",
+        "delete-snapshot",
+        "full-replace-deployment",
+        "list-snapshots",
+        "read-attribute",
+        "read-children-names",
+        "read-children-resources",
+        "read-children-types",
+        "read-config-as-xml",
+        "read-operation-description",
+        "read-operation-names",
+        "read-resource",
+        "read-resource-description",
+        "reload",
+        "remove-namespace",
+        "remove-schema-location",
+        "replace-deployment",
+        "resolve-expression",
+        "resolve-internet-address",
+        "server-set-restart-required",
+        "shutdown",
+        "take-snapshot",
+        "undefine-attribute",
+        "upload-deployment-bytes",
+        "upload-deployment-stream",
+        "upload-deployment-url",
+        "validate-address",
+        "validate-operation",
+        "whoami",
+        "write-attribute"
+    ]
+}
+----
++
+. Complete detail about an operation can be obtained using `:read-operation-description(name=<OPERATION-NAME>)`. Try that for some of the operations and read the output.
++
+. A number of operations can be applied to every resource. Such operations are called _global operations_. `read-operation-names` is one such global operations. Another commonly used global operation is `read-resource` that reads resource's attribute values along with either basic or complete information about any child resources.
+
+==== Basic Commands
 
 . Type `help --commands` at the jboss-cli prompt to see a complete list of commands available in current context. This will show the following output:
 +
@@ -94,24 +160,9 @@ data-source         history             quit                try
 This can also be achieved by pressing the tab key at the prompt. The list of commands depends upon the current context, i.e. it may change based upon the node address in the domain management model.
 +
 TIP: Commands can be auto completed by using the tab key. For example, type letter `d` at the prompt and press tab key to see the list of commands beginning with that letter. Enter space after choosing the command and press tab key again to see the list of arguments to the command.
-+
-. Type `:` at the jboss-cli prompt and press tab key to see a complete list of operations. This will show the following output:
-+
-[source]
-----
-add-namespace                read-operation-names         take-snapshot                
-add-schema-location          read-resource                undefine-attribute           
-delete-snapshot              read-resource-description    upload-deployment-bytes      
-full-replace-deployment      reload                       upload-deployment-stream     
-list-snapshots               remove-namespace             upload-deployment-url        
-read-attribute               remove-schema-location       validate-address             
-read-children-names          replace-deployment           validate-operation           
-read-children-resources      resolve-expression           whoami                       
-read-children-types          resolve-internet-address     write-attribute              
-read-config-as-xml           server-set-restart-required  
-read-operation-description   shutdown 
-----
-+
+
+==== Global Operations
+
 . Tab completion of commands
 +
 . Tab or help --commands shows the list of commands available in a given context. Explain ls, tab, :

@@ -31,5 +31,7 @@ include::chapters/jruby.adoc[]
 
 include::chapters/forge.adoc[]
 
+include::chapters/arquillian.adoc[]
+
 include::chapters/acks.adoc[]
 

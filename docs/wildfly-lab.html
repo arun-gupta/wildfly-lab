@@ -1118,10 +1118,94 @@ yes/no? no</code></pre>
 <p>All resources expose metadata that describes their attributes, operations, and child types. This metadata can be queried by invoking one or more of the <em>global operations</em> supported by the resource.</p>
 </div>
 <div class="sect3">
-<h4 id="_global_operations">3.2.1. Global Operations</h4>
-<div class="paragraph">
-<p>Global operations are operations that apply to every resource.</p>
+<h4 id="_basic_operations">3.2.1. Basic Operations</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Type <code>:</code> at the prompt and press tab key to see a complete list of operations. This will show the following output:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>add-namespace                read-operation-names         take-snapshot
+add-schema-location          read-resource                undefine-attribute
+delete-snapshot              read-resource-description    upload-deployment-bytes
+full-replace-deployment      reload                       upload-deployment-stream
+list-snapshots               remove-namespace             upload-deployment-url
+read-attribute               remove-schema-location       validate-address
+read-children-names          replace-deployment           validate-operation
+read-children-resources      resolve-expression           whoami
+read-children-types          resolve-internet-address     write-attribute
+read-config-as-xml           server-set-restart-required
+read-operation-description   shutdown</code></pre>
 </div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+Operations can be auto completed by using the tab key. For example, type <code>:r</code> at the prompt and press tab key to see the list of operations beginning with that letter.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Read the complete list of operations supported by a resource by typing <code>read-operation-names</code> at the prompt and seeing the output as:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] :read-operation-names
+{
+    "outcome" =&gt; "success",
+    "result" =&gt; [
+        "add-namespace",
+        "add-schema-location",
+        "delete-snapshot",
+        "full-replace-deployment",
+        "list-snapshots",
+        "read-attribute",
+        "read-children-names",
+        "read-children-resources",
+        "read-children-types",
+        "read-config-as-xml",
+        "read-operation-description",
+        "read-operation-names",
+        "read-resource",
+        "read-resource-description",
+        "reload",
+        "remove-namespace",
+        "remove-schema-location",
+        "replace-deployment",
+        "resolve-expression",
+        "resolve-internet-address",
+        "server-set-restart-required",
+        "shutdown",
+        "take-snapshot",
+        "undefine-attribute",
+        "upload-deployment-bytes",
+        "upload-deployment-stream",
+        "upload-deployment-url",
+        "validate-address",
+        "validate-operation",
+        "whoami",
+        "write-attribute"
+    ]
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Complete detail about an operation can be obtained using <code>:read-operation-description(name=&lt;OPERATION-NAME&gt;)</code>. Try that for some of the operations and read the output.</p>
+</li>
+<li>
+<p>A number of operations can be applied to every resource. Such operations are called <em>global operations</em>. <code>read-operation-names</code> is one such global operations. Another commonly used global operation is <code>read-resource</code> that reads resource&#8217;s attribute values along with either basic or complete information about any child resources.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_basic_commands">3.2.2. Basic Commands</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1153,24 +1237,13 @@ Commands can be auto completed by using the tab key. For example, type letter <c
 </table>
 </div>
 </li>
-<li>
-<p>Type <code>:</code> at the jboss-cli prompt and press tab key to see a complete list of operations. This will show the following output:</p>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>add-namespace                read-operation-names         take-snapshot
-add-schema-location          read-resource                undefine-attribute
-delete-snapshot              read-resource-description    upload-deployment-bytes
-full-replace-deployment      reload                       upload-deployment-stream
-list-snapshots               remove-namespace             upload-deployment-url
-read-attribute               remove-schema-location       validate-address
-read-children-names          replace-deployment           validate-operation
-read-children-resources      resolve-expression           whoami
-read-children-types          resolve-internet-address     write-attribute
-read-config-as-xml           server-set-restart-required
-read-operation-description   shutdown</code></pre>
+</ol>
 </div>
 </div>
-</li>
+<div class="sect3">
+<h4 id="_global_operations">3.2.3. Global Operations</h4>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
 <p>Tab completion of commands</p>
 </li>
