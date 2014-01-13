@@ -1,9 +1,12 @@
 [[jboss-cli]]
 == Management using Command Line Interface (jboss-cli)
 
-WildFly comes with a Command Line Interface management tool for a standalone server or a managed domain. It allows a user to connect to a standalone server or domain controller and execute management operations available through the management model. The resources, attributes, and operations that make up the management model can be queried using global operations that applied to every resource.
+WildFly comes with a Command Line Interface management tool for a standalone server or a managed domain. It allows a user to connect to a standalone server or domain controller and execute management operations available through the management model.
 
 *Purpose*: This section explains how to manage WildFly using jboss-cli.
+
+
+=== Connecting to a server
 
 . Start a WildFly standalone server, if not already running, using the following command:
 +
@@ -45,7 +48,7 @@ This will start another WildFly standalone instance on application port 18080 an
 +
 [source]
 ----
-jboss-cli.sh -c --controller localhost:19990
+jboss-cli.sh -c --controller=localhost:19990
 ----
 +
 This opens up the `jboss-cli' interactive console and shows the following prompt:
@@ -57,8 +60,57 @@ This opens up the `jboss-cli' interactive console and shows the following prompt
 +
 The prompt indicates that `jboss-cli' is connected to a standalone instance on port `19990'.
 +
-. Type `exit' or `quit' in the console to exit out of it.
+.. Type `exit' or `quit' in the console to exit out of it.
 
+=== Resources, Operations, and Commands
+
+WildFly internal management model consists of _management resources_ that that are added, removed, or modified by using _operations_ and _commands_. Operations are low level but a comprehensive way to manage the server. Commands are more user-friendly, although most of them still translate into operation requests and some of them even into a few composite operation requests.
+
+All resources are organized in a tree. The path to the node in the tree for a particular resource is its _address_.
+
+Each resource expose information about their state as _attributes_.
+
+Each resource may support child resources.
+
+All resources expose metadata that describes their attributes, operations, and child types. This metadata can be queried by invoking one or more of the _global operations_ supported by the resource.
+
+==== Global Operations
+
+Global operations are operations that apply to every resource.
+
+. Type `help --commands` at the jboss-cli prompt to see a complete list of commands available in current context. This will show the following output:
++
+[source]
+----
+alias               deploy              if                  read-attribute      undeploy            
+batch               deployment-info     jdbc-driver-info    read-operation      unset               
+cd                  deployment-overlay  ls                  reload              version             
+clear               echo                module              run-batch           xa-data-source      
+command             echo-dmr            patch               set                 :                   
+connect             help                pwd                 shutdown            
+data-source         history             quit                try  
+----
++
+This can also be achieved by pressing the tab key at the prompt. The list of commands depends upon the current context, i.e. it may change based upon the node address in the domain management model.
++
+TIP: Commands can be auto completed by using the tab key. For example, type letter `d` at the prompt and press tab key to see the list of commands beginning with that letter. Enter space after choosing the command and press tab key again to see the list of arguments to the command.
++
+. Type `:` at the jboss-cli prompt and press tab key to see a complete list of operations. This will show the following output:
++
+[source]
+----
+add-namespace                read-operation-names         take-snapshot                
+add-schema-location          read-resource                undefine-attribute           
+delete-snapshot              read-resource-description    upload-deployment-bytes      
+full-replace-deployment      reload                       upload-deployment-stream     
+list-snapshots               remove-namespace             upload-deployment-url        
+read-attribute               remove-schema-location       validate-address             
+read-children-names          replace-deployment           validate-operation           
+read-children-resources      resolve-expression           whoami                       
+read-children-types          resolve-internet-address     write-attribute              
+read-config-as-xml           server-set-restart-required  
+read-operation-description   shutdown 
+----
 +
 . Tab completion of commands
 +

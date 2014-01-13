@@ -9,13 +9,13 @@ include::chapters/introduction.adoc[]
 
 include::chapters/deploy.adoc[]
 
+include::chapters/jboss-cli.adoc[]
+
 include::chapters/undertow.adoc[]
 
 include::chapters/rbac.adoc[]
 
 include::chapters/auditlog.adoc[]
-
-include::chapters/jboss-cli.adoc[]
 
 include::chapters/clustering.adoc[]
 
