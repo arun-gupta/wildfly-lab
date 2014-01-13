@@ -389,38 +389,42 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <ul class="sectlevel2">
 <li><a href="#_connecting_to_a_server">3.1. Connecting to a server</a></li>
 <li><a href="#_resources_operations_and_commands">3.2. Resources, Operations, and Commands</a></li>
+<li><a href="#_batch">3.3. Batch</a></li>
+<li><a href="#_environment_variables_jbossclirc">3.4. Environment variables (.jbossclirc)</a></li>
+<li><a href="#_non_interactive_mode_to_set_system_properties">3.5. Non-interactive mode to set system properties</a></li>
+<li><a href="#_gui">3.6. GUI</a></li>
 </ul>
 </li>
-<li><a href="#_undertow">4. Undertow</a></li>
+<li><a href="#_role_based_access_control">4. Role Based Access Control</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#_configure_multipe_handlers">4.1. Configure multipe handlers</a></li>
+<li><a href="#__simple_and_rbac_providers">4.1. &#8216;simple&#8217; and &#8216;rbac&#8217; providers</a></li>
+<li><a href="#_predefined_roles">4.2. Predefined roles</a></li>
+<li><a href="#_run_as">4.3. Run as</a></li>
 </ul>
 </li>
-<li><a href="#_role_based_access_control">5. Role Based Access Control</a></li>
+<li><a href="#_audit_logging">5. Audit Logging</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#__simple_and_rbac_providers">5.1. &#8216;simple&#8217; and &#8216;rbac&#8217; providers</a></li>
-<li><a href="#_predefined_roles">5.2. Predefined roles</a></li>
-<li><a href="#_run_as">5.3. Run as</a></li>
+<li><a href="#_how_to_turn_on_audit_logging">5.1. How to turn on audit logging</a></li>
+<li><a href="#_default_json_formatter_and_others">5.2. Default JSON formatter (and others)</a></li>
+<li><a href="#_custom_formatter">5.3. Custom formatter</a></li>
 </ul>
 </li>
-<li><a href="#_audit_logging">6. Audit Logging</a></li>
+<li><a href="#clustering">6. Clustering, Replication and Failover</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#_how_to_turn_on_audit_logging">6.1. How to turn on audit logging</a></li>
-<li><a href="#_default_json_formatter_and_others">6.2. Default JSON formatter (and others)</a></li>
-<li><a href="#_custom_formatter">6.3. Custom formatter</a></li>
+<li><a href="#_http">6.1. HTTP</a></li>
+<li><a href="#_ejb">6.2. EJB</a></li>
 </ul>
 </li>
-<li><a href="#clustering">7. Clustering, Replication and Failover</a></li>
+<li><a href="#_configuring_logging">7. Configuring Logging</a></li>
+<li><a href="#_undertow">8. Undertow</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#_http">7.1. HTTP</a></li>
-<li><a href="#_ejb">7.2. EJB</a></li>
+<li><a href="#_configure_multipe_handlers">8.1. Configure multipe handlers</a></li>
 </ul>
 </li>
-<li><a href="#_configuring_logging">8. Configuring Logging</a></li>
 <li><a href="#_realms">9. Realms</a></li>
 <li>
 <ul class="sectlevel2">
@@ -1107,7 +1111,7 @@ yes/no? no</code></pre>
 <p>WildFly internal management model consists of <em>management resources</em> that that are added, removed, or modified by using <em>operations</em> and <em>commands</em>. Operations are low level but a comprehensive way to manage the server. Commands are more user-friendly, although most of them still translate into operation requests and some of them even into a few composite operation requests.</p>
 </div>
 <div class="paragraph">
-<p>All resources are organized in a tree. The path to the node in the tree for a particular resource is its <em>address</em>.</p>
+<p>All resources are organized in a tree. The path to the node in the tree for a particular resource is its <em>address</em> and is identified by <code>/</code>.</p>
 </div>
 <div class="paragraph">
 <p>Each resource expose information about their state as <em>attributes</em>.</p>
@@ -1118,15 +1122,26 @@ yes/no? no</code></pre>
 <div class="paragraph">
 <p>All resources expose metadata that describes their attributes, operations, and child types. This metadata can be queried by invoking one or more of the <em>global operations</em> supported by the resource.</p>
 </div>
+<div class="paragraph">
+<p>Command and operation request history is enabled by default. While in the command line session, you can use the arrow keys to go back and forth in the history of commands and operations.</p>
+</div>
 <div class="sect3">
-<h4 id="_basic_operations">3.2.1. Basic Operations</h4>
+<h4 id="_operations">3.2.1. Operations</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
+<p>The operations require one of the following prefixes:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>:</code> to execute against the current node</p>
+<div class="paragraph">
 <p>Type <code>:</code> at the prompt and press tab key to see a complete list of operations. This will show the following output:</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>add-namespace                read-operation-names         take-snapshot
+<pre class="highlight"><code>[standalone@localhost:9990 /] :
+add-namespace                read-operation-names         take-snapshot
 add-schema-location          read-resource                undefine-attribute
 delete-snapshot              read-resource-description    upload-deployment-bytes
 full-replace-deployment      reload                       upload-deployment-stream
@@ -1151,9 +1166,66 @@ Operations can be auto completed by using the tab key. For example, type <code>:
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>Read a simple attribute using <code>read-attribute</code> operation as shown:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] :read-attribute(name=release-version)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will show the output as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>{
+    "outcome" =&gt; "success",
+    "result" =&gt; "8.0.0.Final-SNAPSHOT"
+}</code></pre>
+</div>
+</div>
 </li>
 <li>
-<p>Read the complete list of operations supported by a resource by typing <code>read-operation-names</code> at the prompt and seeing the output as:</p>
+<p><code>./</code> to execute against a child node of the current node</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 deployment] ./javaee7-1.0-SNAPSHOT.war:read-resource</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command reads resource&#8217;s attribute, the deployed war file in this case, values along with either basic (default) or complete information about any child resources. Detailed information about the resource can be obtained by adding <code>recursive=true</code> parameters as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] ./javaee7-1.0-SNAPSHOT.war:read-resource(recursive=true)</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><code>/</code> to execute an operation against the root node</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] /socket-binding-group=standard-sockets/socket-binding=http:read-attribute(name=bound-port)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command traverses a path and reads an attribute on the leaf node. In this case it reads the port and displays the output as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>{
+    "outcome" =&gt; "success",
+    "result" =&gt; 8080
+}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Read the complete list of operations supported by a resource by typing <code>read-operation-names</code> at the prompt and see the output as:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>[standalone@localhost:9990 /] :read-operation-names
@@ -1197,23 +1269,60 @@ Operations can be auto completed by using the tab key. For example, type <code>:
 </div>
 </li>
 <li>
-<p>Complete detail about an operation can be obtained using <code>:read-operation-description(name=&lt;OPERATION-NAME&gt;)</code>. Try that for some of the operations and read the output.</p>
+<p>A number of operations can be applied to every resource. Such operations are called <em>global operations</em>. <code>read-operation-names</code> is one such global operation. Another commonly used global operation is <code>read-resource</code> that reads resource&#8217;s attribute values along with either basic or complete information about any child resources.</p>
 </li>
 <li>
-<p>A number of operations can be applied to every resource. Such operations are called <em>global operations</em>. <code>read-operation-names</code> is one such global operations. Another commonly used global operation is <code>read-resource</code> that reads resource&#8217;s attribute values along with either basic or complete information about any child resources.</p>
+<p>Read complete detail about <code>read-operation-description</code> operation by giving the command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] :read-operation-description(name=read-operation-names)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and see the output as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>{
+    "outcome" =&gt; "success",
+    "result" =&gt; {
+        "operation-name" =&gt; "read-operation-names",
+        "description" =&gt; "Gets the names of all the operations for the given resource",
+        "request-properties" =&gt; {"access-control" =&gt; {
+            "type" =&gt; BOOLEAN,
+            "description" =&gt; "If 'true' only operations the user is allowed to see are returned, and filtered operations are listed in the 'access-control' response header.",
+            "expressions-allowed" =&gt; false,
+            "required" =&gt; false,
+            "nillable" =&gt; true,
+            "default" =&gt; false
+        }},
+        "reply-properties" =&gt; {
+            "type" =&gt; LIST,
+            "value-type" =&gt; STRING,
+            "description" =&gt; "The operation names"
+        },
+        "read-only" =&gt; true
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Try this operation for some other operations and read the output.</p>
+</div>
 </li>
 </ol>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_basic_commands">3.2.2. Basic Commands</h4>
+<h4 id="_commands">3.2.2. Commands</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
 <p>Type <code>help --commands</code> at the jboss-cli prompt to see a complete list of commands available in current context. This will show the following output:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>alias               deploy              if                  read-attribute      undeploy
+<pre class="highlight"><code>[standalone@localhost:9990 /] help --commands
+alias               deploy              if                  read-attribute      undeploy
 batch               deployment-info     jdbc-driver-info    read-operation      unset
 cd                  deployment-overlay  ls                  reload              version
 clear               echo                module              run-batch           xa-data-source
@@ -1238,126 +1347,279 @@ Commands can be auto completed by using the tab key. For example, type letter <c
 </table>
 </div>
 </li>
-</ol>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_global_operations">3.2.3. Global Operations</h4>
-<div class="olist arabic">
-<ol class="arabic">
 <li>
-<p>Tab completion of commands</p>
-</li>
-<li>
-<p>Tab or help --commands shows the list of commands available in a given context. Explain ls, tab, :</p>
-</li>
-<li>
-<p>Show how to read a simple attribute value using :read-attribute(name=release-version)</p>
-</li>
-<li>
-<p>Read the port on which the host is running /socket-binding-group=standard-sockets/socket-binding=http:read-attribute(name=bound-port)</p>
-</li>
-<li>
-<p><code>deploy</code> to deploy an application</p>
-</li>
-<li>
-<p><code>deployment-info</code> to check the deployment status</p>
-</li>
-<li>
-<p><code>batch</code> to batch up create-jdbc-resource, create-jms-resource, and deploy</p>
-</li>
-<li>
-<p>Read details about Data Source before/after accessing the application:</p>
+<p>Help for any command is available by typing the command name and using <code>--help</code> option. For example:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code class="shell language-shell">/subsystem=datasources/data-source=ExampleDS/statistics=pool:read-attribute(name=ActiveCount)</code></pre>
+<pre class="highlight"><code>[standalone@localhost:9990 /] deploy --help</code></pre>
 </div>
 </div>
-</li>
-<li>
-<p>How to change default HTTP and management port</p>
 <div class="paragraph">
-<p>+</p>
-</div>
-</li>
-</ol>
+<p>will show the following output:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>/socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name=port,value=8090)
-{
+<pre class="highlight"><code>SYNOPSIS
+
+    deploy ((file_path | --url=deployment_url)
+               [--script=script_name] [--name=deployment_name]
+               [--runtime-name=deployment_runtime_name]
+               [--force | --disabled] [--unmanaged])
+           | --name=deployment_name
+           [--server-groups=group_name (,group_name)* | --all-server-groups]
+           [--headers={operation_header (;operation_header)*}]
+
+DESCRIPTION
+
+  Deploys the application designated by the file_path or enables an already
+  existing but disabled in the repository deployment designated by the name
+  . . .</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><code>ls</code> command list the contents of a node path including node types and attributes. Giving this command on the root node shows the following output:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] ls
+core-service                          management-minor-version=0
+deployment                            name=aruns-macbook-pro
+deployment-overlay                    namespaces=[]
+extension                             process-type=Server
+interface                             product-name=undefined
+path                                  product-version=undefined
+socket-binding-group                  profile-name=undefined
+subsystem                             release-codename=WildFly
+system-property                       release-version=8.0.0.Final-SNAPSHOT
+launch-type=STANDALONE                running-mode=NORMAL
+management-major-version=2            schema-locations=[]
+management-micro-version=0            server-state=running</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All entries with name/value pairs are attributes and every thing else is a node.</p>
+</div>
+</li>
+<li>
+<p><code>cd</code> command changes the current node path to the specified argument.</p>
+<div class="paragraph">
+<p>Change the path to &#8216;management&#8217; node by typing the command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] cd core-service=management
+[standalone@localhost:9990 core-service=management]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The command line prompt in the first line shows that the command was issued from the root node. The prompt in the second line shows the updated node name.</p>
+</div>
+</li>
+<li>
+<p>Deploy an application and check its status by typing the following commands:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war --force
+[standalone@localhost:9990 /] deployment-info
+NAME                     RUNTIME-NAME             PERSISTENT ENABLED STATUS
+javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Change the HTTP application port from a default value of 8080 to 8090 by giving the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] /socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name=port,value=8090)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and see the output as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>{
     "outcome" =&gt; "success",
     "response-headers" =&gt; {
         "operation-requires-reload" =&gt; true,
         "process-state" =&gt; "reload-required"
     }
-}</pre>
+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>curl --digest -D - <a href="http://admin:admin123@localhost:9990/management/">http://admin:admin123@localhost:9990/management/</a> -d <em>{"operation":"read-resource", "include-runtime":"true", "address":[{"core-service":"server-environment"}], "json.pretty":1}</em> -HContent-Type:application/json</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_undertow">4. Undertow</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Undertow is the default web server in the Wildfly Application Server.</p>
+<p>The command output indicates that the server should be reloaded. This can be achieved by typing <code>reload</code> command at the prompt.
+Now the application is accessible at <a href="http://8090/javaee7-1.0-SNAPSHOT/EmployeeList">http://8090/javaee7-1.0-SNAPSHOT/EmployeeList</a> instead of the port 8080.</p>
 </div>
 <div class="paragraph">
-<p>Undertow is a flexible performant web server written in java, providing both blocking and non-blocking API’s based on NIO.</p>
+<p>Any change to the management model is persisted to the configuration file. Lets change the port back to 8080 by giving the following command:</p>
 </div>
-<div class="paragraph">
-<p>Undertow has a composition based architecture that allows you to build a web server by combining small single purpose handlers. The gives you the flexibility to choose between a full Java EE servlet 3.1 container, or a low level non-blocking handler, to anything in between.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] /socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name=port,value=8080)</code></pre>
 </div>
-<div class="paragraph">
-<p>Undertow is designed to be fully embeddable, with easy to use fluent builder APIs. Undertow’s lifecycle is completely controlled by the embeding application.</p>
 </div>
-<div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to build applications using Undertow.</p>
+</li>
+</ol>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_configure_multipe_handlers">4.1. Configure multipe handlers</h3>
-
+<h3 id="_batch">3.3. Batch</h3>
+<div class="paragraph">
+<p>The batch mode allows one to group commands and operations and execute them together as an atomic unit, i.e., if at least one of the commands or operations fails, all the other successfully executed commands and operations in the batch are rolled back.</p>
+</div>
+<div class="paragraph">
+<p>Only the commands that translate into operation requests are allowed in the batch. The batch, actually, translates into a <em>composite</em> operation request.</p>
+</div>
+<div class="paragraph">
+<p>Batch mode can be invoked interactively using jboss-cli prompt or non-interactively where the set of commands and operations are saved in a file.</p>
+</div>
+<div class="sect3">
+<h4 id="_interactive_batch">3.3.1. Interactive Batch</h4>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Start batch mode by typing the <code>batch</code> command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] batch
+[standalone@localhost:9990 / #]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The prompt changes to <code>#</code> indicating that the CLI is in batch mode.</p>
+</div>
+</li>
+<li>
+<p>Enter the operations and commands that need to be included in batch:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 / #] /subsystem=datasources/data-source="java:jboss/datasources/MyDataSource":add(jndi-name="java:jboss/datasources/MyDataSource", driver-name="h2", connection-url="jdbc:h2:mem:myData", user-name="sa", password="sa")
+[standalone@localhost:9990 / #] deploy ~/workspaces/wildfly-lab/samples/javaee7/javaee7-1.0-SNAPSHOT.war</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command is creating a JDBC resource and deploys an application that uses it.</p>
+</div>
+</li>
+<li>
+<p>Finally run the commands entered in the batch by giving the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 / #] run-batch</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the command is executed successfully then it is discarded and the CLI leaves the batch mode. If any of the command or operation in the batch fails then the CLI gives an error and all steps executed so far are rolled back.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_non_interactive_batch">3.3.2. Non-interactive Batch</h4>
+<div class="paragraph">
+<p>Non-interactive batch is useful for set of commands and operations that are executed frequently. Such commands and operations can be saved to a file and later used as argument to &#8216;batch&#8217; command.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Save the following commands in a text file:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>/subsystem=datasources/data-source="java:jboss/datasources/MyDataSource":add(jndi-name="java:jboss/datasources/MyDataSource", driver-name="h2", connection-url="jdbc:h2:mem:myData", user-name="sa", password="sa")
+deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>and save the file as &#8216;myScript.txt&#8217;.</p>
+</div>
+</li>
+<li>
+<p>Run the interactive CLI as:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>standalone.sh</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Load the script file using <code>batch</code> command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] batch --file=myScript.txt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>+ Run the batch using the <code>run-job</code> command.</p>
+</div>
+<div class="paragraph">
+<p>Alternatively, the file may be loaded and executed in one command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] run-batch --file=myScript.txt</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_environment_variables_jbossclirc">3.4. Environment variables (.jbossclirc)</h3>
+<div class="paragraph">
+<p>Not persisted</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_non_interactive_mode_to_set_system_properties">3.5. Non-interactive mode to set system properties</h3>
+<div class="paragraph">
+<p><a href="https://community.jboss.org/wiki/SystemPropertiesInOperationParameterValuesAndCommandArguments">https://community.jboss.org/wiki/SystemPropertiesInOperationParameterValuesAndCommandArguments</a></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_gui">3.6. GUI</h3>
+<div class="paragraph">
+<p>--gui</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_role_based_access_control">5. Role Based Access Control</h2>
+<h2 id="_role_based_access_control">4. Role Based Access Control</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Pick up flow from Brian&#8217;s videos</p>
 </div>
 <div class="sect2">
-<h3 id="__simple_and_rbac_providers">5.1. &#8216;simple&#8217; and &#8216;rbac&#8217; providers</h3>
+<h3 id="__simple_and_rbac_providers">4.1. &#8216;simple&#8217; and &#8216;rbac&#8217; providers</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_predefined_roles">5.2. Predefined roles</h3>
+<h3 id="_predefined_roles">4.2. Predefined roles</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_run_as">5.3. Run as</h3>
+<h3 id="_run_as">4.3. Run as</h3>
 
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_audit_logging">6. Audit Logging</h2>
+<h2 id="_audit_logging">5. Audit Logging</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_how_to_turn_on_audit_logging">6.1. How to turn on audit logging</h3>
+<h3 id="_how_to_turn_on_audit_logging">5.1. How to turn on audit logging</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_default_json_formatter_and_others">6.2. Default JSON formatter (and others)</h3>
+<h3 id="_default_json_formatter_and_others">5.2. Default JSON formatter (and others)</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_custom_formatter">6.3. Custom formatter</h3>
+<h3 id="_custom_formatter">5.3. Custom formatter</h3>
 <div class="paragraph">
 <p>How to setup filter ?</p>
 </div>
@@ -1365,23 +1627,23 @@ Commands can be auto completed by using the tab key. For example, type letter <c
 </div>
 </div>
 <div class="sect1">
-<h2 id="clustering">7. Clustering, Replication and Failover</h2>
+<h2 id="clustering">6. Clustering, Replication and Failover</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Domains can span multiple physical (or virtual) machines with all WildFly instances on a given host under the control of a Host Controller process. The Host Controllers interact with the Domain Controller to control the lifecycle of the WildFly instances running on that host and to assist the Domain Controller in managing them.</p>
 </div>
 <div class="sect2">
-<h3 id="_http">7.1. HTTP</h3>
+<h3 id="_http">6.1. HTTP</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_ejb">7.2. EJB</h3>
+<h3 id="_ejb">6.2. EJB</h3>
 
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_configuring_logging">8. Configuring Logging</h2>
+<h2 id="_configuring_logging">7. Configuring Logging</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>WildFly provides comprehensive logging output from different subsystems. User applications can also leverage the same framework to generate logging output.</p>
@@ -1404,6 +1666,30 @@ Commands can be auto completed by using the tab key. For example, type letter <c
 <p>Where to copy custom logging handler ? (class loading)</p>
 </li>
 </ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_undertow">8. Undertow</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Undertow is the default web server in the Wildfly Application Server.</p>
+</div>
+<div class="paragraph">
+<p>Undertow is a flexible performant web server written in java, providing both blocking and non-blocking API’s based on NIO.</p>
+</div>
+<div class="paragraph">
+<p>Undertow has a composition based architecture that allows you to build a web server by combining small single purpose handlers. The gives you the flexibility to choose between a full Java EE servlet 3.1 container, or a low level non-blocking handler, to anything in between.</p>
+</div>
+<div class="paragraph">
+<p>Undertow is designed to be fully embeddable, with easy to use fluent builder APIs. Undertow’s lifecycle is completely controlled by the embeding application.</p>
+</div>
+<div class="paragraph">
+<p><strong>Purpose</strong>: This section explains how to build applications using Undertow.</p>
+</div>
+<div class="sect2">
+<h3 id="_configure_multipe_handlers">8.1. Configure multipe handlers</h3>
+
 </div>
 </div>
 </div>
@@ -1489,7 +1775,7 @@ Commands can be auto completed by using the tab key. For example, type letter <c
 <div id="footer">
 <div id="footer-text">
 Version 0.1<br>
-Last updated 2014-01-13 08:14:40 CET
+Last updated 2014-01-13 11:04:42 CET
 </div>
 </div>
 </body>

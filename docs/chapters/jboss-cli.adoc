@@ -66,7 +66,7 @@ The prompt indicates that `jboss-cli' is connected to a standalone instance on p
 
 WildFly internal management model consists of _management resources_ that that are added, removed, or modified by using _operations_ and _commands_. Operations are low level but a comprehensive way to manage the server. Commands are more user-friendly, although most of them still translate into operation requests and some of them even into a few composite operation requests.
 
-All resources are organized in a tree. The path to the node in the tree for a particular resource is its _address_.
+All resources are organized in a tree. The path to the node in the tree for a particular resource is its _address_ and is identified by `/`.
 
 Each resource expose information about their state as _attributes_.
 
@@ -74,12 +74,19 @@ Each resource may support child resources.
 
 All resources expose metadata that describes their attributes, operations, and child types. This metadata can be queried by invoking one or more of the _global operations_ supported by the resource.
 
-==== Basic Operations
+Command and operation request history is enabled by default. While in the command line session, you can use the arrow keys to go back and forth in the history of commands and operations.
 
-. Type `:` at the prompt and press tab key to see a complete list of operations. This will show the following output:
+==== Operations
+
+. The operations require one of the following prefixes:
++
+.. `:` to execute against the current node
++
+Type `:` at the prompt and press tab key to see a complete list of operations. This will show the following output:
 +
 [source]
 ----
+[standalone@localhost:9990 /] :
 add-namespace                read-operation-names         take-snapshot                
 add-schema-location          read-resource                undefine-attribute           
 delete-snapshot              read-resource-description    upload-deployment-bytes      
@@ -95,7 +102,55 @@ read-operation-description   shutdown
 +
 TIP: Operations can be auto completed by using the tab key. For example, type `:r` at the prompt and press tab key to see the list of operations beginning with that letter.
 +
-. Read the complete list of operations supported by a resource by typing `read-operation-names` at the prompt and seeing the output as:
+Read a simple attribute using `read-attribute` operation as shown:
++
+[source]
+----
+[standalone@localhost:9990 /] :read-attribute(name=release-version)
+----
++
+This will show the output as:
++
+[source]
+----
+{
+    "outcome" => "success",
+    "result" => "8.0.0.Final-SNAPSHOT"
+}
+----
++
+.. `./` to execute against a child node of the current node
++
+[source]
+----
+[standalone@localhost:9990 deployment] ./javaee7-1.0-SNAPSHOT.war:read-resource
+----
++
+This command reads resource's attribute, the deployed war file in this case, values along with either basic (default) or complete information about any child resources. Detailed information about the resource can be obtained by adding `recursive=true` parameters as:
++
+[source]
+----
+[standalone@localhost:9990 /] ./javaee7-1.0-SNAPSHOT.war:read-resource(recursive=true)
+----
++
+.. `/` to execute an operation against the root node
++
+[source]
+----
+[standalone@localhost:9990 /] /socket-binding-group=standard-sockets/socket-binding=http:read-attribute(name=bound-port)
+----
++
+This command traverses a path and reads an attribute on the leaf node. In this case it reads the port and displays the output as:
++
+[source]
+----
+{
+    "outcome" => "success",
+    "result" => 8080
+}
+----
++
+. Read the complete list of operations supported by a resource by typing `read-operation-names` at the prompt and see the output as:
 +
 [source]
 ----
@@ -138,16 +193,51 @@ TIP: Operations can be auto completed by using the tab key. For example, type `:
 }
 ----
 +
-. Complete detail about an operation can be obtained using `:read-operation-description(name=<OPERATION-NAME>)`. Try that for some of the operations and read the output.
+. A number of operations can be applied to every resource. Such operations are called _global operations_. `read-operation-names` is one such global operation. Another commonly used global operation is `read-resource` that reads resource's attribute values along with either basic or complete information about any child resources.
 +
-. A number of operations can be applied to every resource. Such operations are called _global operations_. `read-operation-names` is one such global operations. Another commonly used global operation is `read-resource` that reads resource's attribute values along with either basic or complete information about any child resources.
+. Read complete detail about `read-operation-description` operation by giving the command:
++
+[source]
+----
+[standalone@localhost:9990 /] :read-operation-description(name=read-operation-names)
+----
++
+and see the output as:
++
+[source]
+----
+{
+    "outcome" => "success",
+    "result" => {
+        "operation-name" => "read-operation-names",
+        "description" => "Gets the names of all the operations for the given resource",
+        "request-properties" => {"access-control" => {
+            "type" => BOOLEAN,
+            "description" => "If 'true' only operations the user is allowed to see are returned, and filtered operations are listed in the 'access-control' response header.",
+            "expressions-allowed" => false,
+            "required" => false,
+            "nillable" => true,
+            "default" => false
+        }},
+        "reply-properties" => {
+            "type" => LIST,
+            "value-type" => STRING,
+            "description" => "The operation names"
+        },
+        "read-only" => true
+    }
+}
+----
++
+Try this operation for some other operations and read the output.
 
-==== Basic Commands
+==== Commands
 
 . Type `help --commands` at the jboss-cli prompt to see a complete list of commands available in current context. This will show the following output:
 +
 [source]
 ----
+[standalone@localhost:9990 /] help --commands
 alias               deploy              if                  read-attribute      undeploy            
 batch               deployment-info     jdbc-driver-info    read-operation      unset               
 cd                  deployment-overlay  ls                  reload              version             
@@ -160,34 +250,89 @@ data-source         history             quit                try
 This can also be achieved by pressing the tab key at the prompt. The list of commands depends upon the current context, i.e. it may change based upon the node address in the domain management model.
 +
 TIP: Commands can be auto completed by using the tab key. For example, type letter `d` at the prompt and press tab key to see the list of commands beginning with that letter. Enter space after choosing the command and press tab key again to see the list of arguments to the command.
-
-==== Global Operations
-
-. Tab completion of commands
 +
-. Tab or help --commands shows the list of commands available in a given context. Explain ls, tab, :
+. Help for any command is available by typing the command name and using `--help` option. For example:
 +
-. Show how to read a simple attribute value using :read-attribute(name=release-version)
-+
-. Read the port on which the host is running /socket-binding-group=standard-sockets/socket-binding=http:read-attribute(name=bound-port)
-+
-. `deploy` to deploy an application
-+
-. `deployment-info` to check the deployment status
-+
-. `batch` to batch up create-jdbc-resource, create-jms-resource, and deploy
-+
-. Read details about Data Source before/after accessing the application:
-+
-[source, shell]
-/subsystem=datasources/data-source=ExampleDS/statistics=pool:read-attribute(name=ActiveCount)
-+
-. How to change default HTTP and management port
-+
-+
-[source, json]
+[source]
 ----
-/socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name=port,value=8090)
+[standalone@localhost:9990 /] deploy --help
+----
++
+will show the following output:
++
+[source]
+----
+SYNOPSIS
+
+    deploy ((file_path | --url=deployment_url)
+               [--script=script_name] [--name=deployment_name]
+               [--runtime-name=deployment_runtime_name]
+               [--force | --disabled] [--unmanaged])
+           | --name=deployment_name
+           [--server-groups=group_name (,group_name)* | --all-server-groups]
+           [--headers={operation_header (;operation_header)*}]
+
+DESCRIPTION
+
+  Deploys the application designated by the file_path or enables an already
+  existing but disabled in the repository deployment designated by the name
+  . . .
+----
++
+. `ls` command list the contents of a node path including node types and attributes. Giving this command on the root node shows the following output:
++
+[source]
+----
+[standalone@localhost:9990 /] ls
+core-service                          management-minor-version=0            
+deployment                            name=aruns-macbook-pro                
+deployment-overlay                    namespaces=[]                         
+extension                             process-type=Server                   
+interface                             product-name=undefined                
+path                                  product-version=undefined             
+socket-binding-group                  profile-name=undefined                
+subsystem                             release-codename=WildFly              
+system-property                       release-version=8.0.0.Final-SNAPSHOT  
+launch-type=STANDALONE                running-mode=NORMAL                   
+management-major-version=2            schema-locations=[]                   
+management-micro-version=0            server-state=running
+----
++
+All entries with name/value pairs are attributes and every thing else is a node.
++
+. `cd` command changes the current node path to the specified argument.
++
+Change the path to `management' node by typing the command:
++
+[source]
+----
+[standalone@localhost:9990 /] cd core-service=management
+[standalone@localhost:9990 core-service=management]
+----
++
+The command line prompt in the first line shows that the command was issued from the root node. The prompt in the second line shows the updated node name.
++
+. Deploy an application and check its status by typing the following commands:
++
+[source]
+----
+[standalone@localhost:9990 /] deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war --force
+[standalone@localhost:9990 /] deployment-info 
+NAME                     RUNTIME-NAME             PERSISTENT ENABLED STATUS 
+javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK
+----
++
+. Change the HTTP application port from a default value of 8080 to 8090 by giving the following command:
++
+[source]
+----
+[standalone@localhost:9990 /] /socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name=port,value=8090)
+----
++
+and see the output as:
++
+[source]
+----
 {
     "outcome" => "success",
     "response-headers" => {
@@ -196,7 +341,103 @@ TIP: Commands can be auto completed by using the tab key. For example, type lett
     }
 }
 ----
++
+The command output indicates that the server should be reloaded. This can be achieved by typing `reload` command at the prompt.
+Now the application is accessible at http://8090/javaee7-1.0-SNAPSHOT/EmployeeList instead of the port 8080.
++
+Any change to the management model is persisted to the configuration file. Lets change the port back to 8080 by giving the following command:
++
+[source]
+----
+[standalone@localhost:9990 /] /socket-binding-group=standard-sockets/socket-binding=http:write-attribute(name=port,value=8080)
+----
 
-curl --digest -D - http://admin:admin123@localhost:9990/management/ -d '{"operation":"read-resource", "include-runtime":"true", "address":[{"core-service":"server-environment"}], "json.pretty":1}' -HContent-Type:application/json
+=== Batch
+
+The batch mode allows one to group commands and operations and execute them together as an atomic unit, i.e., if at least one of the commands or operations fails, all the other successfully executed commands and operations in the batch are rolled back.
+
+Only the commands that translate into operation requests are allowed in the batch. The batch, actually, translates into a 'composite' operation request.
+
+Batch mode can be invoked interactively using jboss-cli prompt or non-interactively where the set of commands and operations are saved in a file.
+
+==== Interactive Batch
+
+. Start batch mode by typing the `batch` command:
++
+[source]
+----
+[standalone@localhost:9990 /] batch
+[standalone@localhost:9990 / #]
+----
++
+The prompt changes to `#` indicating that the CLI is in batch mode.
++
+. Enter the operations and commands that need to be included in batch:
++
+[source]
+----
+[standalone@localhost:9990 / #] /subsystem=datasources/data-source="java:jboss/datasources/MyDataSource":add(jndi-name="java:jboss/datasources/MyDataSource", driver-name="h2", connection-url="jdbc:h2:mem:myData", user-name="sa", password="sa")
+[standalone@localhost:9990 / #] deploy ~/workspaces/wildfly-lab/samples/javaee7/javaee7-1.0-SNAPSHOT.war
+----
++
+This command is creating a JDBC resource and deploys an application that uses it.
+
+. Finally run the commands entered in the batch by giving the following command:
++
+[source]
+----
+[standalone@localhost:9990 / #] run-batch
+----
++
+If the command is executed successfully then it is discarded and the CLI leaves the batch mode. If any of the command or operation in the batch fails then the CLI gives an error and all steps executed so far are rolled back.
+
+==== Non-interactive Batch
+
+Non-interactive batch is useful for set of commands and operations that are executed frequently. Such commands and operations can be saved to a file and later used as argument to `batch' command.
+
+. Save the following commands in a text file:
++
+[source]
+----
+/subsystem=datasources/data-source="java:jboss/datasources/MyDataSource":add(jndi-name="java:jboss/datasources/MyDataSource", driver-name="h2", connection-url="jdbc:h2:mem:myData", user-name="sa", password="sa")
+deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war
+----
++
+and save the file as `myScript.txt'.
++
+. Run the interactive CLI as:
++
+[source]
+----
+standalone.sh
+----
++
+. Load the script file using `batch` command:
++
+[source]
+----
+[standalone@localhost:9990 /] batch --file=myScript.txt
+----
++
++ Run the batch using the `run-job` command.
++
+Alternatively, the file may be loaded and executed in one command:
++
+[source]
+----
+[standalone@localhost:9990 /] run-batch --file=myScript.txt
+----
+
+=== Environment variables (.jbossclirc)
+
+Not persisted
+
+=== Non-interactive mode to set system properties
+
+https://community.jboss.org/wiki/SystemPropertiesInOperationParameterValuesAndCommandArguments
+
+=== GUI
+
+--gui
 
 
