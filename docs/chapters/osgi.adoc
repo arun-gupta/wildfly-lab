@@ -1,7 +1,0 @@
-== OSGi
-
-. How to configure OSGi in WildFly ?
-. Deploying an OSGi bundle to WildFly
-. Deploy a WAB
-. OSGi console in WildFly
-
