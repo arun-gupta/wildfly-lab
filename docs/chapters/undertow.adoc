@@ -10,5 +10,11 @@ Undertow is designed to be fully embeddable, with easy to use fluent builder API
 
 *Purpose*: This section explains how to build applications using Undertow.
 
-=== Configure multipe handlers
+=== Simple HTTP
+
+=== Servlet
+
+=== WebSocket
+
+=== Server Container Initializer
 

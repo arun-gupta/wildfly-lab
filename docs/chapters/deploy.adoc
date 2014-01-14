@@ -71,7 +71,7 @@ deploy target/javaee7-1.0-SNAPSHOT.war
 +
 The directory name of the war file in the command may be different depending upon how `jboss-cli' was invoked. Verify the server log to ensure that the application was redeployed. Look for specific timestamp in the log entries.
 +
-TIP: `--force` switch can be included in the command to redeploy the application.
+TIP: `--force` switch can be included in the command to replace the existing application.
 +
 . Verify the deployment status by typing the following command `deployment-info` in the console:
 +
@@ -133,6 +133,8 @@ Verify the deployed application at http://localhost:8080/javaee7/EmployeeList an
 curl is a free and popular command line tool for transfering data using URL syntax. If you don't have it installed on your machine then it can be downloaded from http://curl.haxx.se/download.html.
 
 *Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using curl.
+
+curl -X POST -F "file=@javaee7-1.0-SNAPSHOT.war;Content-Type=application/octet-stream" --digest http://u1:p1@localhost:9990/management/add-content
 
 ==== HTTP APIs
 

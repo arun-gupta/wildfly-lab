@@ -119,7 +119,7 @@ This will show the output as:
 }
 ----
 +
-.. `./` to execute against a child node of the current node
+.. `./` to execute against a child node of the current path
 +
 [source]
 ----
@@ -130,7 +130,7 @@ This command reads resource's attribute, the deployed war file in this case, val
 +
 [source]
 ----
-[standalone@localhost:9990 /] ./javaee7-1.0-SNAPSHOT.war:read-resource(recursive=true)
+[standalone@localhost:9990 /deployment] ./javaee7-1.0-SNAPSHOT.war:read-resource(recursive=true)
 ----
 +
 .. `/` to execute an operation against the root node
@@ -358,7 +358,7 @@ The batch mode allows one to group commands and operations and execute them toge
 
 Only the commands that translate into operation requests are allowed in the batch. The batch, actually, translates into a 'composite' operation request.
 
-Batch mode can be invoked interactively using jboss-cli prompt or non-interactively where the set of commands and operations are saved in a file.
+Batch mode can be composed interactively using jboss-cli prompt or non-interactively where the set of commands and operations are saved in a file and loaded at the prompt.
 
 ==== Interactive Batch
 
@@ -376,12 +376,12 @@ The prompt changes to `#` indicating that the CLI is in batch mode.
 +
 [source]
 ----
-[standalone@localhost:9990 / #] /subsystem=datasources/data-source="java:jboss/datasources/MyDataSource":add(jndi-name="java:jboss/datasources/MyDataSource", driver-name="h2", connection-url="jdbc:h2:mem:myData", user-name="sa", password="sa")
+[standalone@localhost:9990 / #] data-source add --name=myDataSource --jndi-name=java:jboss/datasources/MyDataSource --user-name=sa --password=sa --driver-name=h2 --connection-url=jdbc:h2:mem:myData
 [standalone@localhost:9990 / #] deploy ~/workspaces/wildfly-lab/samples/javaee7/javaee7-1.0-SNAPSHOT.war
 ----
 +
 This command is creating a JDBC resource and deploys an application that uses it.
-
++
 . Finally run the commands entered in the batch by giving the following command:
 +
 [source]
@@ -443,9 +443,9 @@ Variables set during a CLI session are not persisted when the session is termina
 [standalone@localhost:9990 /] set default_port=/socket-binding-group=standard-sockets/socket-binding=http:read-attribute(name=bound-port)
 ----
 +
-This code defines a new variable `default_port` and sets its value to the default application port. Variable names are expected to follow Java identifier format.
+This code defines a new variable `default_port` and sets its value to the defined operation. Variable names are expected to follow Java identifier format.
 +
-. Use this variable in CLI:
+. Use this variable in CLI to execute the command:
 +
 [source]
 ----

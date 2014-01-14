@@ -421,7 +421,10 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_undertow">8. Undertow</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#_configure_multipe_handlers">8.1. Configure multipe handlers</a></li>
+<li><a href="#_simple_http">8.1. Simple HTTP</a></li>
+<li><a href="#_servlet">8.2. Servlet</a></li>
+<li><a href="#_websocket">8.3. WebSocket</a></li>
+<li><a href="#_server_container_initializer">8.4. Server Container Initializer</a></li>
 </ul>
 </li>
 <li><a href="#_realms">9. Realms</a></li>
@@ -432,11 +435,10 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 </ul>
 </li>
 <li><a href="#_jboss_modules">10. JBoss Modules</a></li>
-<li><a href="#_osgi">11. OSGi</a></li>
-<li><a href="#_jruby_on_rails">12. JRuby-on-Rails</a></li>
-<li><a href="#_forge">13. Forge</a></li>
-<li><a href="#_arquillian">14. Arquillian</a></li>
-<li><a href="#_acknowledgements">15. Acknowledgements</a></li>
+<li><a href="#_jruby_on_rails">11. JRuby-on-Rails</a></li>
+<li><a href="#_forge">12. Forge</a></li>
+<li><a href="#_arquillian">13. Arquillian</a></li>
+<li><a href="#_acknowledgements">14. Acknowledgements</a></li>
 </ul>
 </div>
 </div>
@@ -736,7 +738,7 @@ This deployment mode is only intended to be used during development phase. Other
 <div class="title">Tip</div>
 </td>
 <td class="content">
-<code>--force</code> switch can be included in the command to redeploy the application.
+<code>--force</code> switch can be included in the command to replace the existing application.
 </td>
 </tr>
 </table>
@@ -824,6 +826,9 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </div>
 <div class="paragraph">
 <p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using curl.</p>
+</div>
+<div class="paragraph">
+<p>curl -X POST -F "file=@javaee7-1.0-SNAPSHOT.war;Content-Type=application/octet-stream" --digest <a href="http://u1:p1@localhost:9990/management/add-content">http://u1:p1@localhost:9990/management/add-content</a></p>
 </div>
 </div>
 <div class="sect3">
@@ -1186,7 +1191,7 @@ Operations can be auto completed by using the tab key. For example, type <code>:
 </div>
 </li>
 <li>
-<p><code>./</code> to execute against a child node of the current node</p>
+<p><code>./</code> to execute against a child node of the current path</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>[standalone@localhost:9990 deployment] ./javaee7-1.0-SNAPSHOT.war:read-resource</code></pre>
@@ -1197,7 +1202,7 @@ Operations can be auto completed by using the tab key. For example, type <code>:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>[standalone@localhost:9990 /] ./javaee7-1.0-SNAPSHOT.war:read-resource(recursive=true)</code></pre>
+<pre class="highlight"><code>[standalone@localhost:9990 /deployment] ./javaee7-1.0-SNAPSHOT.war:read-resource(recursive=true)</code></pre>
 </div>
 </div>
 </li>
@@ -1472,7 +1477,7 @@ Now the application is accessible at <a href="http://8090/javaee7-1.0-SNAPSHOT/E
 <p>Only the commands that translate into operation requests are allowed in the batch. The batch, actually, translates into a <em>composite</em> operation request.</p>
 </div>
 <div class="paragraph">
-<p>Batch mode can be invoked interactively using jboss-cli prompt or non-interactively where the set of commands and operations are saved in a file.</p>
+<p>Batch mode can be composed interactively using jboss-cli prompt or non-interactively where the set of commands and operations are saved in a file and loaded at the prompt.</p>
 </div>
 <div class="sect3">
 <h4 id="_interactive_batch">3.3.1. Interactive Batch</h4>
@@ -1494,7 +1499,7 @@ Now the application is accessible at <a href="http://8090/javaee7-1.0-SNAPSHOT/E
 <p>Enter the operations and commands that need to be included in batch:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>[standalone@localhost:9990 / #] /subsystem=datasources/data-source="java:jboss/datasources/MyDataSource":add(jndi-name="java:jboss/datasources/MyDataSource", driver-name="h2", connection-url="jdbc:h2:mem:myData", user-name="sa", password="sa")
+<pre class="highlight"><code>[standalone@localhost:9990 / #] data-source add --name=myDataSource --jndi-name=java:jboss/datasources/MyDataSource --user-name=sa --password=sa --driver-name=h2 --connection-url=jdbc:h2:mem:myData
 [standalone@localhost:9990 / #] deploy ~/workspaces/wildfly-lab/samples/javaee7/javaee7-1.0-SNAPSHOT.war</code></pre>
 </div>
 </div>
@@ -1586,11 +1591,11 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 </div>
 </div>
 <div class="paragraph">
-<p>This code defines a new variable <code>default_port</code> and sets its value to the default application port. Variable names are expected to follow Java identifier format.</p>
+<p>This code defines a new variable <code>default_port</code> and sets its value to the defined operation. Variable names are expected to follow Java identifier format.</p>
 </div>
 </li>
 <li>
-<p>Use this variable in CLI:</p>
+<p>Use this variable in CLI to execute the command:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>[standalone@localhost:9990 /] $default_port</code></pre>
@@ -1791,7 +1796,19 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 <p><strong>Purpose</strong>: This section explains how to build applications using Undertow.</p>
 </div>
 <div class="sect2">
-<h3 id="_configure_multipe_handlers">8.1. Configure multipe handlers</h3>
+<h3 id="_simple_http">8.1. Simple HTTP</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_servlet">8.2. Servlet</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_websocket">8.3. WebSocket</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_server_container_initializer">8.4. Server Container Initializer</h3>
 
 </div>
 </div>
@@ -1818,46 +1835,25 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 </div>
 </div>
 <div class="sect1">
-<h2 id="_osgi">11. OSGi</h2>
-<div class="sectionbody">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>How to configure OSGi in WildFly ?</p>
-</li>
-<li>
-<p>Deploying an OSGi bundle to WildFly</p>
-</li>
-<li>
-<p>Deploy a WAB</p>
-</li>
-<li>
-<p>OSGi console in WildFly</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_jruby_on_rails">12. JRuby-on-Rails</h2>
+<h2 id="_jruby_on_rails">11. JRuby-on-Rails</h2>
 <div class="sectionbody">
 
 </div>
 </div>
 <div class="sect1">
-<h2 id="_forge">13. Forge</h2>
+<h2 id="_forge">12. Forge</h2>
 <div class="sectionbody">
 
 </div>
 </div>
 <div class="sect1">
-<h2 id="_arquillian">14. Arquillian</h2>
+<h2 id="_arquillian">13. Arquillian</h2>
 <div class="sectionbody">
 
 </div>
 </div>
 <div class="sect1">
-<h2 id="_acknowledgements">15. Acknowledgements</h2>
+<h2 id="_acknowledgements">14. Acknowledgements</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The following JBoss community members graciously reviewed and contributed to this hands-on lab:</p>
@@ -1878,7 +1874,7 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 <div id="footer">
 <div id="footer-text">
 Version 0.1<br>
-Last updated 2014-01-13 11:04:42 CET
+Last updated 2014-01-14 09:59:36 CET
 </div>
 </div>
 </body>
