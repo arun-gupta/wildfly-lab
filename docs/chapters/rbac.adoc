@@ -2,8 +2,15 @@
 
 Pick up flow from Brian's videos
 
+Role Based Access Control (RBAC) is the ability to restrict access to system or certain portions of it to authorized users. For JBoss AS 7.x or JBoss EAP 6.0 and 6.1, the web-based administrative console had an all-or-nothing approach. So if a user can authenticate with management security realm, then he'll have all the privileges. This might be OK for smaller deployments but the roles are typically divided for mission critical deployments and a finer-grained control is required. JBoss EAP 6.2 and WildFly 8 introduces RBAC using different roles.
+
+There are essential 7 different roles in 2 different categories - first 4 roles where users are locked out of sensitive data and 3 higher level roles where users are able to deal with sensitive data.
+
+
 === `simple' and `rbac' providers
 
 === Predefined roles
 
 === Run as
+
+jboss-cli.xml <access-control> Does not suggest commands that will not work

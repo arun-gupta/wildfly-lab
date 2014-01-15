@@ -77,7 +77,7 @@ This starts WildFly standalone instance server in web profile. By default it ref
 +
 Access http://localhost:8080 and see the following page to make sure the server is running correctly.
 +
-image:images/intro-wildfly-welcome.png[]
+image::images/intro-wildfly-welcome.png[]
 +
 Use Ctrl+C to stop the running server.
 +
