@@ -1,7 +1,8 @@
-:revnumber: 0.1
+:revnumber: 0.2
 :author: Arun Gupta
 :revdate: Jan 10, 2014
 :toc:
+:toclevels: 3
 
 = WildFly 8 Hands-on Lab
 

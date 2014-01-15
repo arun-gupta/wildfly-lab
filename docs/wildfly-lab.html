@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="generator" content="Asciidoctor 0.1.4">
+<meta name="generator" content="Asciidoctor 1.5.0.preview.1">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WildFly 8 Hands-on Lab</title>
 <style>
@@ -10,9 +10,11 @@
 article, aside, details, figcaption, figure, footer, header, hgroup, main, nav, section, summary { display: block; }
 audio, canvas, video { display: inline-block; }
 audio:not([controls]) { display: none; height: 0; }
-[hidden] { display: none; }
-html { background: #fff; color: #000; font-family: sans-serif; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; }
+[hidden], template { display: none; }
+script { display: none !important; }
+html { font-family: sans-serif; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; }
 body { margin: 0; }
+a { background: transparent; }
 a:focus { outline: thin dotted; }
 a:active, a:hover { outline: 0; }
 h1 { font-size: 2em; margin: 0.67em 0; }
@@ -44,11 +46,13 @@ input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webki
 button::-moz-focus-inner, input::-moz-focus-inner { border: 0; padding: 0; }
 textarea { overflow: auto; vertical-align: top; }
 table { border-collapse: collapse; border-spacing: 0; }
+meta.foundation-mq-small { font-family: "only screen and (min-width: 768px)"; width: 768px; }
+meta.foundation-mq-medium { font-family: "only screen and (min-width:1280px)"; width: 1280px; }
+meta.foundation-mq-large { font-family: "only screen and (min-width:1440px)"; width: 1440px; }
 *, *:before, *:after { -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box; }
 html, body { font-size: 100%; }
 body { background: white; color: #222222; padding: 0; margin: 0; font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; font-weight: normal; font-style: normal; line-height: 1; position: relative; cursor: auto; }
 a:hover { cursor: pointer; }
-a:focus { outline: none; }
 img, object, embed { max-width: 100%; height: auto; }
 object, embed { height: 100%; }
 img { -ms-interpolation-mode: bicubic; }
@@ -65,7 +69,7 @@ img { display: inline-block; vertical-align: middle; }
 textarea { height: auto; min-height: 50px; }
 select { width: 100%; }
 p.lead, .paragraph.lead > p, #preamble > .sectionbody > .paragraph:first-of-type p { font-size: 1.21875em; line-height: 1.6; }
-.subheader, #content #toctitle, .admonitionblock td.content > .title, .exampleblock > .title, .imageblock > .title, .videoblock > .title, .listingblock > .title, .literalblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, .sidebarblock > .title, .tableblock > .title, .verseblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title, .tableblock > caption { line-height: 1.4; color: #7a2518; font-weight: 300; margin-top: 0.2em; margin-bottom: 0.5em; }
+.subheader, #content #toctitle, .admonitionblock td.content > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .mathblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, .sidebarblock > .title, .tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title, .tableblock > caption { line-height: 1.4; color: #7a2518; font-weight: 300; margin-top: 0.2em; margin-bottom: 0.5em; }
 div, dl, dt, dd, ul, ol, li, h1, h2, h3, #toctitle, .sidebarblock > .content > .title, h4, h5, h6, pre, form, p, blockquote, th, td { margin: 0; padding: 0; direction: ltr; }
 a { color: #005498; text-decoration: underline; line-height: inherit; }
 a:hover, a:focus { color: #00467f; }
@@ -87,6 +91,7 @@ small { font-size: 60%; line-height: inherit; }
 code { font-family: Consolas, "Liberation Mono", Courier, monospace; font-weight: normal; color: #6d180b; }
 ul, ol, dl { font-size: 1em; line-height: 1.6; margin-bottom: 1.25em; list-style-position: outside; font-family: inherit; }
 ul, ol { margin-left: 1.5em; }
+ul.no-bullet, ol.no-bullet { margin-left: 1.5em; }
 ul li ul, ul li ol { margin-left: 1.25em; margin-bottom: 0; font-size: 1em; }
 ul.square li ul, ul.circle li ul, ul.disc li ul { list-style: inherit; }
 ul.square { list-style-type: square; }
@@ -145,6 +150,8 @@ kbd:not(.keyseq) { display: inline-block; color: #222222; font-size: 0.75em; lin
 kbd kbd:first-child { margin-left: 0; }
 kbd kbd:last-child { margin-right: 0; }
 .menuseq, .menu { color: #090909; }
+b.button:before { content: '[ '; }
+b.button:after { content: ' ]'; }
 p a > code:hover { color: #561309; }
 #header, #content, #footnotes, #footer { width: 100%; margin-left: auto; margin-right: auto; margin-top: 0; margin-bottom: 0; max-width: 62.5em; *zoom: 1; position: relative; padding-left: 0.9375em; padding-right: 0.9375em; }
 #header:before, #header:after, #content:before, #content:after, #footnotes:before, #footnotes:after, #footer:before, #footer:after { content: " "; display: table; }
@@ -164,14 +171,20 @@ p a > code:hover { color: #561309; }
 #toc ul.sectlevel0 ul.sectlevel1 { margin-left: 0; margin-top: 0.5em; margin-bottom: 0.5em; }
 #toc ul { list-style-type: none; }
 #toctitle { color: #7a2518; }
-@media only screen and (min-width: 1280px) { body.toc2 { padding-left: 20em; }
-  #toc.toc2 { position: fixed; width: 20em; left: 0; top: 0; border-right: 1px solid #ebebeb; border-bottom: 0; z-index: 1000; padding: 1em; height: 100%; overflow: auto; }
-  #toc.toc2 #toctitle { margin-top: 0; }
-  #toc.toc2 > ul { font-size: .95em; }
-  #toc.toc2 ul ul { margin-left: 0; padding-left: 1.25em; }
+@media only screen and (min-width: 768px) { body.toc2 { padding-left: 15em; padding-right: 0; }
+  #toc.toc2 { position: fixed; width: 15em; left: 0; top: 0; border-right: 1px solid #ebebeb; border-bottom: 0; z-index: 1000; padding: 1em; height: 100%; overflow: auto; }
+  #toc.toc2 #toctitle { margin-top: 0; font-size: 1.2em; }
+  #toc.toc2 > ul { font-size: .90em; }
+  #toc.toc2 ul ul { margin-left: 0; padding-left: 1em; }
   #toc.toc2 ul.sectlevel0 ul.sectlevel1 { padding-left: 0; margin-top: 0.5em; margin-bottom: 0.5em; }
-  body.toc2.toc-right { padding-left: 0; padding-right: 20em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 15em; }
   body.toc2.toc-right #toc.toc2 { border-right: 0; border-left: 1px solid #ebebeb; left: auto; right: 0; } }
+@media only screen and (min-width: 1280px) { body.toc2 { padding-left: 20em; padding-right: 0; }
+  #toc.toc2 { width: 20em; }
+  #toc.toc2 #toctitle { font-size: 1.375em; }
+  #toc.toc2 > ul { font-size: 0.95em; }
+  #toc.toc2 ul ul { padding-left: 1.25em; }
+  body.toc2.toc-right { padding-left: 0; padding-right: 20em; } }
 #content #toc { border-style: solid; border-width: 1px; border-color: #d9d9d9; margin-bottom: 1.25em; padding: 1.25em; background: #f2f2f2; border-width: 0; -webkit-border-radius: 4px; border-radius: 4px; }
 #content #toc > :first-child { margin-top: 0; }
 #content #toc > :last-child { margin-bottom: 0; }
@@ -186,8 +199,8 @@ p a > code:hover { color: #561309; }
 #content h1:hover > a.anchor, #content h1 > a.anchor:hover, h2:hover > a.anchor, h2 > a.anchor:hover, h3:hover > a.anchor, #toctitle:hover > a.anchor, .sidebarblock > .content > .title:hover > a.anchor, h3 > a.anchor:hover, #toctitle > a.anchor:hover, .sidebarblock > .content > .title > a.anchor:hover, h4:hover > a.anchor, h4 > a.anchor:hover, h5:hover > a.anchor, h5 > a.anchor:hover, h6:hover > a.anchor, h6 > a.anchor:hover { visibility: visible; }
 #content h1 > a.link, h2 > a.link, h3 > a.link, #toctitle > a.link, .sidebarblock > .content > .title > a.link, h4 > a.link, h5 > a.link, h6 > a.link { color: #ba3925; text-decoration: none; }
 #content h1 > a.link:hover, h2 > a.link:hover, h3 > a.link:hover, #toctitle > a.link:hover, .sidebarblock > .content > .title > a.link:hover, h4 > a.link:hover, h5 > a.link:hover, h6 > a.link:hover { color: #a53221; }
-.imageblock, .literalblock, .listingblock, .verseblock, .videoblock { margin-bottom: 1.25em; }
-.admonitionblock td.content > .title, .exampleblock > .title, .imageblock > .title, .videoblock > .title, .listingblock > .title, .literalblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, .sidebarblock > .title, .tableblock > .title, .verseblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { text-align: left; font-weight: bold; }
+.imageblock, .literalblock, .listingblock, .mathblock, .verseblock, .videoblock { margin-bottom: 1.25em; }
+.admonitionblock td.content > .title, .exampleblock > .title, .imageblock > .title, .listingblock > .title, .literalblock > .title, .mathblock > .title, .openblock > .title, .paragraph > .title, .quoteblock > .title, .sidebarblock > .title, .tableblock > .title, .verseblock > .title, .videoblock > .title, .dlist > .title, .olist > .title, .ulist > .title, .qlist > .title, .hdlist > .title { text-align: left; font-weight: bold; }
 .tableblock > caption { text-align: left; font-weight: bold; white-space: nowrap; overflow: visible; max-width: 0; }
 table.tableblock #preamble > .sectionbody > .paragraph:first-of-type p { font-size: inherit; }
 .admonitionblock > table { border: 0; background: none; width: 100%; }
@@ -211,12 +224,15 @@ table.tableblock #preamble > .sectionbody > .paragraph:first-of-type p { font-si
 .sidebarblock h1.subheader, .sidebarblock h2.subheader, .sidebarblock h3.subheader, .sidebarblock .subheader#toctitle, .sidebarblock > .content > .subheader.title, .sidebarblock h4.subheader, .sidebarblock h5.subheader, .sidebarblock h6.subheader { line-height: 1.4; }
 .sidebarblock > .content > .title { color: #7a2518; margin-top: 0; line-height: 1.6; }
 .exampleblock > .content > :last-child > :last-child, .exampleblock > .content .olist > ol > li:last-child > :last-child, .exampleblock > .content .ulist > ul > li:last-child > :last-child, .exampleblock > .content .qlist > ol > li:last-child > :last-child, .sidebarblock > .content > :last-child > :last-child, .sidebarblock > .content .olist > ol > li:last-child > :last-child, .sidebarblock > .content .ulist > ul > li:last-child > :last-child, .sidebarblock > .content .qlist > ol > li:last-child > :last-child { margin-bottom: 0; }
-.literalblock > .content pre, .listingblock > .content pre { background: none; border-width: 1px 0; border-style: dotted; border-color: #bfbfbf; -webkit-border-radius: 4px; border-radius: 4px; padding: 0.75em 0.75em 0.5em 0.75em; word-wrap: break-word; }
-.literalblock > .content pre.nowrap, .listingblock > .content pre.nowrap { overflow-x: auto; white-space: pre; word-wrap: normal; }
-.literalblock > .content pre > code, .listingblock > .content pre > code { display: block; }
-@media only screen { .literalblock > .content pre, .listingblock > .content pre { font-size: 0.8em; } }
-@media only screen and (min-width: 768px) { .literalblock > .content pre, .listingblock > .content pre { font-size: 0.9em; } }
-@media only screen and (min-width: 1280px) { .literalblock > .content pre, .listingblock > .content pre { font-size: 1em; } }
+.literalblock pre:not([class]), .listingblock pre:not([class]) { background: none; }
+.literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { border-width: 1px 0; border-style: dotted; border-color: #bfbfbf; -webkit-border-radius: 4px; border-radius: 4px; padding: 0.75em 0.75em 0.5em 0.75em; word-wrap: break-word; }
+.literalblock pre.nowrap, .literalblock pre[class].nowrap, .listingblock pre.nowrap, .listingblock pre[class].nowrap { overflow-x: auto; white-space: pre; word-wrap: normal; }
+.literalblock pre > code, .literalblock pre[class] > code, .listingblock pre > code, .listingblock pre[class] > code { display: block; }
+@media only screen { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 0.8em; } }
+@media only screen and (min-width: 768px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 0.9em; } }
+@media only screen and (min-width: 1280px) { .literalblock pre, .literalblock pre[class], .listingblock pre, .listingblock pre[class] { font-size: 1em; } }
+.listingblock pre.highlight { padding: 0; }
+.listingblock pre.highlight > code { padding: 0.75em 0.75em 0.5em 0.75em; }
 .listingblock > .content { position: relative; }
 .listingblock:hover code[class*=" language-"]:before { text-transform: uppercase; font-size: 0.9em; color: #999; position: absolute; top: 0.375em; right: 0.375em; }
 .listingblock:hover code.asciidoc:before { content: "asciidoc"; }
@@ -228,6 +244,7 @@ table.tableblock #preamble > .sectionbody > .paragraph:first-of-type p { font-si
 .listingblock:hover code.javascript:before { content: "javascript"; }
 .listingblock:hover code.python:before { content: "python"; }
 .listingblock:hover code.ruby:before { content: "ruby"; }
+.listingblock:hover code.sass:before { content: "sass"; }
 .listingblock:hover code.scss:before { content: "scss"; }
 .listingblock:hover code.xml:before { content: "xml"; }
 .listingblock:hover code.yaml:before { content: "yaml"; }
@@ -249,14 +266,15 @@ table thead th, table tfoot th { font-weight: bold; }
 table.tableblock.grid-all { border-collapse: separate; border-spacing: 1px; -webkit-border-radius: 4px; border-radius: 4px; border-top: 1px solid #dddddd; border-bottom: 1px solid #dddddd; }
 table.tableblock.frame-topbot, table.tableblock.frame-none { border-left: 0; border-right: 0; }
 table.tableblock.frame-sides, table.tableblock.frame-none { border-top: 0; border-bottom: 0; }
-table.tableblock td .paragraph:last-child p, table.tableblock td > p:last-child { margin-bottom: 0; }
+table.tableblock td .paragraph:last-child p > p:last-child, table.tableblock th > p:last-child, table.tableblock td > p:last-child { margin-bottom: 0; }
 th.tableblock.halign-left, td.tableblock.halign-left { text-align: left; }
 th.tableblock.halign-right, td.tableblock.halign-right { text-align: right; }
 th.tableblock.halign-center, td.tableblock.halign-center { text-align: center; }
 th.tableblock.valign-top, td.tableblock.valign-top { vertical-align: top; }
 th.tableblock.valign-bottom, td.tableblock.valign-bottom { vertical-align: bottom; }
 th.tableblock.valign-middle, td.tableblock.valign-middle { vertical-align: middle; }
-p.tableblock.header { color: #222222; font-weight: bold; }
+tbody tr th { display: table-cell; line-height: 1.6; background: whitesmoke; }
+tbody tr th, tbody tr th p, tfoot tr th, tfoot tr th p { color: #222222; font-weight: bold; }
 td > div.verse { white-space: pre; }
 ol { margin-left: 1.75em; }
 ul li ol { margin-left: 1.5em; }
@@ -364,7 +382,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <div id="header">
 <h1>WildFly 8 Hands-on Lab</h1>
 <span id="author" class="author">Arun Gupta</span><br>
-<span id="revnumber">version 0.1,</span>
+<span id="revnumber">version 0.2,</span>
 <span id="revdate">Jan 10, 2014</span>
 <div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
@@ -373,6 +391,13 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li>
 <ul class="sectlevel2">
 <li><a href="#_getting_started">1.1. Getting Started</a></li>
+<li>
+<ul class="sectlevel3">
+<li><a href="#_standalone_and_managed_domain">1.1.1. Standalone and Managed Domain</a></li>
+<li><a href="#_web_profile_and_full_platform">1.1.2. Web Profile and Full Platform</a></li>
+<li><a href="#_multiple_instances_on_the_same_machine">1.1.3. Multiple instances on the same machine</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_deploying_applications_to_wildfly">2. Deploying Applications to WildFly</a></li>
@@ -380,8 +405,18 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <ul class="sectlevel2">
 <li><a href="#_file_system">2.1. File system</a></li>
 <li><a href="#_command_line_interface">2.2. Command Line Interface</a></li>
+<li>
+<ul class="sectlevel3">
+<li><a href="#_jboss_cli">2.2.1. jboss-cli</a></li>
+<li><a href="#_curl">2.2.2. Curl</a></li>
+<li><a href="#_http_apis_tbd">2.2.3. HTTP APIs (TBD)</a></li>
+</ul>
+</li>
 <li><a href="#_admin_console">2.3. Admin Console</a></li>
 <li><a href="#_maven_plugin">2.4. Maven plugin</a></li>
+<li><a href="#_java_tbd">2.5. Java (TBD)</a></li>
+<li><a href="#_ruby_tbd">2.6. Ruby (TBD)</a></li>
+<li><a href="#_perl_tbd">2.7. Perl (TBD)</a></li>
 </ul>
 </li>
 <li><a href="#jboss-cli">3. Management using Command Line Interface (jboss-cli)</a></li>
@@ -389,8 +424,26 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <ul class="sectlevel2">
 <li><a href="#_connecting_to_a_server">3.1. Connecting to a server</a></li>
 <li><a href="#_resources_operations_and_commands">3.2. Resources, Operations, and Commands</a></li>
+<li>
+<ul class="sectlevel3">
+<li><a href="#_operations">3.2.1. Operations</a></li>
+<li><a href="#_commands">3.2.2. Commands</a></li>
+</ul>
+</li>
 <li><a href="#_batch">3.3. Batch</a></li>
+<li>
+<ul class="sectlevel3">
+<li><a href="#_interactive_batch">3.3.1. Interactive Batch</a></li>
+<li><a href="#_non_interactive_batch">3.3.2. Non-interactive Batch</a></li>
+</ul>
+</li>
 <li><a href="#_environment_variables">3.4. Environment variables</a></li>
+<li>
+<ul class="sectlevel3">
+<li><a href="#_non_persistent_variables">3.4.1. Non-persistent Variables</a></li>
+<li><a href="#_persistent_variables">3.4.2. Persistent Variables</a></li>
+</ul>
+</li>
 <li><a href="#_gui">3.5. GUI</a></li>
 </ul>
 </li>
@@ -472,10 +525,10 @@ This document is a work in progress.
 <div class="paragraph">
 <p>Lets get familiar with the directory structure.</p>
 </div>
-<table class="tableblock frame-all grid-all" style="width:100%; ">
+<table class="tableblock frame-all grid-all" style="width: 100%;">
 <colgroup>
-<col style="width:20%;">
-<col style="width:80%;"> 
+<col style="width: 20%;">
+<col style="width: 80%;">
 </colgroup>
 <thead>
 <tr>
@@ -530,7 +583,6 @@ This document is a work in progress.
 </tr>
 </tbody>
 </table>
-
 <div class="sect3">
 <h4 id="_standalone_and_managed_domain">1.1.1. Standalone and Managed Domain</h4>
 <div class="paragraph">
@@ -573,8 +625,10 @@ This document is a work in progress.
 <div class="paragraph">
 <p>Access <a href="http://localhost:8080">http://localhost:8080</a> and see the following page to make sure the server is running correctly.</p>
 </div>
-<div class="paragraph">
-<p><span class="image"><img src="images/intro-wildfly-welcome.png" alt="intro-wildfly-welcome"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="images/intro-wildfly-welcome.png" alt="intro wildfly welcome">
+</div>
 </div>
 <div class="paragraph">
 <p>Use Ctrl+C to stop the running server.</p>
@@ -672,8 +726,10 @@ This deployment mode is only intended to be used during development phase. Other
 <div class="paragraph">
 <p>Verify the deployed application by accessing the webpage <a href="http://localhost:8080/javaee7-1.0-SNAPSHOT/EmployeeList">http://localhost:8080/javaee7-1.0-SNAPSHOT/EmployeeList</a> and see the output as:</p>
 </div>
-<div class="paragraph">
-<p><span class="image"><img src="images/deploy-javaee7-sample-output.png" alt="Java EE 7 Sample Application Output"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="images/deploy-javaee7-sample-output.png" alt="Java EE 7 Sample Application Output">
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -828,11 +884,92 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 <p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using curl.</p>
 </div>
 <div class="paragraph">
-<p>curl -X POST -F "file=@javaee7-1.0-SNAPSHOT.war;Content-Type=application/octet-stream" --digest <a href="http://u1:p1@localhost:9990/management/add-content">http://u1:p1@localhost:9990/management/add-content</a></p>
+<p>Deploying applications using curl is a two-step process.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Upload your archive to WildFly using the following command</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>curl -F "file=@target/javaee7-1.0-SNAPSHOT.war" --digest http://u1:p1@localhost:9990/management/add-content</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command:</p>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Makes a POST request using form-encoded (<code>-F</code>) data with one field (<code>file</code>) defining the location of the WAR file</p>
+</li>
+<li>
+<p><code>target/javaee7-1.0-SNAPSHOT.war</code> is the location of the WAR file</p>
+</li>
+<li>
+<p><code>u1</code> is the administrative user with password <code>p1</code></p>
+</li>
+<li>
+<p><code>localhost:9090</code> is the default management host and port for WildFly instance</p>
+</li>
+<li>
+<p>WildFly management port uses digest authentication and that is defined using <code>–digest</code></p>
+</li>
+<li>
+<p>Prints the output as something like:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>{“outcome” : “success”, “result” : { “BYTES_VALUE” : “+Dg9u1ALXacrndNdLrT3DQSaqjw=” }}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Deploy the uploaded archive using the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>curl -S -H "Content-Type: application/json" -d '{"content":[{"hash": {"BYTES_VALUE" : "+Dg9u1ALXacrndNdLrT3DQSaqjw="}}], "address": [{"deployment":"javaee7-1.0-SNAPSHOT.war"}], "operation":"add", "enabled":"true"}' --digest http://u1:p1@localhost:9990/management</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command:</p>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Sends a POST request (<code>-d</code>) with JSON payload</p>
+</li>
+<li>
+<p>The value assigned to <code>result</code> name in the JSON response of previous command is used in this command</p>
+</li>
+<li>
+<p>Content type of the payload is explicitly specified to be <code>application/json</code></p>
+</li>
+<li>
+<p><code>add</code> command triggers the deployment of the archive</p>
+</li>
+<li>
+<p>Application archive is enabled as well, as opposed to not by default</p>
+</li>
+<li>
+<p>As in previous command, <code>u1</code> is the administrative user with password <code>p1</code></p>
+</li>
+<li>
+<p>As in previous command, <code>localhost:9090</code> is the default management host and port for WildFly instance</p>
+</li>
+<li>
+<p>As in previous command, WildFly management port uses digest authentication and that is defined using <code>–digest</code></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_http_apis">2.2.3. HTTP APIs</h4>
+<h4 id="_http_apis_tbd">2.2.3. HTTP APIs (TBD)</h4>
 <div class="paragraph">
 <p><a href="http://localhost:9990/management?operation=deploy">http://localhost:9990/management?operation=deploy</a></p>
 </div>
@@ -921,32 +1058,43 @@ yes/no? no</code></pre>
 <div class="paragraph">
 <p>Now accessing the console at <a href="http://localhost:9990/console">http://localhost:9990/console</a> prompts for a username and password. Enter the username &#8216;sheldon&#8217; and password &#8216;baz^ngaA&#8217; and then the console is shown as:</p>
 </div>
-<div class="paragraph">
-<p><span class="image"><img src="images/deploy-admin-console.png" alt="Admin Console"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="images/deploy-admin-console.png" alt="Admin Console">
+</div>
 </div>
 </li>
 <li>
 <p>Click on &#8216;Manage Deployments&#8217; to see the output as:</p>
-<div class="paragraph">
-<p><span class="image"><img src="images/deploy-admin-console-deployments-first.png" alt="Admin Console Deployments"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="images/deploy-admin-console-deployments-first.png" alt="Admin Console Deployments">
+</div>
 </div>
 </li>
 <li>
 <p>Click on &#8216;Add&#8217; button to see:</p>
-<div class="paragraph">
-<p><span class="image"><img src="images/deploy-admin-console-add-first.png" alt="Add a Deployment"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="images/deploy-admin-console-add-first.png" alt="Add a Deployment">
+</div>
 </div>
 </li>
 <li>
 <p>Click on &#8216;Choose File&#8217; button and select the war file.</p>
 <div class="paragraph">
-<p>Click on &#8216;Next&#8217; button.</p>
+<p>Click on &#8216;Next &gt;&gt;&#8217; button. Take the defaults and click &#8216;Save&#8217;.</p>
 </div>
 </li>
 <li>
-<p>What names to choose here ?</p>
+<p>By default the application is not enabled and the console shows:</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/deploy-enable-disable-app.png" alt="En/Disable Button">
+</div>
+</div>
 <div class="paragraph">
-<p>Deploying through admin console is giving 404 at <a href="http://localhost:8080/javaee7-1.0-SNAPSHOT.war/EmployeeList">http://localhost:8080/javaee7-1.0-SNAPSHOT.war/EmployeeList</a></p>
+<p>Click on &#8216;En/Disable&#8217; button, click on &#8216;Confirm&#8217; and now the app is ready to be used. Access the application <a href="http://localhost:8080/javaee7-1.0-SNAPSHOT.war/EmployeeList">http://localhost:8080/javaee7-1.0-SNAPSHOT.war/EmployeeList</a>.</p>
 </div>
 </li>
 </ol>
@@ -1014,12 +1162,26 @@ yes/no? no</code></pre>
 </li>
 <li>
 <p>Access the web page at <a href="http://localhost:8080/javaee7/TestServlet">http://localhost:8080/javaee7/TestServlet</a> and see the output as:</p>
-<div class="paragraph">
-<p><span class="image"><img src="images/deploy-javaee7-sample-output.png" alt="Java EE 7 Sample Application Output"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="images/deploy-javaee7-sample-output.png" alt="Java EE 7 Sample Application Output">
+</div>
 </div>
 </li>
 </ol>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_java_tbd">2.5. Java (TBD)</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_ruby_tbd">2.6. Ruby (TBD)</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_perl_tbd">2.7. Perl (TBD)</h3>
+
 </div>
 </div>
 </div>
@@ -1665,14 +1827,18 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 <div class="paragraph">
 <p>The complete domain model is shown in a separate window as:</p>
 </div>
-<div class="paragraph">
-<p><span class="image"><img src="images/jboss-cli-gui.png" alt="jboss-cli GUI"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="images/jboss-cli-gui.png" alt="jboss-cli GUI">
+</div>
 </div>
 </li>
 <li>
 <p>Right-click on any node to see the list of supported operations as shown:</p>
-<div class="paragraph">
-<p><span class="image"><img src="images/jboss-cli-gui-operations.png" alt="Operations on Nodes"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="images/jboss-cli-gui-operations.png" alt="Operations on Nodes">
+</div>
 </div>
 <div class="paragraph">
 <p>The command is dynamically created and populated in the &#8216;cmd&gt;&#8217; text box.</p>
@@ -1680,14 +1846,18 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 </li>
 <li>
 <p>This command can be submitted to the server by clicking on &#8216;Submit&#8217; button. Command output is shown:</p>
-<div class="paragraph">
-<p><span class="image"><img src="images/jboss-cli-gui-output.png" alt="GUI Output"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="images/jboss-cli-gui-output.png" alt="GUI Output">
+</div>
 </div>
 </li>
 <li>
 <p>Type &#8216;serv&#8217; in &#8216;Filter&#8217; box to search for any nodes and attributes that contains this phrase. The output is shown as:</p>
-<div class="paragraph">
-<p><span class="image"><img src="images/jboss-cli-gui-filter.png" alt="Filter"></span></p>
+<div class="imageblock">
+<div class="content">
+<img src="images/jboss-cli-gui-filter.png" alt="Filter">
+</div>
 </div>
 </li>
 </ol>
@@ -1701,6 +1871,65 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 <div class="paragraph">
 <p>Pick up flow from Brian&#8217;s videos</p>
 </div>
+<div class="paragraph">
+<p>Role Based Access Control (RBAC) is the ability to restrict access to system or certain portions of it to authorized users. For JBoss AS 7.x or JBoss EAP 6.0 and 6.1, the web-based administrative console had an all-or-nothing approach. So if a user can authenticate with management security realm, then he&#8217;ll have all the privileges. This might be OK for smaller deployments but the roles are typically divided for mission critical deployments and a finer-grained control is required. JBoss EAP 6.2 and WildFly 8 introduces RBAC using different roles.</p>
+</div>
+<div class="paragraph">
+<p>There are essential 7 different roles in 2 different categories - first 4 roles where users are locked out of sensitive data and 3 higher level roles where users are able to deal with sensitive data.</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: %;">
+<col style="width: %;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Role</th>
+<th class="tableblock halign-left valign-top">Permissions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Monitor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- Has the fewest permissions
+- Only read configuration and current runtime state
+- No access to sensitive resources or data or audit logging resources</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Operator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- All permissions of Monitor
+- Can modify the runtime state, e.g. reload or shutdown the server, pause/resume JMS destination, flush database connection pool.
+- Does not have permission to modify persistent state.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Maintainer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- All permissions of Operator
+- Can modify the persistent state, e.g. deploy an application, setting up new data sources, add a JMS destination</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deployer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- All permissions of Maintainer
+- Permission is restricted to applications only, cannot make changes to container configuration</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Administrator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- All permissions of Maintainer
+- View and modify sensitive data such as access control system
+- No access to administrative audit logging system</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Auditor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- All permissions of Monitor
+- View and modify resources to administrative audit logging system
+- Cannot modify sensitive resources or data outside auditing, can read any sensitive data</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Super User</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">- Has all the permissions
+- Equivalent to administrator in previous versions</p></td>
+</tr>
+</tbody>
+</table>
 <div class="sect2">
 <h3 id="__simple_and_rbac_providers">4.1. &#8216;simple&#8217; and &#8216;rbac&#8217; providers</h3>
 
@@ -1711,7 +1940,9 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 </div>
 <div class="sect2">
 <h3 id="_run_as">4.3. Run as</h3>
-
+<div class="paragraph">
+<p>jboss-cli.xml &lt;access-control&gt; Does not suggest commands that will not work</p>
+</div>
 </div>
 </div>
 </div>
@@ -1873,8 +2104,8 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.1<br>
-Last updated 2014-01-14 09:59:36 CET
+Version 0.2<br>
+Last updated 2014-01-15 22:28:00 CET
 </div>
 </div>
 </body>

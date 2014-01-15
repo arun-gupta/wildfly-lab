@@ -6,6 +6,51 @@ Role Based Access Control (RBAC) is the ability to restrict access to system or 
 
 There are essential 7 different roles in 2 different categories - first 4 roles where users are locked out of sensitive data and 3 higher level roles where users are able to deal with sensitive data.
 
+[cols="literal,asciidoc", options="header"]
+|=================
+
+| Role | Permissions
+
+| Monitor
+|
+- Has the fewest permissions
+- Only read configuration and current runtime state
+- No access to sensitive resources or data or audit logging resources
+
+| Operator
+|
+- All permissions of Monitor
+- Can modify the runtime state, e.g. reload or shutdown the server, pause/resume JMS destination, flush database connection pool.
+- Does not have permission to modify persistent state.
+
+| Maintainer
+|
+- All permissions of Operator
+- Can modify the persistent state, e.g. deploy an application, setting up new data sources, add a JMS destination
+
+| Deployer
+|
+- All permissions of Maintainer
+- Permission is restricted to applications only, cannot make changes to container configuration
+
+| Administrator
+|
+- All permissions of Maintainer
+- View and modify sensitive data such as access control system
+- No access to administrative audit logging system
+
+| Auditor
+|
+- All permissions of Monitor
+- View and modify resources to administrative audit logging system
+- Cannot modify sensitive resources or data outside auditing, can read any sensitive data
+
+| Super User
+|
+- Has all the permissions
+- Equivalent to administrator in previous versions
+
+|=================
 
 === `simple' and `rbac' providers
 
