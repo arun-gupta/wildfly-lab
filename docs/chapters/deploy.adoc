@@ -26,7 +26,7 @@ cp target/javaee7-1.0-SNAPSHOT.war /Users/arungupta/workspaces/wildfly/build/tar
 
 Verify the deployed application by accessing the webpage http://localhost:8080/javaee7-1.0-SNAPSHOT/EmployeeList and see the output as:
 
-image:images/deploy-javaee7-sample-output.png[Java EE 7 Sample Application Output]
+image::images/deploy-javaee7-sample-output.png[Java EE 7 Sample Application Output]
 
 === Command Line Interface
 
@@ -134,9 +134,48 @@ curl is a free and popular command line tool for transfering data using URL synt
 
 *Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using curl.
 
-curl -X POST -F "file=@javaee7-1.0-SNAPSHOT.war;Content-Type=application/octet-stream" --digest http://u1:p1@localhost:9990/management/add-content
+Deploying applications using curl is a two-step process.
 
-==== HTTP APIs
+. Upload your archive to WildFly using the following command
++
+[source]
+----
+curl -F "file=@target/javaee7-1.0-SNAPSHOT.war" --digest http://u1:p1@localhost:9990/management/add-content
+----
++
+This command:
++
+.. Makes a POST request using form-encoded (`-F`) data with one field (`file`) defining the location of the WAR file
+.. `target/javaee7-1.0-SNAPSHOT.war` is the location of the WAR file
+.. `u1` is the administrative user with password `p1`
+.. `localhost:9090` is the default management host and port for WildFly instance
+.. WildFly management port uses digest authentication and that is defined using `–digest`
+.. Prints the output as something like:
++
+[source]
+----
+{“outcome” : “success”, “result” : { “BYTES_VALUE” : “+Dg9u1ALXacrndNdLrT3DQSaqjw=” }}
+----
++
+. Deploy the uploaded archive using the following command:
++
+[source]
+----
+curl -S -H "Content-Type: application/json" -d '{"content":[{"hash": {"BYTES_VALUE" : "+Dg9u1ALXacrndNdLrT3DQSaqjw="}}], "address": [{"deployment":"javaee7-1.0-SNAPSHOT.war"}], "operation":"add", "enabled":"true"}' --digest http://u1:p1@localhost:9990/management
+----
++
+This command:
++
+.. Sends a POST request (`-d`) with JSON payload
+.. The value assigned to `result` name in the JSON response of previous command is used in this command
+.. Content type of the payload is explicitly specified to be `application/json`
+.. `add` command triggers the deployment of the archive
+.. Application archive is enabled as well, as opposed to not by default
+.. As in previous command, `u1` is the administrative user with password `p1`
+.. As in previous command, `localhost:9090` is the default management host and port for WildFly instance
+.. As in previous command, WildFly management port uses digest authentication and that is defined using `–digest`
+
+==== HTTP APIs (TBD)
 
 http://localhost:9990/management?operation=deploy
 
@@ -203,23 +242,25 @@ yes/no? no
 +
 Now accessing the console at http://localhost:9990/console prompts for a username and password. Enter the username `sheldon' and password `baz^ngaA' and then the console is shown as:
 +
-image:images/deploy-admin-console.png[Admin Console]
+image::images/deploy-admin-console.png[Admin Console]
 +
 . Click on `Manage Deployments' to see the output as:
 +
-image:images/deploy-admin-console-deployments-first.png[Admin Console Deployments]
+image::images/deploy-admin-console-deployments-first.png[Admin Console Deployments]
 +
 . Click on `Add' button to see:
 +
-image:images/deploy-admin-console-add-first.png[Add a Deployment]
+image::images/deploy-admin-console-add-first.png[Add a Deployment]
 +
 . Click on `Choose File' button and select the war file.
 +
-Click on `Next' button.
+Click on `Next >>' button. Take the defaults and click `Save'.
 +
-. What names to choose here ?
+. By default the application is not enabled and the console shows:
 +
-Deploying through admin console is giving 404 at http://localhost:8080/javaee7-1.0-SNAPSHOT.war/EmployeeList
+image::images/deploy-enable-disable-app.png[En/Disable Button]
++
+Click on `En/Disable' button, click on `Confirm' and now the app is ready to be used. Access the application http://localhost:8080/javaee7-1.0-SNAPSHOT.war/EmployeeList.
 
 === Maven plugin
 
@@ -272,5 +313,10 @@ mvn install
 +
 . Access the web page at http://localhost:8080/javaee7/TestServlet and see the output as:
 +
-image:images/deploy-javaee7-sample-output.png[Java EE 7 Sample Application Output]
+image::images/deploy-javaee7-sample-output.png[Java EE 7 Sample Application Output]
 
+=== Java (TBD)
+
+=== Ruby (TBD)
+
+=== Perl (TBD)
