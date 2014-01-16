@@ -2028,7 +2028,7 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 </div>
 </div>
 <div class="paragraph">
-<p>Enter the user name &#8216;sheldon&#8217; and password &#8216;bazinga&#8217; (as entered earlier). Admin console should look like:</p>
+<p>Enter the user name &#8216;sheldon&#8217; and password &#8216;bazinga&#8217; (as created earlier). Admin console should look like:</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -2041,7 +2041,7 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>A new &#8216;Administration&#8217; that allows to map users to roles. This will be done in a later section.</p>
+<p>A new &#8216;Administration&#8217; tab that allows to map users to roles. This will be done in a later section.</p>
 </li>
 <li>
 <p>Information about the logged in user is shown on top-right as:</p>
@@ -2049,6 +2049,9 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 <div class="content">
 <img src="images/rbac-superuser-information.png" alt="Super User">
 </div>
+</div>
+<div class="paragraph">
+<p>Notice the logged in user name is shown.</p>
 </div>
 </li>
 <li>
@@ -2163,20 +2166,24 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 <div class="sect2">
 <h3 id="_mapping_users_groups_and_roles">4.3. Mapping users, groups, and roles</h3>
 <div class="paragraph">
-<p>WildFly introduces the concept of "groups" in security realms. Users can be directly associated with a role, or can belong to a group and then a group can be associated with a role.</p>
+<p>WildFly introduces the concept of &#8220;groups&#8221; in security realms. Users can be directly associated with a role, or can belong to a group and then a group can be associated with a role.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Add two new users in management realm using <code>bin/adduser.sh</code> script:</p>
+<p>Add two new users in two separate groups using <code>bin/adduser.sh</code> script:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>add-user.sh -u penny -p penny1
+<pre class="highlight"><code>add-user.sh -u penny -p penny1 -g just4fun
 Added user 'penny' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
 Added user 'penny' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
-add-user.sh -u leonard -p leonard1
+Added user 'penny' with groups just4fun to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-groups.properties'
+Added user 'penny' with groups just4fun to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-groups.properties'
+add-user.sh -u leonard -p leonard1 -g geek
 Added user 'leonard' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
-Added user 'leonard' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'</code></pre>
+Added user 'leonard' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
+Added user 'leonard' with groups geek to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-groups.properties'
+Added user 'leonard' with groups geek to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-groups.properties'</code></pre>
 </div>
 </div>
 <div class="paragraph">

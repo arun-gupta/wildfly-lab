@@ -55,17 +55,19 @@ By default, any user added to the management realm and not belonging to a group 
 +
 image::images/rbac-authentication-required.png[Authentication Required]
 +
-Enter the user name `sheldon' and password `bazinga' (as entered earlier). Admin console should look like:
+Enter the user name `sheldon' and password `bazinga' (as created earlier). Admin console should look like:
 +
 image::images/rbac-admin-console-superuser-default.png[Super User Default View]
 +
 This view shows:
 +
-.. A new `Administration' that allows to map users to roles. This will be done in a later section.
+.. A new `Administration' tab that allows to map users to roles. This will be done in a later section.
 +
 .. Information about the logged in user is shown on top-right as:
 +
 image::images/rbac-superuser-information.png[Super User]
++
+Notice the logged in user name is shown.
 +
 .. A user in `Super User'' role can act to run in any role by clicking on `Run as'. Click on `Run as' and select drop-down list box to see the list of available roles as:
 +
@@ -127,22 +129,25 @@ Check in the server log to confirm server restarted, look for specific time stam
 
 === Mapping users, groups, and roles
 
-WildFly introduces the concept of "groups" in security realms. Users can be directly associated with a role, or can belong to a group and then a group can be associated with a role.
+WildFly introduces the concept of ``groups'' in security realms. Users can be directly associated with a role, or can belong to a group and then a group can be associated with a role.
 
-. Add two new users in management realm using `bin/adduser.sh` script:
+. Add two new users in two separate groups using `bin/adduser.sh` script:
 +
 [source]
 ----
-add-user.sh -u penny -p penny1
+add-user.sh -u penny -p penny1 -g just4fun
 Added user 'penny' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
 Added user 'penny' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
-add-user.sh -u leonard -p leonard1
+Added user 'penny' with groups just4fun to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-groups.properties'
+Added user 'penny' with groups just4fun to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-groups.properties'
+add-user.sh -u leonard -p leonard1 -g geek
 Added user 'leonard' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
 Added user 'leonard' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
+Added user 'leonard' with groups geek to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-groups.properties'
+Added user 'leonard' with groups geek to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-groups.properties'
 ----
+This create user `penny' with password `penny1' in group `just4fun'. It also creates another user `leonard' with password `leonard1' in group `geek'. Both the users are added for standalone instance and managed domain.
 .
-
-=== Mapping roles to groups
 
 === Configuring constraints
 
