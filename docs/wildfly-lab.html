@@ -453,12 +453,11 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_default_super_user">4.1. Default super user</a></li>
 <li><a href="#_configure_rbac_access_control_provider">4.2. Configure &#8216;rbac&#8217; access control provider</a></li>
 <li><a href="#_mapping_users_groups_and_roles">4.3. Mapping users, groups, and roles</a></li>
-<li><a href="#_mapping_roles_to_groups">4.4. Mapping roles to groups</a></li>
-<li><a href="#_configuring_constraints">4.5. Configuring constraints</a></li>
+<li><a href="#_configuring_constraints">4.4. Configuring constraints</a></li>
 <li>
 <ul class="sectlevel3">
-<li><a href="#_sensitive_resources">4.5.1. Sensitive resources</a></li>
-<li><a href="#_sensitive_data">4.5.2. Sensitive data</a></li>
+<li><a href="#_sensitive_resources">4.4.1. Sensitive resources</a></li>
+<li><a href="#_sensitive_data">4.4.2. Sensitive data</a></li>
 </ul>
 </li>
 </ul>
@@ -2187,26 +2186,23 @@ Added user 'leonard' with groups geek to file '/Users/arungupta/workspaces/wildf
 </div>
 </div>
 <div class="paragraph">
-<p>.</p>
+<p>This create user &#8216;penny&#8217; with password &#8216;penny1&#8217; in group &#8216;just4fun&#8217;. It also creates another user &#8216;leonard&#8217; with password &#8216;leonard1&#8217; in group &#8216;geek&#8217;. Both the users are added for standalone instance and managed domain.
+.</p>
 </div>
 </li>
 </ol>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_mapping_roles_to_groups">4.4. Mapping roles to groups</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_configuring_constraints">4.5. Configuring constraints</h3>
+<h3 id="_configuring_constraints">4.4. Configuring constraints</h3>
 <div class="sect3">
-<h4 id="_sensitive_resources">4.5.1. Sensitive resources</h4>
+<h4 id="_sensitive_resources">4.4.1. Sensitive resources</h4>
 <div class="paragraph">
 <p>Resources, attributes, or operations can be annotated with a &#8216;sensitiviy classification&#8217;. The classification can be further configured whether they can be addressed, viewed, or modified.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_sensitive_data">4.5.2. Sensitive data</h4>
+<h4 id="_sensitive_data">4.4.2. Sensitive data</h4>
 <div class="paragraph">
 <p>jboss-cli.xml &lt;access-control&gt; Does not suggest commands that will not work</p>
 </div>
