@@ -1,61 +1,159 @@
 == Role Based Access Control
 
-Pick up flow from Brian's videos
+Role Based Access Control (RBAC) is the ability to restrict access to system or certain portions of it to authorized users. For JBoss AS 7.x, the web-based administrative console had an all-or-nothing approach. This means user authenticated with management security realm will have all the privileges. This may not be appropriate for mission-critical deployments and a finer-grained control may be required. WildFly 8 introduces RBAC using different roles.
 
-Role Based Access Control (RBAC) is the ability to restrict access to system or certain portions of it to authorized users. For JBoss AS 7.x or JBoss EAP 6.0 and 6.1, the web-based administrative console had an all-or-nothing approach. So if a user can authenticate with management security realm, then he'll have all the privileges. This might be OK for smaller deployments but the roles are typically divided for mission critical deployments and a finer-grained control is required. JBoss EAP 6.2 and WildFly 8 introduces RBAC using different roles.
+*Purpose*: This section explains how to configure RBAC for WildFly 8.
 
-There are essential 7 different roles in 2 different categories - first 4 roles where users are locked out of sensitive data and 3 higher level roles where users are able to deal with sensitive data.
+There are seven pre-defined roles in two different categories. First four roles are where users are locked out of sensitive data and the next three level roles where users are allowed to deal with sensitive data.
 
-[cols="literal,asciidoc", options="header"]
+The pre-defined roles are explained below:
+
+[cols="2,8a", options="header"]
 |=================
 
 | Role | Permissions
 
 | Monitor
-|
-- Has the fewest permissions
-- Only read configuration and current runtime state
+| - Has the fewest permissions
+- Can only read configuration and current runtime state
 - No access to sensitive resources or data or audit logging resources
 
 | Operator
-|
-- All permissions of Monitor
+| - All permissions of Monitor
 - Can modify the runtime state, e.g. reload or shutdown the server, pause/resume JMS destination, flush database connection pool.
 - Does not have permission to modify persistent state.
 
 | Maintainer
-|
-- All permissions of Operator
+| - All permissions of Operator
 - Can modify the persistent state, e.g. deploy an application, setting up new data sources, add a JMS destination
 
 | Deployer
-|
-- All permissions of Maintainer
+| - All permissions of Maintainer
 - Permission is restricted to applications only, cannot make changes to container configuration
 
 | Administrator
-|
-- All permissions of Maintainer
+| - All permissions of Maintainer
 - View and modify sensitive data such as access control system
 - No access to administrative audit logging system
 
 | Auditor
-|
-- All permissions of Monitor
+| - All permissions of Monitor
 - View and modify resources to administrative audit logging system
 - Cannot modify sensitive resources or data outside auditing, can read any sensitive data
 
 | Super User
-|
-- Has all the permissions
+| - Has all the permissions
 - Equivalent to administrator in previous versions
 
 |=================
 
-=== `simple' and `rbac' providers
+=== Default super user
 
-=== Predefined roles
+By default, any user added to the management realm and not belonging to a group is in ``Super User'' role.
 
-=== Run as
+. Access Admin Console at http://localhost:9990/console. This prompts for authentication as shown:
++
+image::images/rbac-authentication-required.png[Authentication Required]
++
+Enter the user name `sheldon' and password `bazinga' (as entered earlier). Admin console should look like:
++
+image::images/rbac-admin-console-superuser-default.png[Super User Default View]
++
+This view shows:
++
+.. A new `Administration' that allows to map users to roles. This will be done in a later section.
++
+.. Information about the logged in user is shown on top-right as:
++
+image::images/rbac-superuser-information.png[Super User]
++
+.. A user in `Super User'' role can act to run in any role by clicking on `Run as'. Click on `Run as' and select drop-down list box to see the list of available roles as:
++
+image::images/rbac-run-as-roles.png[Run As Roles]
++
+.. Select the `Monitor' role and click on `Run As'.
++
+The application has to be reloaded for changes to take effect. Click on `Confirm' to reload the application. After the reload, clicking on the user on top-right in admin console will display the selected role as `Run as Monitor' as shown:
++
+image::images/rbac-run-as-monitor.png[Run As Monitor]
++
+... Click on `Manage Deployments' and check that `Add', `Remove', and similar buttons are not present as shown:
++
+image::images/rbac-run-as-monitor-deployments.png[Manage Deployments as Monitor]
++
+... Click on `Profile', `Data Sources' and check that `Add', `Remove', and `Disable' buttons are not available as shown.
++
+image::images/rbac-run-as-monitor-data-sources.png[Data Sources as Monitor]
++
+... Click on `Administration' tab and make sure the user does not have access to it as shown:
++
+image::images/rbac-run-as-monitor-administration.png[Administration as Monitor]
++
+.. Feel free to select other roles and observe how different options are enabled/disabled.
+
+=== Configure `rbac' access control provider
+
+WildFly 8 comes with two access control providers:
+
+- `simple' provider, the default one, gives all privileges to any authenticated administrator. This provides compatibility with older releases.
+- `rbac' provider allows you to setup configuration that will map users to different roles.
+
+. Configure `rbac' access control provider by giving the following command:
++
+[source]
+----
+jboss-cli.sh -c --command="/core-service=management/access=authorization:write-attribute(name=provider,value=rbac)"
+----
++
+This command will change authorization provider to ``rbac'' and will produce the output as:
++
+[source]
+----
+{
+    "outcome" => "success",
+    "response-headers" => {
+        "operation-requires-reload" => true,
+        "process-state" => "reload-required"
+    }
+}
+----
+. The server needs to be restarted after the authorization providers are changed. Give the following command to restart the server:
++
+[source]
+----
+./bin/jboss-cli.sh -c --command="reload"
+----
+Check in the server log to confirm server restarted, look for specific time stamps.
+
+=== Mapping users, groups, and roles
+
+WildFly introduces the concept of "groups" in security realms. Users can be directly associated with a role, or can belong to a group and then a group can be associated with a role.
+
+. Add two new users in management realm using `bin/adduser.sh` script:
++
+[source]
+----
+add-user.sh -u penny -p penny1
+Added user 'penny' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
+Added user 'penny' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
+add-user.sh -u leonard -p leonard1
+Added user 'leonard' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
+Added user 'leonard' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
+----
+.
+
+=== Mapping roles to groups
+
+=== Configuring constraints
+
+==== Sensitive resources
+Resources, attributes, or operations can be annotated with a `sensitiviy classification'. The classification can be further configured whether they can be addressed, viewed, or modified.
+
+==== Sensitive data
+
+
 
 jboss-cli.xml <access-control> Does not suggest commands that will not work
+
+
+

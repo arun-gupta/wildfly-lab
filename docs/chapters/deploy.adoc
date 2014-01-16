@@ -193,7 +193,7 @@ A new user can be added in the management realm using `bin/add-user.sh` script. 
 +
 [source]
 ----
-./bin/add-user.sh -u sheldon -p baz^ngaA
+./bin/add-user.sh -u sheldon -p bazinga
 ----
 +
 The output of the command looks like:
@@ -240,9 +240,16 @@ e.g. for a slave host controller connecting to the master or for a Remoting conn
 yes/no? no
 ----
 +
-Now accessing the console at http://localhost:9990/console prompts for a username and password. Enter the username `sheldon' and password `baz^ngaA' and then the console is shown as:
+Now accessing the console at http://localhost:9990/console prompts for a username and password. Enter the username `sheldon' and password `bazinga' and then the console is shown as:
 +
 image::images/deploy-admin-console.png[Admin Console]
++
+The added user can be disabled (deleted?) by giving the following command:
++
+[source]
+----
+./bin/add-user.sh -u sheldon -d
+----
 +
 . Click on `Manage Deployments' to see the output as:
 +

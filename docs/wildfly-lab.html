@@ -450,9 +450,17 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_role_based_access_control">4. Role Based Access Control</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#__simple_and_rbac_providers">4.1. &#8216;simple&#8217; and &#8216;rbac&#8217; providers</a></li>
-<li><a href="#_predefined_roles">4.2. Predefined roles</a></li>
-<li><a href="#_run_as">4.3. Run as</a></li>
+<li><a href="#_default_super_user">4.1. Default super user</a></li>
+<li><a href="#_configure_rbac_access_control_provider">4.2. Configure &#8216;rbac&#8217; access control provider</a></li>
+<li><a href="#_mapping_users_groups_and_roles">4.3. Mapping users, groups, and roles</a></li>
+<li><a href="#_mapping_roles_to_groups">4.4. Mapping roles to groups</a></li>
+<li><a href="#_configuring_constraints">4.5. Configuring constraints</a></li>
+<li>
+<ul class="sectlevel3">
+<li><a href="#_sensitive_resources">4.5.1. Sensitive resources</a></li>
+<li><a href="#_sensitive_data">4.5.2. Sensitive data</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_audit_logging">5. Audit Logging</a></li>
@@ -995,7 +1003,7 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./bin/add-user.sh -u sheldon -p baz^ngaA</code></pre>
+<pre class="highlight"><code>./bin/add-user.sh -u sheldon -p bazinga</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1056,11 +1064,19 @@ yes/no? no</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now accessing the console at <a href="http://localhost:9990/console">http://localhost:9990/console</a> prompts for a username and password. Enter the username &#8216;sheldon&#8217; and password &#8216;baz^ngaA&#8217; and then the console is shown as:</p>
+<p>Now accessing the console at <a href="http://localhost:9990/console">http://localhost:9990/console</a> prompts for a username and password. Enter the username &#8216;sheldon&#8217; and password &#8216;bazinga&#8217; and then the console is shown as:</p>
 </div>
 <div class="imageblock">
 <div class="content">
 <img src="images/deploy-admin-console.png" alt="Admin Console">
+</div>
+</div>
+<div class="paragraph">
+<p>The added user can be disabled (deleted?) by giving the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./bin/add-user.sh -u sheldon -d</code></pre>
 </div>
 </div>
 </li>
@@ -1869,18 +1885,21 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 <h2 id="_role_based_access_control">4. Role Based Access Control</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Pick up flow from Brian&#8217;s videos</p>
+<p>Role Based Access Control (RBAC) is the ability to restrict access to system or certain portions of it to authorized users. For JBoss AS 7.x, the web-based administrative console had an all-or-nothing approach. This means user authenticated with management security realm will have all the privileges. This may not be appropriate for mission-critical deployments and a finer-grained control may be required. WildFly 8 introduces RBAC using different roles.</p>
 </div>
 <div class="paragraph">
-<p>Role Based Access Control (RBAC) is the ability to restrict access to system or certain portions of it to authorized users. For JBoss AS 7.x or JBoss EAP 6.0 and 6.1, the web-based administrative console had an all-or-nothing approach. So if a user can authenticate with management security realm, then he&#8217;ll have all the privileges. This might be OK for smaller deployments but the roles are typically divided for mission critical deployments and a finer-grained control is required. JBoss EAP 6.2 and WildFly 8 introduces RBAC using different roles.</p>
+<p><strong>Purpose</strong>: This section explains how to configure RBAC for WildFly 8.</p>
 </div>
 <div class="paragraph">
-<p>There are essential 7 different roles in 2 different categories - first 4 roles where users are locked out of sensitive data and 3 higher level roles where users are able to deal with sensitive data.</p>
+<p>There are seven pre-defined roles in two different categories. First four roles are where users are locked out of sensitive data and the next three level roles where users are allowed to deal with sensitive data.</p>
+</div>
+<div class="paragraph">
+<p>The pre-defined roles are explained below:</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 100%;">
 <colgroup>
-<col style="width: %;">
-<col style="width: %;">
+<col style="width: 20%;">
+<col style="width: 80%;">
 </colgroup>
 <thead>
 <tr>
@@ -1891,57 +1910,299 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Monitor</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- Has the fewest permissions
-- Only read configuration and current runtime state
-- No access to sensitive resources or data or audit logging resources</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>
+<p>Has the fewest permissions</p>
+</li>
+<li>
+<p>Can only read configuration and current runtime state</p>
+</li>
+<li>
+<p>No access to sensitive resources or data or audit logging resources</p>
+</li>
+</ul>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Operator</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- All permissions of Monitor
-- Can modify the runtime state, e.g. reload or shutdown the server, pause/resume JMS destination, flush database connection pool.
-- Does not have permission to modify persistent state.</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>
+<p>All permissions of Monitor</p>
+</li>
+<li>
+<p>Can modify the runtime state, e.g. reload or shutdown the server, pause/resume JMS destination, flush database connection pool.</p>
+</li>
+<li>
+<p>Does not have permission to modify persistent state.</p>
+</li>
+</ul>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Maintainer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- All permissions of Operator
-- Can modify the persistent state, e.g. deploy an application, setting up new data sources, add a JMS destination</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>
+<p>All permissions of Operator</p>
+</li>
+<li>
+<p>Can modify the persistent state, e.g. deploy an application, setting up new data sources, add a JMS destination</p>
+</li>
+</ul>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Deployer</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- All permissions of Maintainer
-- Permission is restricted to applications only, cannot make changes to container configuration</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>
+<p>All permissions of Maintainer</p>
+</li>
+<li>
+<p>Permission is restricted to applications only, cannot make changes to container configuration</p>
+</li>
+</ul>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Administrator</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- All permissions of Maintainer
-- View and modify sensitive data such as access control system
-- No access to administrative audit logging system</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>
+<p>All permissions of Maintainer</p>
+</li>
+<li>
+<p>View and modify sensitive data such as access control system</p>
+</li>
+<li>
+<p>No access to administrative audit logging system</p>
+</li>
+</ul>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Auditor</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- All permissions of Monitor
-- View and modify resources to administrative audit logging system
-- Cannot modify sensitive resources or data outside auditing, can read any sensitive data</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>
+<p>All permissions of Monitor</p>
+</li>
+<li>
+<p>View and modify resources to administrative audit logging system</p>
+</li>
+<li>
+<p>Cannot modify sensitive resources or data outside auditing, can read any sensitive data</p>
+</li>
+</ul>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Super User</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">- Has all the permissions
-- Equivalent to administrator in previous versions</p></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>
+<p>Has all the permissions</p>
+</li>
+<li>
+<p>Equivalent to administrator in previous versions</p>
+</li>
+</ul>
+</div></div></td>
 </tr>
 </tbody>
 </table>
 <div class="sect2">
-<h3 id="__simple_and_rbac_providers">4.1. &#8216;simple&#8217; and &#8216;rbac&#8217; providers</h3>
+<h3 id="_default_super_user">4.1. Default super user</h3>
+<div class="paragraph">
+<p>By default, any user added to the management realm and not belonging to a group is in &#8220;Super User&#8221; role.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Access Admin Console at <a href="http://localhost:9990/console">http://localhost:9990/console</a>. This prompts for authentication as shown:</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/rbac-authentication-required.png" alt="Authentication Required">
+</div>
+</div>
+<div class="paragraph">
+<p>Enter the user name &#8216;sheldon&#8217; and password &#8216;bazinga&#8217; (as entered earlier). Admin console should look like:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/rbac-admin-console-superuser-default.png" alt="Super User Default View">
+</div>
+</div>
+<div class="paragraph">
+<p>This view shows:</p>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>A new &#8216;Administration&#8217; that allows to map users to roles. This will be done in a later section.</p>
+</li>
+<li>
+<p>Information about the logged in user is shown on top-right as:</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/rbac-superuser-information.png" alt="Super User">
+</div>
+</div>
+</li>
+<li>
+<p>A user in &#8216;Super User&#8217;' role can act to run in any role by clicking on &#8216;Run as&#8217;. Click on &#8216;Run as&#8217; and select drop-down list box to see the list of available roles as:</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/rbac-run-as-roles.png" alt="Run As Roles">
+</div>
+</div>
+</li>
+<li>
+<p>Select the &#8216;Monitor&#8217; role and click on &#8216;Run As&#8217;.</p>
+<div class="paragraph">
+<p>The application has to be reloaded for changes to take effect. Click on &#8216;Confirm&#8217; to reload the application. After the reload, clicking on the user on top-right in admin console will display the selected role as &#8216;Run as Monitor&#8217; as shown:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/rbac-run-as-monitor.png" alt="Run As Monitor">
+</div>
+</div>
+<div class="olist lowerroman">
+<ol class="lowerroman" type="i">
+<li>
+<p>Click on &#8216;Manage Deployments&#8217; and check that &#8216;Add&#8217;, &#8216;Remove&#8217;, and similar buttons are not present as shown:</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/rbac-run-as-monitor-deployments.png" alt="Manage Deployments as Monitor">
+</div>
+</div>
+</li>
+<li>
+<p>Click on &#8216;Profile&#8217;, &#8216;Data Sources&#8217; and check that &#8216;Add&#8217;, &#8216;Remove&#8217;, and &#8216;Disable&#8217; buttons are not available as shown.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/rbac-run-as-monitor-data-sources.png" alt="Data Sources as Monitor">
+</div>
+</div>
+</li>
+<li>
+<p>Click on &#8216;Administration&#8217; tab and make sure the user does not have access to it as shown:</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/rbac-run-as-monitor-administration.png" alt="Administration as Monitor">
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Feel free to select other roles and observe how different options are enabled/disabled.</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_configure_rbac_access_control_provider">4.2. Configure &#8216;rbac&#8217; access control provider</h3>
+<div class="paragraph">
+<p>WildFly 8 comes with two access control providers:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>&#8216;simple&#8217; provider, the default one, gives all privileges to any authenticated administrator. This provides compatibility with older releases.</p>
+</li>
+<li>
+<p>&#8216;rbac&#8217; provider allows you to setup configuration that will map users to different roles.</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Configure &#8216;rbac&#8217; access control provider by giving the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>jboss-cli.sh -c --command="/core-service=management/access=authorization:write-attribute(name=provider,value=rbac)"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command will change authorization provider to &#8220;rbac&#8221; and will produce the output as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>{
+    "outcome" =&gt; "success",
+    "response-headers" =&gt; {
+        "operation-requires-reload" =&gt; true,
+        "process-state" =&gt; "reload-required"
+    }
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>The server needs to be restarted after the authorization providers are changed. Give the following command to restart the server:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./bin/jboss-cli.sh -c --command="reload"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Check in the server log to confirm server restarted, look for specific time stamps.</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_mapping_users_groups_and_roles">4.3. Mapping users, groups, and roles</h3>
+<div class="paragraph">
+<p>WildFly introduces the concept of "groups" in security realms. Users can be directly associated with a role, or can belong to a group and then a group can be associated with a role.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Add two new users in management realm using <code>bin/adduser.sh</code> script:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>add-user.sh -u penny -p penny1
+Added user 'penny' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
+Added user 'penny' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
+add-user.sh -u leonard -p leonard1
+Added user 'leonard' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
+Added user 'leonard' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_mapping_roles_to_groups">4.4. Mapping roles to groups</h3>
 
 </div>
 <div class="sect2">
-<h3 id="_predefined_roles">4.2. Predefined roles</h3>
-
+<h3 id="_configuring_constraints">4.5. Configuring constraints</h3>
+<div class="sect3">
+<h4 id="_sensitive_resources">4.5.1. Sensitive resources</h4>
+<div class="paragraph">
+<p>Resources, attributes, or operations can be annotated with a &#8216;sensitiviy classification&#8217;. The classification can be further configured whether they can be addressed, viewed, or modified.</p>
 </div>
-<div class="sect2">
-<h3 id="_run_as">4.3. Run as</h3>
+</div>
+<div class="sect3">
+<h4 id="_sensitive_data">4.5.2. Sensitive data</h4>
 <div class="paragraph">
 <p>jboss-cli.xml &lt;access-control&gt; Does not suggest commands that will not work</p>
+</div>
 </div>
 </div>
 </div>
