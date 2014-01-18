@@ -2394,7 +2394,7 @@ Groups, and thus all users in that group, can be assigned one or more roles by c
 <div class="sect2">
 <h3 id="_filtering_out_commands_in_jboss_cli">4.5. Filtering out commands in &#8216;jboss-cli&#8217;</h3>
 <div class="paragraph">
-<p>CLI or <code>jboss-cli' can authenticate against local WildFly without prompting the user for a username and password. This mechanism only works if the user running the CLI has read access to the `standalone/tmp/auth</code> directory or <code>domain/tmp/auth</code> folder under the respective WildFly installation. If the local mechanism fails then the CLI will fallback to prompting for a username and password.</p>
+<p>CLI or &#8216;jboss-cli&#8217; can authenticate against local WildFly without prompting the user for a username and password. This mechanism only works if the user running the CLI has read access to the &#8220;standalone/tmp/auth&#8221; directory or &#8220;domain/tmp/auth&#8221; folder under the respective WildFly installation. If the local mechanism fails then the CLI will fallback to prompting for a username and password.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -2407,12 +2407,56 @@ Groups, and thus all users in that group, can be assigned one or more roles by c
 </div>
 </li>
 <li>
-<p>Username and password used</p>
+<p>Connecting using &#8216;jboss-cli&#8217; prompts the following message:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>jboss-cli.sh -c
+Authenticating against security realm: ManagementRealm
+Username:</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Enter the username &#8216;penny&#8217; and password &#8216;penny1&#8217;. This role was previously assigned to &#8216;Monitor&#8217; role.</p>
+</li>
+<li>
+<p>Try to add a new data source using the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] data-source add --name=testDataSource</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This command gives the following error:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>JBAS013456: Unauthorized to execute operation 'add' for resource '[
+    ("subsystem" =&gt; "datasources"),
+    ("data-source" =&gt; "testDataSource")
+]' -- "JBAS013475: Permission denied"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is because &#8216;Monitor&#8217; role does not have permission to add data sources.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+Try some other commands and see which ones are accessible or not.
+</td>
+</tr>
+</table>
+</div>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>jboss-cli.xml &lt;access-control&gt; Does not suggest commands that will not work</p>
+<p>What is the purpose ?? jboss-cli.xml &lt;access-control&gt; Does not suggest commands that will not work</p>
 </div>
 </div>
 </div>

@@ -235,7 +235,7 @@ Note that `Run as' is not available any more.
 
 === Filtering out commands in `jboss-cli'
 
-CLI or `jboss-cli' can authenticate against local WildFly without prompting the user for a username and password. This mechanism only works if the user running the CLI has read access to the `standalone/tmp/auth` directory or `domain/tmp/auth` folder under the respective WildFly installation. If the local mechanism fails then the CLI will fallback to prompting for a username and password.
+CLI or `jboss-cli' can authenticate against local WildFly without prompting the user for a username and password. This mechanism only works if the user running the CLI has read access to the ``standalone/tmp/auth'' directory or ``domain/tmp/auth'' folder under the respective WildFly installation. If the local mechanism fails then the CLI will fallback to prompting for a username and password.
 
 . Rename `standalone/tmp/auth' folder to something else by giving the command:
 +
@@ -243,9 +243,39 @@ CLI or `jboss-cli' can authenticate against local WildFly without prompting the 
 ----
 mv standalone/tmp/auth standalone/tmp/auth2
 ----
-. Username and password used 
+. Connecting using `jboss-cli' prompts the following message:
++
+[source]
+----
+jboss-cli.sh -c
+Authenticating against security realm: ManagementRealm
+Username:
+----
++
+. Enter the username `penny' and password `penny1'. This role was previously assigned to `Monitor' role.
++
+. Try to add a new data source using the following command:
++
+[source]
+----
+[standalone@localhost:9990 /] data-source add --name=testDataSource
+----
++
+This command gives the following error:
++
+[source]
+----
+JBAS013456: Unauthorized to execute operation 'add' for resource '[
+    ("subsystem" => "datasources"),
+    ("data-source" => "testDataSource")
+]' -- "JBAS013475: Permission denied"
+----
++
+This is because `Monitor' role does not have permission to add data sources.
++
+TIP: Try some other commands and see which ones are accessible or not.
 
-jboss-cli.xml <access-control> Does not suggest commands that will not work
+What is the purpose ?? jboss-cli.xml <access-control> Does not suggest commands that will not work
 
 
 
