@@ -51,6 +51,13 @@ The pre-defined roles are explained below:
 
 By default, any user added to the management realm and not belonging to a group is in ``Super User'' role.
 
+. Start the server as standalone instance if not already running:
++
+[source]
+----
+./bin/standalone.sh
+----
++
 . Access Admin Console at http://localhost:9990/console. This prompts for authentication as shown:
 +
 image::images/rbac-authentication-required.png[Authentication Required]
@@ -83,7 +90,7 @@ image::images/rbac-run-as-monitor.png[Run As Monitor]
 +
 image::images/rbac-run-as-monitor-deployments.png[Manage Deployments as Monitor]
 +
-... Click on `Profile', `Data Sources' and check that `Add', `Remove', and `Disable' buttons are not available as shown.
+... Click on `Profile', `Data Sources' and check that all data sources are visible but not editable. This is identified by the fact that `Add', `Remove', and `Disable' buttons are not available as shown.
 +
 image::images/rbac-run-as-monitor-data-sources.png[Data Sources as Monitor]
 +
@@ -119,19 +126,33 @@ This command will change authorization provider to ``rbac'' and will produce the
     }
 }
 ----
-. The server needs to be restarted after the authorization providers are changed. Give the following command to restart the server:
+. The server needs to be restarted as the authorization provider is changed. Give the following command to restart the server:
 +
 [source]
 ----
 ./bin/jboss-cli.sh -c --command="reload"
 ----
-Check in the server log to confirm server restarted, look for specific time stamps.
++
+TIP: If the server is running in managed domain then it can be restarted by additionally specifying `--host=master` in the command.
++
+Check the server log to confirm server restarted, look for specific time stamps.
++
+. Any existing roles need to be explicitly mapped after the access control provider is changed. Map the user `sheldon' to the role `Super User' by giving the following command:
++
+[source]
+----
+jboss-cli.sh -c --command="/core-service=management/access=authorization/role-mapping=SuperUser/include=user-sheldon:add(name=sheldon,type=USER)"
+----
+. On top-right in admin console, click on the username and click on `Logout' and then `Confirm'.
++
+. Enter the login credentials again (username is `sheldon' and password is `bazinga') to login back into the admin console.
 
-=== Mapping users, groups, and roles
+=== Map users, groups, and roles
 
 WildFly introduces the concept of ``groups'' in security realms. Users can be directly associated with a role, or can belong to a group and then a group can be associated with a role.
 
-. Add two new users in two separate groups using `bin/adduser.sh` script:
+. Add two users in different groups using `bin/adduser.sh` script
+.. Add first user in a group by giving the following command:
 +
 [source]
 ----
@@ -140,23 +161,89 @@ Added user 'penny' to file '/Users/arungupta/workspaces/wildfly/build/target/wil
 Added user 'penny' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
 Added user 'penny' with groups just4fun to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-groups.properties'
 Added user 'penny' with groups just4fun to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-groups.properties'
+----
+.. Add another user in a different group by giving the following command:
++
+[source]
+----
 add-user.sh -u leonard -p leonard1 -g geek
 Added user 'leonard' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
 Added user 'leonard' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
 Added user 'leonard' with groups geek to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-groups.properties'
 Added user 'leonard' with groups geek to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-groups.properties'
 ----
-This create user `penny' with password `penny1' in group `just4fun'. It also creates another user `leonard' with password `leonard1' in group `geek'. Both the users are added for standalone instance and managed domain.
-.
++
+These commands creates the following users:
++
+[width="50%", options="header"]
+|=================
+| User | Password | Group
+| penny | penny1 | just4fun
+| leonard | leonard1 | geek
+|=================
++
+Both users are added for standalone instance and managed domain.
++
+. Click on `Administration' tab to see an output as:
++
+image::images/rbac-admin-users-default.png[Administration Tab in Admin Console]
++
+Previously assigned user/role mapping is already shown here.
+. Click on `Add' to assign a new role to user mapping. Type `penny' in `User' textbox and select `Monitor' role as shown:
++
+image::images/rbac-admin-users-penny.png[Assigning role to Penny]
++
+Click on `Save'.
++
+NOTE: Multiple roles may be assigned to each user.
+. Assign `Administrator' role to user `leonard'. The updated admin console looks like as shown:
++
+image:images/rbac-admin-users-role-assigned.png[Roles assigned to users]
++
+TIP: Groups, and thus all users in that group, can be assigned one or more roles by clicking on `GROUPS' tab.
 
-=== Configuring constraints
+=== Logging in as different users
 
-==== Sensitive resources
-Resources, attributes, or operations can be annotated with a `sensitiviy classification'. The classification can be further configured whether they can be addressed, viewed, or modified.
+. Click on top-right and select `Logout' to log out of admin console. Login again by using the username `penny' and password `penny1'. Note that this user was assigned `Monitor' role.
++
+. Top-right of admin console shows the logged in user name.
++
+image::images/rbac-penny-information.png[Information about Penny]
++
+Note that `Run as' is not available any more.
++
+. Click on `Manage Deployments' to see the output as shown:
++
+image::images/rbac-run-as-monitor-deployments.png[Deployments for user Penny]
++
+This role permits only monitoring and `Add', `Remove', `En/Disable', and `Replace' buttons are not available.
+. Click on `Administration' tab to see a permissiond denied output as:
++
+image::images/rbac-run-as-monitor-administration.png[Administration for user Penny]
++
+. Click on top-right and select `Logout' to log out of admin console. Login again by using the username `leonard' and password `leonard1'. Note that this user was assigned `Administrator' role.
++
+. Top-right of admin console shows the logged in user name.
++
+image::images/rbac-leonard-information.png[Information about Leonard]
++
+Note that `Run as' is not available any more.
++
+. Click on `Deployments' and confirm that new deployments can be added or existing can be replace, removed, enabled or disabled by the presence of buttons.
++
+. Click on `Administration' tab and confirm that all information is visible and editable.
 
-==== Sensitive data
+=== Filtering out commands in `jboss-cli'
 
+CLI or `jboss-cli' can authenticate against local WildFly without prompting the user for a username and password. This mechanism only works if the user running the CLI has read access to the `standalone/tmp/auth` directory or `domain/tmp/auth` folder under the respective WildFly installation. If the local mechanism fails then the CLI will fallback to prompting for a username and password.
 
+. Rename `standalone/tmp/auth' folder to something else by giving the command:
++
+[source]
+----
+mv standalone/tmp/auth standalone/tmp/auth2
+----
+. Username and password used 
 
 jboss-cli.xml <access-control> Does not suggest commands that will not work
 

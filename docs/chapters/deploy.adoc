@@ -11,9 +11,11 @@ Make sure to start a WildFly standalone instance for each sub-section unless sta
 
 === File system
 
-*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using filesystem commands.
+Deploying archives such as war, ear, and rar files using file system is as simple as copying to `standalone/deployments` directory. The deployment can be configured for auto-deploy or manual mode.
 
-Any archive (e.g. war, ear, jar, and sar files) can be placed in the `standalone/deployments` directory in order to be automatically deployed to the server.
+*Purpose*: This section explains how to auto-deploy a Java EE 7 application to WildFly using filesystem commands.
+
+Any archive can be placed in `standalone/deployments` directory and is automatically deployed to the server.This is the default behavior.
 
 CAUTION: This deployment mode is only intended to be used during development phase. Other modes are recommended if running production systems.
 
@@ -244,12 +246,14 @@ Now accessing the console at http://localhost:9990/console prompts for a usernam
 +
 image::images/deploy-admin-console.png[Admin Console]
 +
-The added user can be disabled (deleted?) by giving the following command:
+The added user can be disabled by giving the following command:
 +
 [source]
 ----
 ./bin/add-user.sh -u sheldon -d
 ----
++
+TIP: User can be deleted by deleting the corresponding line from `domain/configuration/mgmt-users.properties` and `standalone/configuration/mgmt-users.properties` files.
 +
 . Click on `Manage Deployments' to see the output as:
 +

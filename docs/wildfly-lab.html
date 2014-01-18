@@ -452,14 +452,9 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <ul class="sectlevel2">
 <li><a href="#_default_super_user">4.1. Default super user</a></li>
 <li><a href="#_configure_rbac_access_control_provider">4.2. Configure &#8216;rbac&#8217; access control provider</a></li>
-<li><a href="#_mapping_users_groups_and_roles">4.3. Mapping users, groups, and roles</a></li>
-<li><a href="#_configuring_constraints">4.4. Configuring constraints</a></li>
-<li>
-<ul class="sectlevel3">
-<li><a href="#_sensitive_resources">4.4.1. Sensitive resources</a></li>
-<li><a href="#_sensitive_data">4.4.2. Sensitive data</a></li>
-</ul>
-</li>
+<li><a href="#_map_users_groups_and_roles">4.3. Map users, groups, and roles</a></li>
+<li><a href="#_logging_in_as_different_users">4.4. Logging in as different users</a></li>
+<li><a href="#_filtering_out_commands_in_jboss_cli">4.5. Filtering out commands in &#8216;jboss-cli&#8217;</a></li>
 </ul>
 </li>
 <li><a href="#_audit_logging">5. Audit Logging</a></li>
@@ -705,10 +700,13 @@ This document is a work in progress.
 <div class="sect2">
 <h3 id="_file_system">2.1. File system</h3>
 <div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using filesystem commands.</p>
+<p>Deploying archives such as war, ear, and rar files using file system is as simple as copying to <code>standalone/deployments</code> directory. The deployment can be configured for auto-deploy or manual mode.</p>
 </div>
 <div class="paragraph">
-<p>Any archive (e.g. war, ear, jar, and sar files) can be placed in the <code>standalone/deployments</code> directory in order to be automatically deployed to the server.</p>
+<p><strong>Purpose</strong>: This section explains how to auto-deploy a Java EE 7 application to WildFly using filesystem commands.</p>
+</div>
+<div class="paragraph">
+<p>Any archive can be placed in <code>standalone/deployments</code> directory and is automatically deployed to the server.This is the default behavior.</p>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -1071,12 +1069,24 @@ yes/no? no</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The added user can be disabled (deleted?) by giving the following command:</p>
+<p>The added user can be disabled by giving the following command:</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>./bin/add-user.sh -u sheldon -d</code></pre>
 </div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+User can be deleted by deleting the corresponding line from <code>domain/configuration/mgmt-users.properties</code> and <code>standalone/configuration/mgmt-users.properties</code> files.
+</td>
+</tr>
+</table>
 </div>
 </li>
 <li>
@@ -2020,6 +2030,14 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 <div class="olist arabic">
 <ol class="arabic">
 <li>
+<p>Start the server as standalone instance if not already running:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./bin/standalone.sh</code></pre>
+</div>
+</div>
+</li>
+<li>
 <p>Access Admin Console at <a href="http://localhost:9990/console">http://localhost:9990/console</a>. This prompts for authentication as shown:</p>
 <div class="imageblock">
 <div class="content">
@@ -2082,7 +2100,7 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 </div>
 </li>
 <li>
-<p>Click on &#8216;Profile&#8217;, &#8216;Data Sources&#8217; and check that &#8216;Add&#8217;, &#8216;Remove&#8217;, and &#8216;Disable&#8217; buttons are not available as shown.</p>
+<p>Click on &#8216;Profile&#8217;, &#8216;Data Sources&#8217; and check that all data sources are visible but not editable. This is identified by the fact that &#8216;Add&#8217;, &#8216;Remove&#8217;, and &#8216;Disable&#8217; buttons are not available as shown.</p>
 <div class="imageblock">
 <div class="content">
 <img src="images/rbac-run-as-monitor-data-sources.png" alt="Data Sources as Monitor">
@@ -2146,15 +2164,41 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 </div>
 </li>
 <li>
-<p>The server needs to be restarted after the authorization providers are changed. Give the following command to restart the server:</p>
+<p>The server needs to be restarted as the authorization provider is changed. Give the following command to restart the server:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>./bin/jboss-cli.sh -c --command="reload"</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>Check in the server log to confirm server restarted, look for specific time stamps.</p>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+If the server is running in managed domain then it can be restarted by additionally specifying <code>--host=master</code> in the command.
+</td>
+</tr>
+</table>
 </div>
+<div class="paragraph">
+<p>Check the server log to confirm server restarted, look for specific time stamps.</p>
+</div>
+</li>
+<li>
+<p>Any existing roles need to be explicitly mapped after the access control provider is changed. Map the user &#8216;sheldon&#8217; to the role &#8216;Super User&#8217; by giving the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>jboss-cli.sh -c --command="/core-service=management/access=authorization/role-mapping=SuperUser/include=user-sheldon:add(name=sheldon,type=USER)"</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>On top-right in admin console, click on the username and click on &#8216;Logout&#8217; and then &#8216;Confirm&#8217;.</p>
+</li>
+<li>
+<p>Enter the login credentials again (username is &#8216;sheldon&#8217; and password is &#8216;bazinga&#8217;) to login back into the admin console.</p>
 </li>
 </ol>
 </div>
@@ -2163,22 +2207,33 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 </div>
 </div>
 <div class="sect2">
-<h3 id="_mapping_users_groups_and_roles">4.3. Mapping users, groups, and roles</h3>
+<h3 id="_map_users_groups_and_roles">4.3. Map users, groups, and roles</h3>
 <div class="paragraph">
 <p>WildFly introduces the concept of &#8220;groups&#8221; in security realms. Users can be directly associated with a role, or can belong to a group and then a group can be associated with a role.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Add two new users in two separate groups using <code>bin/adduser.sh</code> script:</p>
+<p>Add two users in different groups using <code>bin/adduser.sh</code> script</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Add first user in a group by giving the following command:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>add-user.sh -u penny -p penny1 -g just4fun
 Added user 'penny' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
 Added user 'penny' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
 Added user 'penny' with groups just4fun to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-groups.properties'
-Added user 'penny' with groups just4fun to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-groups.properties'
-add-user.sh -u leonard -p leonard1 -g geek
+Added user 'penny' with groups just4fun to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-groups.properties'</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add another user in a different group by giving the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>add-user.sh -u leonard -p leonard1 -g geek
 Added user 'leonard' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
 Added user 'leonard' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
 Added user 'leonard' with groups geek to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-groups.properties'
@@ -2186,26 +2241,178 @@ Added user 'leonard' with groups geek to file '/Users/arungupta/workspaces/wildf
 </div>
 </div>
 <div class="paragraph">
-<p>This create user &#8216;penny&#8217; with password &#8216;penny1&#8217; in group &#8216;just4fun&#8217;. It also creates another user &#8216;leonard&#8217; with password &#8216;leonard1&#8217; in group &#8216;geek&#8217;. Both the users are added for standalone instance and managed domain.
-.</p>
+<p>These commands creates the following users:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 50%;">
+<colgroup>
+<col style="width: 33%;">
+<col style="width: 33%;">
+<col style="width: 33%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">User</th>
+<th class="tableblock halign-left valign-top">Password</th>
+<th class="tableblock halign-left valign-top">Group</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">penny</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">penny1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">just4fun</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">leonard</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">leonard1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">geek</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Both users are added for standalone instance and managed domain.</p>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Click on &#8216;Administration&#8217; tab to see an output as:</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/rbac-admin-users-default.png" alt="Administration Tab in Admin Console">
+</div>
+</div>
+<div class="paragraph">
+<p>Previously assigned user/role mapping is already shown here.</p>
+</div>
+</li>
+<li>
+<p>Click on &#8216;Add&#8217; to assign a new role to user mapping. Type &#8216;penny&#8217; in &#8216;User&#8217; textbox and select &#8216;Monitor&#8217; role as shown:</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/rbac-admin-users-penny.png" alt="Assigning role to Penny">
+</div>
+</div>
+<div class="paragraph">
+<p>Click on &#8216;Save&#8217;.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Note</div>
+</td>
+<td class="content">
+Multiple roles may be assigned to each user.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Assign &#8216;Administrator&#8217; role to user &#8216;leonard&#8217;. The updated admin console looks like as shown:</p>
+<div class="paragraph">
+<p><span class="image"><img src="images/rbac-admin-users-role-assigned.png" alt="Roles assigned to users"></span></p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+Groups, and thus all users in that group, can be assigned one or more roles by clicking on &#8216;GROUPS&#8217; tab.
+</td>
+</tr>
+</table>
 </div>
 </li>
 </ol>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_configuring_constraints">4.4. Configuring constraints</h3>
-<div class="sect3">
-<h4 id="_sensitive_resources">4.4.1. Sensitive resources</h4>
+<h3 id="_logging_in_as_different_users">4.4. Logging in as different users</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Click on top-right and select &#8216;Logout&#8217; to log out of admin console. Login again by using the username &#8216;penny&#8217; and password &#8216;penny1&#8217;. Note that this user was assigned &#8216;Monitor&#8217; role.</p>
+</li>
+<li>
+<p>Top-right of admin console shows the logged in user name.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/rbac-penny-information.png" alt="Information about Penny">
+</div>
+</div>
 <div class="paragraph">
-<p>Resources, attributes, or operations can be annotated with a &#8216;sensitiviy classification&#8217;. The classification can be further configured whether they can be addressed, viewed, or modified.</p>
+<p>Note that &#8216;Run as&#8217; is not available any more.</p>
+</div>
+</li>
+<li>
+<p>Click on &#8216;Manage Deployments&#8217; to see the output as shown:</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/rbac-run-as-monitor-deployments.png" alt="Deployments for user Penny">
 </div>
 </div>
-<div class="sect3">
-<h4 id="_sensitive_data">4.4.2. Sensitive data</h4>
+<div class="paragraph">
+<p>This role permits only monitoring and &#8216;Add&#8217;, &#8216;Remove&#8217;, &#8216;En/Disable&#8217;, and &#8216;Replace&#8217; buttons are not available.</p>
+</div>
+</li>
+<li>
+<p>Click on &#8216;Administration&#8217; tab to see a permissiond denied output as:</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/rbac-run-as-monitor-administration.png" alt="Administration for user Penny">
+</div>
+</div>
+</li>
+<li>
+<p>Click on top-right and select &#8216;Logout&#8217; to log out of admin console. Login again by using the username &#8216;leonard&#8217; and password &#8216;leonard1&#8217;. Note that this user was assigned &#8216;Administrator&#8217; role.</p>
+</li>
+<li>
+<p>Top-right of admin console shows the logged in user name.</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/rbac-leonard-information.png" alt="Information about Leonard">
+</div>
+</div>
+<div class="paragraph">
+<p>Note that &#8216;Run as&#8217; is not available any more.</p>
+</div>
+</li>
+<li>
+<p>Click on &#8216;Deployments&#8217; and confirm that new deployments can be added or existing can be replace, removed, enabled or disabled by the presence of buttons.</p>
+</li>
+<li>
+<p>Click on &#8216;Administration&#8217; tab and confirm that all information is visible and editable.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_filtering_out_commands_in_jboss_cli">4.5. Filtering out commands in &#8216;jboss-cli&#8217;</h3>
+<div class="paragraph">
+<p>CLI or <code>jboss-cli' can authenticate against local WildFly without prompting the user for a username and password. This mechanism only works if the user running the CLI has read access to the `standalone/tmp/auth</code> directory or <code>domain/tmp/auth</code> folder under the respective WildFly installation. If the local mechanism fails then the CLI will fallback to prompting for a username and password.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Rename &#8216;standalone/tmp/auth&#8217; folder to something else by giving the command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mv standalone/tmp/auth standalone/tmp/auth2</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Username and password used</p>
+</li>
+</ol>
+</div>
 <div class="paragraph">
 <p>jboss-cli.xml &lt;access-control&gt; Does not suggest commands that will not work</p>
-</div>
 </div>
 </div>
 </div>
@@ -2369,7 +2576,7 @@ Added user 'leonard' with groups geek to file '/Users/arungupta/workspaces/wildf
 <div id="footer">
 <div id="footer-text">
 Version 0.2<br>
-Last updated 2014-01-15 22:28:00 CET
+Last updated 2014-01-15 16:28:00 EST
 </div>
 </div>
 </body>
