@@ -205,3 +205,37 @@ will generate the following audit log record:
 }
 ----
 
+Similarly deploying an application as:
+
+[source]
+----
+[standalone@localhost:9990 /] deploy javaee7-1.0-SNAPSHOT.war --force
+----
+
+shows the following audit log record:
+
+[source]
+----
+{
+    "type" : "core",
+    "r/o" : false,
+    "booting" : false,
+    "version" : "8.0.0.Final-SNAPSHOT",
+    "user" : "sheldon",
+    "domainUUID" : null,
+    "access" : "NATIVE",
+    "remote-address" : "127.0.0.1/127.0.0.1",
+    "success" : true,
+    "ops" : [{
+        "operation" : "full-replace-deployment",
+        "name" : "javaee7-1.0-SNAPSHOT.war",
+        "content" : [{"input-stream-index" : 0}],
+        "operation-headers" : {
+            "caller-type" : "user",
+            "access-mechanism" : "NATIVE"
+        },
+        "address" : null
+    }]
+}
+----
+
