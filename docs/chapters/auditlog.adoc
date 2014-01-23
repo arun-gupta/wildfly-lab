@@ -1,8 +1,89 @@
 == Audit Logging
 
+WildFly comes with audit logging built in for management operations affecting the management model. By default it is turned off and needs to be turned on.
+
 === How to turn on audit logging
 
-=== Default JSON formatter (and others)
+. Connect using `jboss-cli' using the following command:
++
+[source]
+----
+jboss-cli.sh --user=sheldon --password=bazinga -c
+----
++
+Note you need to provide user and password credentials of a user in Auditor or Super User role.
++
+. Enable audit logging by giving the following command:
++
+[source]
+----
+[standalone@localhost:9990 /] /core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)
+----
++
+This will display the output as:
++
+[source]
+----
+{"outcome" => "success"}
+----
++
+If the user is not in Auditor or Super User role then the following error message will be displayed:
++
+[source]
+----
+{
+    "outcome" => "failed",
+    "failure-description" => "JBAS013456: Unauthorized to execute operation 'write-attribute' for resource '[
+    (\"core-service\" => \"management\"),
+    (\"access\" => \"audit\"),
+    (\"logger\" => \"audit-log\")
+]' -- \"JBAS013475: Permission denied\"",
+    "rolled-back" => true
+}
+----
+
+=== Default JSON formatter
+
+By default audit log records are formatted using JSON and are generated in `standalone/data/audit-log.log`. This file is generated right after audit log is enabled and looks like:
+
+[source]
+----
+{
+    "type" : "core",
+    "r/o" : false,
+    "booting" : false,
+    "version" : "8.0.0.Final-SNAPSHOT",
+    "user" : "sheldon",
+    "domainUUID" : null,
+    "access" : "NATIVE",
+    "remote-address" : "127.0.0.1/127.0.0.1",
+    "success" : true,
+    "ops" : [{
+        "address" : [
+            {
+                "core-service" : "management"
+            },
+            {
+                "access" : "audit"
+            },
+            {
+                "logger" : "audit-log"
+            }
+        ],
+        "operation" : "write-attribute",
+        "name" : "enabled",
+        "value" : true,
+        "operation-headers" : {
+            "caller-type" : "user",
+            "access-mechanism" : "NATIVE"
+        }
+    }]
+}
+----
+
+Explain these fields.
+
+Try a few other management operations and notice how `audit-log.log` is updated.
 
 === Custom formatter
 

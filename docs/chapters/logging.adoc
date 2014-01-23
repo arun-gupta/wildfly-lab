@@ -1,4 +1,4 @@
-== Configuring Logging
+== Configure Logging
 
 WildFly provides comprehensive logging output from different subsystems. User applications can also leverage the same framework to generate logging output.
 

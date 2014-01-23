@@ -461,7 +461,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li>
 <ul class="sectlevel2">
 <li><a href="#_how_to_turn_on_audit_logging">5.1. How to turn on audit logging</a></li>
-<li><a href="#_default_json_formatter_and_others">5.2. Default JSON formatter (and others)</a></li>
+<li><a href="#_default_json_formatter">5.2. Default JSON formatter</a></li>
 <li><a href="#_custom_formatter">5.3. Custom formatter</a></li>
 </ul>
 </li>
@@ -472,7 +472,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_ejb">6.2. EJB</a></li>
 </ul>
 </li>
-<li><a href="#_configuring_logging">7. Configuring Logging</a></li>
+<li><a href="#_configure_logging">7. Configure Logging</a></li>
 <li><a href="#_undertow">8. Undertow</a></li>
 <li>
 <ul class="sectlevel2">
@@ -2513,13 +2513,99 @@ Try some other commands and see which ones are accessible or not.
 <div class="sect1">
 <h2 id="_audit_logging">5. Audit Logging</h2>
 <div class="sectionbody">
-<div class="sect2">
-<h3 id="_how_to_turn_on_audit_logging">5.1. How to turn on audit logging</h3>
-
+<div class="paragraph">
+<p>WildFly comes with audit logging built in for management operations affecting the management model. By default it is turned off and needs to be turned on.</p>
 </div>
 <div class="sect2">
-<h3 id="_default_json_formatter_and_others">5.2. Default JSON formatter (and others)</h3>
-
+<h3 id="_how_to_turn_on_audit_logging">5.1. How to turn on audit logging</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Connect using &#8216;jboss-cli&#8217; using the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>jboss-cli.sh --user=sheldon --password=bazinga -c</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note you need to provide user and password credentials of a user in Auditor or Super User role.</p>
+</div>
+</li>
+<li>
+<p>Enable audit logging by giving the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] /core-service=management/access=audit/logger=audit-log:write-attribute(name=enabled,value=true)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This will display the output as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>{"outcome" =&gt; "success"}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the user is not in Auditor or Super User role then the following error message will be displayed:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>{
+    "outcome" =&gt; "failed",
+    "failure-description" =&gt; "JBAS013456: Unauthorized to execute operation 'write-attribute' for resource '[
+    (\"core-service\" =&gt; \"management\"),
+    (\"access\" =&gt; \"audit\"),
+    (\"logger\" =&gt; \"audit-log\")
+]' -- \"JBAS013475: Permission denied\"",
+    "rolled-back" =&gt; true
+}</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_default_json_formatter">5.2. Default JSON formatter</h3>
+<div class="paragraph">
+<p>By default audit log records are formatted using JSON and are generated in <code>standalone/data/audit-log.log</code>. This file is generated right after audit log is enabled and looks like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>{
+    "type" : "core",
+    "r/o" : false,
+    "booting" : false,
+    "version" : "8.0.0.Final-SNAPSHOT",
+    "user" : "sheldon",
+    "domainUUID" : null,
+    "access" : "NATIVE",
+    "remote-address" : "127.0.0.1/127.0.0.1",
+    "success" : true,
+    "ops" : [{
+        "address" : [
+            {
+                "core-service" : "management"
+            },
+            {
+                "access" : "audit"
+            },
+            {
+                "logger" : "audit-log"
+            }
+        ],
+        "operation" : "write-attribute",
+        "name" : "enabled",
+        "value" : true,
+        "operation-headers" : {
+            "caller-type" : "user",
+            "access-mechanism" : "NATIVE"
+        }
+    }]
+}</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_custom_formatter">5.3. Custom formatter</h3>
@@ -2546,7 +2632,7 @@ Try some other commands and see which ones are accessible or not.
 </div>
 </div>
 <div class="sect1">
-<h2 id="_configuring_logging">7. Configuring Logging</h2>
+<h2 id="_configure_logging">7. Configure Logging</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>WildFly provides comprehensive logging output from different subsystems. User applications can also leverage the same framework to generate logging output.</p>
