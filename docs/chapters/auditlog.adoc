@@ -1,8 +1,10 @@
 == Audit Logging
 
-WildFly comes with audit logging built in for management operations affecting the management model. By default it is turned off and needs to be turned on.
+WildFly comes with audit logging built in for management operations affecting the management model. The audit log records can be logged to a file on the server or to syslog. Syslog is a better choice for audit logging since you can log to a remote syslog server, and secure the authentication to happen over TLS with client certificate authentication. This section will only cover default logging in file.
 
-=== How to turn on audit logging
+=== Turn on audit logging
+
+By default audit logging is turned off and needs to be turned on.
 
 . Connect using `jboss-cli' using the following command:
 +
@@ -42,9 +44,9 @@ If the user is not in Auditor or Super User role then the following error messag
 }
 ----
 
-=== Default JSON formatter
+=== Logging JSON records to file
 
-By default audit log records are formatted using JSON and are generated in `standalone/data/audit-log.log`. This file is generated right after audit log is enabled and looks like:
+By default audit log records are formatted using JSON and are generated in `standalone/data/audit-log.log`. This file is generated after audit log is enabled and looks like:
 
 [source]
 ----
@@ -81,11 +83,125 @@ By default audit log records are formatted using JSON and are generated in `stan
 }
 ----
 
-Explain these fields.
+The main fields in this JSON record are explained below:
 
-Try a few other management operations and notice how `audit-log.log` is updated.
+[cols="1,5a", options="header"]
+|==================
 
-=== Custom formatter
+| Field Name | Possible Values
 
-How to setup filter ?
+| `type` | - `core' indicates it is a management operation
+- `jms' indicates it is from the jms subsystem
+
+| `r/o` | - `true' if the operation does not change the management model
+- `false' otherwise
+
+| `booting` | - `true' is the operation was executed during the bootup process
+- `false' otherwise
+
+| `user`
+| The username of the authenticated user. If the operation is logged via the CLI on the same machine as the running server, then the special $local user is used
+
+| `access`
+|- `native' The operation came in through the native management interface, for example the CLI
+- `http' The operation came in through the domain HTTP interface, for example the admin console
+- `jmx' The operation came in through the JMX subsystem. See JMX for how to configure audit logging for JMX
+
+| `ops`
+| List of operations being executed serialized to JSON
+
+|==================
+
+Try a few other management operations and notice how `audit-log.log` is updated. For example, trying to add a new data source using the following command:
+
+[source]
+----
+[standalone@localhost:9990 /] data-source add --name=myDataSource2 --jndi-name=java:jboss/datasources/MyDataSource2 --user-name=sa --password=sa --driver-name=h2 --connection-url=jdbc:h2:mem:myData
+----
+
+will generate the following audit log record:
+
+[source]
+----
+{
+    "type" : "core",
+    "r/o" : false,
+    "booting" : false,
+    "version" : "8.0.0.Final-SNAPSHOT",
+    "user" : "sheldon",
+    "domainUUID" : null,
+    "access" : "NATIVE",
+    "remote-address" : "127.0.0.1/127.0.0.1",
+    "success" : true,
+    "ops" : [{
+        "address" : [
+            {
+                "subsystem" : "datasources"
+            },
+            {
+                "data-source" : "myDataSource2"
+            }
+        ],
+        "operation" : "add",
+        "user-name" : "sa",
+        "password" : "sa",
+        "jndi-name" : "java:jboss/datasources/MyDataSource2",
+        "connection-url" : "jdbc:h2:mem:myData",
+        "driver-name" : "h2",
+        "operation-headers" : {
+            "caller-type" : "user",
+            "access-mechanism" : "NATIVE"
+        },
+        "driver-class" : null,
+        "datasource-class" : null,
+        "new-connection-sql" : null,
+        "url-delimiter" : null,
+        "url-selector-strategy-class-name" : null,
+        "use-java-context" : null,
+        "jta" : null,
+        "max-pool-size" : null,
+        "min-pool-size" : null,
+        "initial-pool-size" : null,
+        "pool-prefill" : null,
+        "pool-use-strict-min" : null,
+        "capacity-incrementer-class" : null,
+        "capacity-decrementer-class" : null,
+        "security-domain" : null,
+        "reauth-plugin-class-name" : null,
+        "flush-strategy" : null,
+        "allow-multiple-users" : null,
+        "connection-listener-class" : null,
+        "connection-properties" : null,
+        "prepared-statements-cache-size" : null,
+        "share-prepared-statements" : null,
+        "track-statements" : null,
+        "allocation-retry" : null,
+        "allocation-retry-wait-millis" : null,
+        "blocking-timeout-wait-millis" : null,
+        "idle-timeout-minutes" : null,
+        "query-timeout" : null,
+        "use-try-lock" : null,
+        "set-tx-query-timeout" : null,
+        "transaction-isolation" : null,
+        "check-valid-connection-sql" : null,
+        "exception-sorter-class-name" : null,
+        "stale-connection-checker-class-name" : null,
+        "valid-connection-checker-class-name" : null,
+        "background-validation-millis" : null,
+        "background-validation" : null,
+        "use-fast-fail" : null,
+        "validate-on-match" : null,
+        "spy" : null,
+        "use-ccm" : null,
+        "enabled" : null,
+        "reauth-plugin-properties" : null,
+        "exception-sorter-properties" : null,
+        "stale-connection-checker-properties" : null,
+        "valid-connection-checker-properties" : null,
+        "connection-listener-property" : null,
+        "capacity-incrementer-properties" : null,
+        "capacity-decrementer-properties" : null
+    }]
+}
+----
 

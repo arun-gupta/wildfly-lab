@@ -460,9 +460,8 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_audit_logging">5. Audit Logging</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#_how_to_turn_on_audit_logging">5.1. How to turn on audit logging</a></li>
-<li><a href="#_default_json_formatter">5.2. Default JSON formatter</a></li>
-<li><a href="#_custom_formatter">5.3. Custom formatter</a></li>
+<li><a href="#_turn_on_audit_logging">5.1. Turn on audit logging</a></li>
+<li><a href="#_logging_json_records_to_file">5.2. Logging JSON records to file</a></li>
 </ul>
 </li>
 <li><a href="#clustering">6. Clustering, Replication and Failover</a></li>
@@ -2514,10 +2513,13 @@ Try some other commands and see which ones are accessible or not.
 <h2 id="_audit_logging">5. Audit Logging</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>WildFly comes with audit logging built in for management operations affecting the management model. By default it is turned off and needs to be turned on.</p>
+<p>WildFly comes with audit logging built in for management operations affecting the management model. The audit log records can be logged to a file on the server or to syslog. Syslog is a better choice for audit logging since you can log to a remote syslog server, and secure the authentication to happen over TLS with client certificate authentication. This section will only cover default logging in file.</p>
 </div>
 <div class="sect2">
-<h3 id="_how_to_turn_on_audit_logging">5.1. How to turn on audit logging</h3>
+<h3 id="_turn_on_audit_logging">5.1. Turn on audit logging</h3>
+<div class="paragraph">
+<p>By default audit logging is turned off and needs to be turned on.</p>
+</div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -2567,9 +2569,9 @@ Try some other commands and see which ones are accessible or not.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_default_json_formatter">5.2. Default JSON formatter</h3>
+<h3 id="_logging_json_records_to_file">5.2. Logging JSON records to file</h3>
 <div class="paragraph">
-<p>By default audit log records are formatted using JSON and are generated in <code>standalone/data/audit-log.log</code>. This file is generated right after audit log is enabled and looks like:</p>
+<p>By default audit log records are formatted using JSON and are generated in <code>standalone/data/audit-log.log</code>. This file is generated after audit log is enabled and looks like:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2606,11 +2608,184 @@ Try some other commands and see which ones are accessible or not.
 }</code></pre>
 </div>
 </div>
-</div>
-<div class="sect2">
-<h3 id="_custom_formatter">5.3. Custom formatter</h3>
 <div class="paragraph">
-<p>How to setup filter ?</p>
+<p>The main fields in this JSON record are explained below:</p>
+</div>
+<table class="tableblock frame-all grid-all" style="width: 100%;">
+<colgroup>
+<col style="width: 16%;">
+<col style="width: 83%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Field Name</th>
+<th class="tableblock halign-left valign-top">Possible Values</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>
+<p>&#8216;core&#8217; indicates it is a management operation</p>
+</li>
+<li>
+<p>&#8216;jms&#8217; indicates it is from the jms subsystem</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>r/o</code></p></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>
+<p>&#8216;true&#8217; if the operation does not change the management model</p>
+</li>
+<li>
+<p>&#8216;false&#8217; otherwise</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>booting</code></p></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>
+<p>&#8216;true&#8217; is the operation was executed during the bootup process</p>
+</li>
+<li>
+<p>&#8216;false&#8217; otherwise</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>user</code></p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>The username of the authenticated user. If the operation is logged via the CLI on the same machine as the running server, then the special $local user is used</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>access</code></p></td>
+<td class="tableblock halign-left valign-top"><div><div class="ulist">
+<ul>
+<li>
+<p>&#8216;native&#8217; The operation came in through the native management interface, for example the CLI</p>
+</li>
+<li>
+<p>&#8216;http&#8217; The operation came in through the domain HTTP interface, for example the admin console</p>
+</li>
+<li>
+<p>&#8216;jmx&#8217; The operation came in through the JMX subsystem. See JMX for how to configure audit logging for JMX</p>
+</li>
+</ul>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>ops</code></p></td>
+<td class="tableblock halign-left valign-top"><div><div class="paragraph">
+<p>List of operations being executed serialized to JSON</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Try a few other management operations and notice how <code>audit-log.log</code> is updated. For example, trying to add a new data source using the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] data-source add --name=myDataSource2 --jndi-name=java:jboss/datasources/MyDataSource2 --user-name=sa --password=sa --driver-name=h2 --connection-url=jdbc:h2:mem:myData</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>will generate the following audit log record:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>{
+    "type" : "core",
+    "r/o" : false,
+    "booting" : false,
+    "version" : "8.0.0.Final-SNAPSHOT",
+    "user" : "sheldon",
+    "domainUUID" : null,
+    "access" : "NATIVE",
+    "remote-address" : "127.0.0.1/127.0.0.1",
+    "success" : true,
+    "ops" : [{
+        "address" : [
+            {
+                "subsystem" : "datasources"
+            },
+            {
+                "data-source" : "myDataSource2"
+            }
+        ],
+        "operation" : "add",
+        "user-name" : "sa",
+        "password" : "sa",
+        "jndi-name" : "java:jboss/datasources/MyDataSource2",
+        "connection-url" : "jdbc:h2:mem:myData",
+        "driver-name" : "h2",
+        "operation-headers" : {
+            "caller-type" : "user",
+            "access-mechanism" : "NATIVE"
+        },
+        "driver-class" : null,
+        "datasource-class" : null,
+        "new-connection-sql" : null,
+        "url-delimiter" : null,
+        "url-selector-strategy-class-name" : null,
+        "use-java-context" : null,
+        "jta" : null,
+        "max-pool-size" : null,
+        "min-pool-size" : null,
+        "initial-pool-size" : null,
+        "pool-prefill" : null,
+        "pool-use-strict-min" : null,
+        "capacity-incrementer-class" : null,
+        "capacity-decrementer-class" : null,
+        "security-domain" : null,
+        "reauth-plugin-class-name" : null,
+        "flush-strategy" : null,
+        "allow-multiple-users" : null,
+        "connection-listener-class" : null,
+        "connection-properties" : null,
+        "prepared-statements-cache-size" : null,
+        "share-prepared-statements" : null,
+        "track-statements" : null,
+        "allocation-retry" : null,
+        "allocation-retry-wait-millis" : null,
+        "blocking-timeout-wait-millis" : null,
+        "idle-timeout-minutes" : null,
+        "query-timeout" : null,
+        "use-try-lock" : null,
+        "set-tx-query-timeout" : null,
+        "transaction-isolation" : null,
+        "check-valid-connection-sql" : null,
+        "exception-sorter-class-name" : null,
+        "stale-connection-checker-class-name" : null,
+        "valid-connection-checker-class-name" : null,
+        "background-validation-millis" : null,
+        "background-validation" : null,
+        "use-fast-fail" : null,
+        "validate-on-match" : null,
+        "spy" : null,
+        "use-ccm" : null,
+        "enabled" : null,
+        "reauth-plugin-properties" : null,
+        "exception-sorter-properties" : null,
+        "stale-connection-checker-properties" : null,
+        "valid-connection-checker-properties" : null,
+        "connection-listener-property" : null,
+        "capacity-incrementer-properties" : null,
+        "capacity-decrementer-properties" : null
+    }]
+}</code></pre>
+</div>
 </div>
 </div>
 </div>
