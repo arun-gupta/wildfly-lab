@@ -237,22 +237,31 @@ Note that `Run as' is not available any more.
 
 CLI or `jboss-cli' can authenticate against local WildFly without prompting the user for a username and password. This mechanism only works if the user running the CLI has read access to the ``standalone/tmp/auth'' directory or ``domain/tmp/auth'' folder under the respective WildFly installation. If the local mechanism fails then the CLI will fallback to prompting for a username and password.
 
-. Rename `standalone/tmp/auth' folder to something else by giving the command:
+Alternatively authentication can be forced by explicitly specifying `user` and `password` options.
+
+. Connect using `jboss-cli' using the following command:
 +
 [source]
 ----
-mv standalone/tmp/auth standalone/tmp/auth2
+jboss-cli.sh --user=penny --password=penny1 -c
 ----
-. Connecting using `jboss-cli' prompts the following message:
++
+Note that the user `penny' is in Monitor role.
++
+. Type `data-source` on the CLI console and TAB to see the following output:
 +
 [source]
 ----
-jboss-cli.sh -c
-Authenticating against security realm: ManagementRealm
-Username:
+[standalone@localhost:9990 /] data-source 
+--help                               flush-gracefully-connection-in-pool  
+--name=                              flush-idle-connection-in-pool        
+add                                  flush-invalid-connection-in-pool     
+disable                              read-resource                        
+enable                               remove                               
+flush-all-connection-in-pool         test-connection-in-pool
 ----
 +
-. Enter the username `penny' and password `penny1'. This role was previously assigned to `Monitor' role.
+Note that all commands and attributes, even those not permitted for Monitor role, are shown.
 +
 . Try to add a new data source using the following command:
 +
@@ -273,9 +282,40 @@ JBAS013456: Unauthorized to execute operation 'add' for resource '[
 +
 This is because `Monitor' role does not have permission to add data sources.
 +
+. Type `exit` or `quit` to exit out of CLI console.
++
+. Edit `bin/jboss-cli.xml` and change the following element:
++
+[source]
+----
+<access-control>false</access-control>
+----
++
+to
++
+[source]
+----
+<access-control>true</access-control>
+----
++
+This element filter out the command and attribute suggestions displayed based on user's permissions.
++
+. Connect using `jboss-cli' using the following command:
++
+[source]
+----
+./bin/jboss-cli.sh --user=penny --password=penny1 -c
+----
++
+. Type `data-source` on the CLI console and TAB to see the following output:
++
+[source]
+----
+[standalone@localhost:9990 /] data-source
+--help         --name=        read-resource
+----
++
+Note that only permitted commands and attributes are shown.
++
 TIP: Try some other commands and see which ones are accessible or not.
-
-What is the purpose ?? jboss-cli.xml <access-control> Does not suggest commands that will not work
-
-
 

@@ -382,8 +382,8 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <div id="header">
 <h1>WildFly 8 Hands-on Lab</h1>
 <span id="author" class="author">Arun Gupta</span><br>
-<span id="revnumber">version 0.2,</span>
-<span id="revdate">Jan 10, 2014</span>
+<span id="revnumber">version 0.3,</span>
+<span id="revdate">Jan 17, 2014</span>
 <div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
@@ -2396,28 +2396,38 @@ Groups, and thus all users in that group, can be assigned one or more roles by c
 <div class="paragraph">
 <p>CLI or &#8216;jboss-cli&#8217; can authenticate against local WildFly without prompting the user for a username and password. This mechanism only works if the user running the CLI has read access to the &#8220;standalone/tmp/auth&#8221; directory or &#8220;domain/tmp/auth&#8221; folder under the respective WildFly installation. If the local mechanism fails then the CLI will fallback to prompting for a username and password.</p>
 </div>
+<div class="paragraph">
+<p>Alternatively authentication can be forced by explicitly specifying <code>user</code> and <code>password</code> options.</p>
+</div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Rename &#8216;standalone/tmp/auth&#8217; folder to something else by giving the command:</p>
+<p>Connect using &#8216;jboss-cli&#8217; using the following command:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mv standalone/tmp/auth standalone/tmp/auth2</code></pre>
+<pre class="highlight"><code>jboss-cli.sh --user=penny --password=penny1 -c</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Note that the user &#8216;penny&#8217; is in Monitor role.</p>
 </div>
 </li>
 <li>
-<p>Connecting using &#8216;jboss-cli&#8217; prompts the following message:</p>
+<p>Type <code>data-source</code> on the CLI console and TAB to see the following output:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>jboss-cli.sh -c
-Authenticating against security realm: ManagementRealm
-Username:</code></pre>
+<pre class="highlight"><code>[standalone@localhost:9990 /] data-source
+--help                               flush-gracefully-connection-in-pool
+--name=                              flush-idle-connection-in-pool
+add                                  flush-invalid-connection-in-pool
+disable                              read-resource
+enable                               remove
+flush-all-connection-in-pool         test-connection-in-pool</code></pre>
 </div>
 </div>
-</li>
-<li>
-<p>Enter the username &#8216;penny&#8217; and password &#8216;penny1&#8217;. This role was previously assigned to &#8216;Monitor&#8217; role.</p>
+<div class="paragraph">
+<p>Note that all commands and attributes, even those not permitted for Monitor role, are shown.</p>
+</div>
 </li>
 <li>
 <p>Try to add a new data source using the following command:</p>
@@ -2440,6 +2450,48 @@ Username:</code></pre>
 <div class="paragraph">
 <p>This is because &#8216;Monitor&#8217; role does not have permission to add data sources.</p>
 </div>
+</li>
+<li>
+<p>Type <code>exit</code> or <code>quit</code> to exit out of CLI console.</p>
+</li>
+<li>
+<p>Edit <code>bin/jboss-cli.xml</code> and change the following element:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;access-control&gt;false&lt;/access-control&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>to</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;access-control&gt;true&lt;/access-control&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This element filter out the command and attribute suggestions displayed based on user&#8217;s permissions.</p>
+</div>
+</li>
+<li>
+<p>Connect using &#8216;jboss-cli&#8217; using the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>./bin/jboss-cli.sh --user=penny --password=penny1 -c</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Type <code>data-source</code> on the CLI console and TAB to see the following output:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] data-source
+--help         --name=        read-resource</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that only permitted commands and attributes are shown.</p>
+</div>
 <div class="admonitionblock tip">
 <table>
 <tr>
@@ -2454,9 +2506,6 @@ Try some other commands and see which ones are accessible or not.
 </div>
 </li>
 </ol>
-</div>
-<div class="paragraph">
-<p>What is the purpose ?? jboss-cli.xml &lt;access-control&gt; Does not suggest commands that will not work</p>
 </div>
 </div>
 </div>
@@ -2619,8 +2668,8 @@ Try some other commands and see which ones are accessible or not.
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.2<br>
-Last updated 2014-01-15 16:28:00 EST
+Version 0.3<br>
+Last updated 2014-01-17 16:36:50 PST
 </div>
 </div>
 </body>
