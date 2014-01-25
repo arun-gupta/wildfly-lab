@@ -2,9 +2,9 @@
 
 WildFly 8 (nee JBoss Application Server 7) is a lightweight, flexible, Java EE 7 compliant, polyglot, and open source application server.
 
-This self-paced hands-on lab gets you introduced to the basic features of WildFly 8.
+This self-paced hands-on lab gets you introduced to the basic administrative features of WildFly 8. A comprehensive lab that covers Java EE 7 development using WildFly is available at: https://github.com/javaee-samples/javaee7-hol.
 
-NOTE: This document is a work in progress.
+NOTE: This document is a work in progress. The latest version of this document is available at http://github.com/arun-gupta/wildfly-lab. Please send pull requests to contribute or file issues.
 
 === Getting Started
 

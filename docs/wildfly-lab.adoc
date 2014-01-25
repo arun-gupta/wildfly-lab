@@ -1,6 +1,6 @@
-:revnumber: 0.3
+:revnumber: 0.5
 :author: Arun Gupta
-:revdate: Jan 17, 2014
+:revdate: Jan 24, 2014
 :toc:
 :toclevels: 3
 
@@ -16,21 +16,21 @@ include::chapters/rbac.adoc[]
 
 include::chapters/auditlog.adoc[]
 
-include::chapters/clustering.adoc[]
+//include::chapters/clustering.adoc[]
 
-include::chapters/logging.adoc[]
+//include::chapters/logging.adoc[]
 
-include::chapters/undertow.adoc[]
+//include::chapters/undertow.adoc[]
 
-include::chapters/realms.adoc[]
+//include::chapters/realms.adoc[]
 
-include::chapters/jboss-modules.adoc[]
+//include::chapters/jboss-modules.adoc[]
 
-include::chapters/jruby.adoc[]
+//include::chapters/jruby.adoc[]
 
-include::chapters/forge.adoc[]
+//include::chapters/forge.adoc[]
 
-include::chapters/arquillian.adoc[]
+//include::chapters/arquillian.adoc[]
 
 include::chapters/acks.adoc[]
 

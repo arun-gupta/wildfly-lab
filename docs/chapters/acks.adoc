@@ -6,4 +6,5 @@ The following JBoss community members graciously reviewed and contributed to thi
 
 Thank you very much for providing the valuable feedback!
 
+Please send pull requests at http://github.com/arun-gupta/wildfly-lab to contribute or file issues.
 

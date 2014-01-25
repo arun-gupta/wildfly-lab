@@ -6,37 +6,129 @@ Make sure to start a WildFly standalone instance for each sub-section unless sta
 
 [source]
 ----
-./bin/standalone.sh
+standalone.sh
 ----
 
 === File system
 
 Deploying archives such as war, ear, and rar files using file system is as simple as copying to `standalone/deployments` directory. The deployment can be configured for auto-deploy or manual mode.
 
-*Purpose*: This section explains how to auto-deploy a Java EE 7 application to WildFly using filesystem commands.
+*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using filesystem commands.
 
-Any archive can be placed in `standalone/deployments` directory and is automatically deployed to the server.This is the default behavior.
+Any archive can be placed in `standalone/deployments` directory and is automatically deployed to the server. This is the default behavior.
 
-CAUTION: This deployment mode is only intended to be used during development phase. Other modes are recommended if running production systems.
+CAUTION: This deployment mode is only intended to be used during development phase. Managed domain mode is recommended if running production systems.
 
-Copy the war file to `standalone/deployments` directory using the following command:
-
+. Download a Java EE 7 sample application from ADD LINK.
++
+. Copy the war file to `standalone/deployments` directory using the following command:
++
 [source]
 ----
 cp target/javaee7-1.0-SNAPSHOT.war /Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/deployments
 ----
-
-Verify the deployed application by accessing the webpage http://localhost:8080/javaee7-1.0-SNAPSHOT/EmployeeList and see the output as:
-
++
+. Verify the deployed application by accessing the webpage http://localhost:8080/javaee7-1.0-SNAPSHOT/EmployeeList and see the output as:
++
 image::images/deploy-javaee7-sample-output.png[Java EE 7 Sample Application Output]
 
-=== Command Line Interface
+=== Administration Console
 
-*Purpose*: This section discusses different ways to deploy an application to WildFly using Command Line Interface.
+The Admin Console is a web-based administration console and available at http://localhost:9990/console.
 
-==== jboss-cli
+*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using web-based Administration Console.
 
-`bin/jboss-cli.sh` or `bin/jboss-cli.bat` is Command Line Interface management tool for a standalone server or a managed domain. It allows a user to connect to a standalone server or domain controller and execute management operations.
+. A new user in the management realm needs to be added before the admin console can be accessed.
++
+A new user can be added in the management realm using `add-user.sh` script. This can be done non-interactively by giving the following command:
++
+[source]
+----
+add-user.sh -u sheldon -p bazinga
+----
++
+The output of the command looks like:
++
+[source]
+----
+Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
+Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
+----
++
+The directory names `standalone' and `domain' indicate that the user is added to both standalone instance and managed domain. The file name indicates that it is added to the management realm.
++
+TIP: A user can be added to application realm by including `-a` switch.
++
+Alternatively, the user can be added interactively by invoking the script and entering the values on the prompt as shown:
++
+[source]
+----
+add-user.sh
+
+What type of user do you wish to add? 
+ a) Management User (mgmt-users.properties) 
+ b) Application User (application-users.properties)
+(a): <take default>
+
+Enter the details of the new user to add.
+Using realm 'ManagementRealm' as discovered from the existing property files.
+Username : <sheldon>
+Password requirements are listed below. To modify these restrictions edit the add-user.properties configuration file.
+ - The password must not be one of the following restricted values {root, admin, administrator}
+ - The password must contain at least 8 characters, 1 alphanumeric character(s), 1 digit(s), 1 non-alphanumeric symbol(s)
+ - The password must be different from the username
+Password : <bazinga>
+JBAS015269: Password must have at least 8 characters!
+Are you sure you want to use the password entered yes/no? <yes>
+Re-enter Password : <bazinga>
+What groups do you want this user to belong to? (Please enter a comma separated list, or leave blank for none)[  ]: 
+About to add user 'sheldon' for realm 'ManagementRealm'
+Is this correct yes/no? <yes>
+Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
+Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
+Added user 'sheldon' with groups  to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-groups.properties'
+Added user 'sheldon' with groups  to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-groups.properties'
+Is this new user going to be used for one AS process to connect to another AS process? 
+e.g. for a slave host controller connecting to the master or for a Remoting connection for server to server EJB calls.
+yes/no? <no>
+----
++
+Now accessing the console at http://localhost:9990/console prompts for a username and password. Enter the username `sheldon' and password `bazinga' and then the console is shown as:
++
+image::images/deploy-admin-console.png[Admin Console]
++
+The added user can be disabled by giving the following command:
++
+[source]
+----
+add-user.sh -u sheldon -d
+----
++
+TIP: User can be deleted by deleting the corresponding line from `domain/configuration/mgmt-users.properties` and `standalone/configuration/mgmt-users.properties` files.
++
+. Click on `Manage Deployments' to see the output as:
++
+image::images/deploy-admin-console-deployments-first.png[Admin Console Deployments]
++
+. Click on `Add' button to see:
++
+image::images/deploy-admin-console-add-first.png[Add a Deployment]
++
+. Click on `Choose File' button and select the war file.
++
+Click on `Next >>' button. Take the defaults and click `Save'.
++
+. By default the application is not enabled and the console shows:
++
+image::images/deploy-enable-disable-app.png[En/Disable Button]
++
+Click on `En/Disable' button, click on `Confirm' and now the app is ready to be used. Access the application http://localhost:8080/javaee7-1.0-SNAPSHOT.war/EmployeeList.
+
+=== Command Line Interface (jboss-cli)
+
+*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using jboss-cli.
+
+`jboss-cli.sh` or `jboss-cli.bat` is Command Line Interface management tool for a standalone server or a managed domain. It allows a user to connect to a standalone server or domain controller and execute management operations.
 
 More details about using jboss-cli for managing the server are available in <<jboss-cli>>.
 
@@ -44,7 +136,7 @@ More details about using jboss-cli for managing the server are available in <<jb
 
 `jboss-cli' can be used to deploy applications using the interactive console or in a non-interactive manner.
 
-===== Interactive
+==== Interactive
 
 . Use jboss-cli to connect with the existing standalone instance by giving the following command:
 +
@@ -53,7 +145,7 @@ More details about using jboss-cli for managing the server are available in <<jb
 jboss-cli.sh -c
 ----
 +
-The `-c` switch connects using the default host (`localhost') and management port (`9990'). These values are specified in `bin/jboss-cli.xml' and can be updated.
+The `-c` switch connects using the default host (`localhost') and management port (`9990'). These values are specified in `jboss-cli.xml' and can be updated.
 +
 This opens up the `jboss-cli' interactive console and shows the following prompt:
 +
@@ -101,7 +193,7 @@ undeploy javaee7-1.0-SNAPSHOT.war
 +
 . Type `exit` `quit' to exit `jboss-cli' interactive console.
 
-===== Non-interactive
+==== Non-interactive
 
 Non-interactive mode allows to support scripts and other types of command line or batch processing.
 
@@ -120,17 +212,17 @@ Verify the deployed application at http://localhost:8080/javaee7/EmployeeList an
 +
 [source]
 ----
-./bin/jboss-cli.sh --connect --command=deployment-info
+jboss-cli.sh --connect --command=deployment-info
 ----
 +
 . Undeploy the application by giving the following command:
 +
 [source]
 ----
-./bin/jboss-cli.sh --connect --command="undeploy javaee7-1.0-SNAPSHOT.war"
+jboss-cli.sh --connect --command="undeploy javaee7-1.0-SNAPSHOT.war"
 ----
 
-==== Curl
+=== Curl
 
 curl is a free and popular command line tool for transfering data using URL syntax. If you don't have it installed on your machine then it can be downloaded from http://curl.haxx.se/download.html.
 
@@ -142,14 +234,14 @@ Deploying applications using curl is a two-step process.
 +
 [source]
 ----
-curl -F "file=@target/javaee7-1.0-SNAPSHOT.war" --digest http://u1:p1@localhost:9990/management/add-content
+curl -F "file=@target/javaee7-1.0-SNAPSHOT.war" --digest http://sheldon:bazinga@localhost:9990/management/add-content
 ----
 +
 This command:
 +
 .. Makes a POST request using form-encoded (`-F`) data with one field (`file`) defining the location of the WAR file
 .. `target/javaee7-1.0-SNAPSHOT.war` is the location of the WAR file
-.. `u1` is the administrative user with password `p1`
+.. `sheldon` is the administrative user with password `bazinga`
 .. `localhost:9090` is the default management host and port for WildFly instance
 .. WildFly management port uses digest authentication and that is defined using `–digest`
 .. Prints the output as something like:
@@ -163,115 +255,25 @@ This command:
 +
 [source]
 ----
-curl -S -H "Content-Type: application/json" -d '{"content":[{"hash": {"BYTES_VALUE" : "+Dg9u1ALXacrndNdLrT3DQSaqjw="}}], "address": [{"deployment":"javaee7-1.0-SNAPSHOT.war"}], "operation":"add", "enabled":"true"}' --digest http://u1:p1@localhost:9990/management
+curl -S -H "Content-Type: application/json" -d '{"content":[{"hash": {"BYTES_VALUE" : "+Dg9u1ALXacrndNdLrT3DQSaqjw="}}], "address": [{"deployment":"javaee7-1.0-SNAPSHOT.war"}], "operation":"add", "enabled":"true"}' --digest http://sheldon:bazinga@localhost:9990/management
 ----
 +
 This command:
 +
 .. Sends a POST request (`-d`) with JSON payload
-.. The value assigned to `result` name in the JSON response of previous command is used in this command
-.. Content type of the payload is explicitly specified to be `application/json`
+.. Value assigned to `result` name in the JSON response of previous command is assigned to `hash` name in this command
+.. Content type of the payload is explicitly specified to be `application/json` using `-H`
 .. `add` command triggers the deployment of the archive
 .. Application archive is enabled as well, as opposed to not by default
-.. As in previous command, `u1` is the administrative user with password `p1`
+.. As in previous command, `sheldon` is the administrative user with password `bazinga`
 .. As in previous command, `localhost:9090` is the default management host and port for WildFly instance
 .. As in previous command, WildFly management port uses digest authentication and that is defined using `–digest`
 
-==== HTTP APIs (TBD)
+=== HTTP APIs (TBD)
 
 http://localhost:9990/management?operation=deploy
 
 *Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using HTTP API.
-
-=== Admin Console
-
-The Admin Console is a web-based administration console and available at http://localhost:9990/console.
-
-*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using web-based Administration Console.
-
-. A new user in the management realm needs to be added before the admin console can be accessed.
-+
-A new user can be added in the management realm using `bin/add-user.sh` script. This can be done non-interactively by giving the following command:
-+
-[source]
-----
-./bin/add-user.sh -u sheldon -p bazinga
-----
-+
-The output of the command looks like:
-+
-[source]
-----
-Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
-Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
-----
-+
-The directory names `standalone' and `domain' indicate that the user is added to both standalone instance and managed domain. The file name indicates that it is added to the management realm.
-+
-TIP: A user can be added to application realm by including `-a` switch.
-+
-Alternatively, the user can be added interactively by invoking the script and entering the values on the prompt as shown:
-+
-[source]
-----
-./bin/add-user.sh
-
-What type of user do you wish to add? 
- a) Management User (mgmt-users.properties) 
- b) Application User (application-users.properties)
-(a):
-
-Enter the details of the new user to add.
-Using realm 'ManagementRealm' as discovered from the existing property files.
-Username : sheldon
-Password requirements are listed below. To modify these restrictions edit the add-user.properties configuration file.
- - The password must not be one of the following restricted values {root, admin, administrator}
- - The password must contain at least 8 characters, 1 alphanumeric character(s), 1 digit(s), 1 non-alphanumeric symbol(s)
- - The password must be different from the username
-Password : baz1ngaa!
-Re-enter Password : baz1ngaa!
-What groups do you want this user to belong to? (Please enter a comma separated list, or leave blank for none)[  ]: 
-About to add user 'sheldon' for realm 'ManagementRealm'
-Is this correct yes/no? *yes*
-Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
-Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
-Added user 'sheldon' with groups  to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-groups.properties'
-Added user 'sheldon' with groups  to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-groups.properties'
-Is this new user going to be used for one AS process to connect to another AS process? 
-e.g. for a slave host controller connecting to the master or for a Remoting connection for server to server EJB calls.
-yes/no? no
-----
-+
-Now accessing the console at http://localhost:9990/console prompts for a username and password. Enter the username `sheldon' and password `bazinga' and then the console is shown as:
-+
-image::images/deploy-admin-console.png[Admin Console]
-+
-The added user can be disabled by giving the following command:
-+
-[source]
-----
-./bin/add-user.sh -u sheldon -d
-----
-+
-TIP: User can be deleted by deleting the corresponding line from `domain/configuration/mgmt-users.properties` and `standalone/configuration/mgmt-users.properties` files.
-+
-. Click on `Manage Deployments' to see the output as:
-+
-image::images/deploy-admin-console-deployments-first.png[Admin Console Deployments]
-+
-. Click on `Add' button to see:
-+
-image::images/deploy-admin-console-add-first.png[Add a Deployment]
-+
-. Click on `Choose File' button and select the war file.
-+
-Click on `Next >>' button. Take the defaults and click `Save'.
-+
-. By default the application is not enabled and the console shows:
-+
-image::images/deploy-enable-disable-app.png[En/Disable Button]
-+
-Click on `En/Disable' button, click on `Confirm' and now the app is ready to be used. Access the application http://localhost:8080/javaee7-1.0-SNAPSHOT.war/EmployeeList.
 
 === Maven plugin
 
@@ -305,7 +307,7 @@ This adds the `wildfly-maven-plugin' description to `pom.xml'. It also invokes t
 +
 [source]
 ----
-./bin/standalone.sh
+standalone.sh
 ----
 +
 . Deploy the application by giving the command:
@@ -328,6 +330,12 @@ image::images/deploy-javaee7-sample-output.png[Java EE 7 Sample Application Outp
 
 === Java (TBD)
 
+*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using Management APIs.
+
 === Ruby (TBD)
 
+*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using Ruby.
+
 === Perl (TBD)
+
+*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using Perl.

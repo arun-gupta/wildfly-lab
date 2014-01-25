@@ -382,8 +382,8 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <div id="header">
 <h1>WildFly 8 Hands-on Lab</h1>
 <span id="author" class="author">Arun Gupta</span><br>
-<span id="revnumber">version 0.3,</span>
-<span id="revdate">Jan 17, 2014</span>
+<span id="revnumber">version 0.5,</span>
+<span id="revdate">Jan 24, 2014</span>
 <div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
@@ -404,19 +404,20 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li>
 <ul class="sectlevel2">
 <li><a href="#_file_system">2.1. File system</a></li>
-<li><a href="#_command_line_interface">2.2. Command Line Interface</a></li>
+<li><a href="#_administration_console">2.2. Administration Console</a></li>
+<li><a href="#_command_line_interface_jboss_cli">2.3. Command Line Interface (jboss-cli)</a></li>
 <li>
 <ul class="sectlevel3">
-<li><a href="#_jboss_cli">2.2.1. jboss-cli</a></li>
-<li><a href="#_curl">2.2.2. Curl</a></li>
-<li><a href="#_http_apis_tbd">2.2.3. HTTP APIs (TBD)</a></li>
+<li><a href="#_interactive">2.3.1. Interactive</a></li>
+<li><a href="#_non_interactive">2.3.2. Non-interactive</a></li>
 </ul>
 </li>
-<li><a href="#_admin_console">2.3. Admin Console</a></li>
-<li><a href="#_maven_plugin">2.4. Maven plugin</a></li>
-<li><a href="#_java_tbd">2.5. Java (TBD)</a></li>
-<li><a href="#_ruby_tbd">2.6. Ruby (TBD)</a></li>
-<li><a href="#_perl_tbd">2.7. Perl (TBD)</a></li>
+<li><a href="#_curl">2.4. Curl</a></li>
+<li><a href="#_http_apis_tbd">2.5. HTTP APIs (TBD)</a></li>
+<li><a href="#_maven_plugin">2.6. Maven plugin</a></li>
+<li><a href="#_java_tbd">2.7. Java (TBD)</a></li>
+<li><a href="#_ruby_tbd">2.8. Ruby (TBD)</a></li>
+<li><a href="#_perl_tbd">2.9. Perl (TBD)</a></li>
 </ul>
 </li>
 <li><a href="#jboss-cli">3. Management using Command Line Interface (jboss-cli)</a></li>
@@ -464,35 +465,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_logging_json_records_to_file">5.2. Logging JSON records to file</a></li>
 </ul>
 </li>
-<li><a href="#clustering">6. Clustering, Replication and Failover</a></li>
-<li>
-<ul class="sectlevel2">
-<li><a href="#_http">6.1. HTTP</a></li>
-<li><a href="#_ejb">6.2. EJB</a></li>
-</ul>
-</li>
-<li><a href="#_configure_logging">7. Configure Logging</a></li>
-<li><a href="#_undertow">8. Undertow</a></li>
-<li>
-<ul class="sectlevel2">
-<li><a href="#_simple_http">8.1. Simple HTTP</a></li>
-<li><a href="#_servlet">8.2. Servlet</a></li>
-<li><a href="#_websocket">8.3. WebSocket</a></li>
-<li><a href="#_server_container_initializer">8.4. Server Container Initializer</a></li>
-</ul>
-</li>
-<li><a href="#_realms">9. Realms</a></li>
-<li>
-<ul class="sectlevel2">
-<li><a href="#_jdbc">9.1. JDBC</a></li>
-<li><a href="#_security">9.2. Security</a></li>
-</ul>
-</li>
-<li><a href="#_jboss_modules">10. JBoss Modules</a></li>
-<li><a href="#_jruby_on_rails">11. JRuby-on-Rails</a></li>
-<li><a href="#_forge">12. Forge</a></li>
-<li><a href="#_arquillian">13. Arquillian</a></li>
-<li><a href="#_acknowledgements">14. Acknowledgements</a></li>
+<li><a href="#_acknowledgements">6. Acknowledgements</a></li>
 </ul>
 </div>
 </div>
@@ -504,7 +477,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <p>WildFly 8 (nee JBoss Application Server 7) is a lightweight, flexible, Java EE 7 compliant, polyglot, and open source application server.</p>
 </div>
 <div class="paragraph">
-<p>This self-paced hands-on lab gets you introduced to the basic features of WildFly 8.</p>
+<p>This self-paced hands-on lab gets you introduced to the basic administrative features of WildFly 8. A comprehensive lab that covers Java EE 7 development using WildFly is available at: <a href="https://github.com/javaee-samples/javaee7-hol">https://github.com/javaee-samples/javaee7-hol</a>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -513,7 +486,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <div class="title">Note</div>
 </td>
 <td class="content">
-This document is a work in progress.
+This document is a work in progress. The latest version of this document is available at <a href="http://github.com/arun-gupta/wildfly-lab">http://github.com/arun-gupta/wildfly-lab</a>. Please send pull requests to contribute or file issues.
 </td>
 </tr>
 </table>
@@ -597,7 +570,7 @@ This document is a work in progress.
 <li>
 <p>A <em>managed domain</em> that allows you to run and manage a multi-server topology and manage multiple WildFly instances from a single control point. It can be started using <code>bin/domain.sh</code> launch script on Unix-variety of machines and <code>bin/domain.bat</code> on Windows.</p>
 <div class="paragraph">
-<p>A Domain Controller is the central management control point for the collection of servers in the &#8216;domain&#8217;. More details about starting WildFly in managed domain mode, server topology and central management is explained in <a href="#clustering">Clustering, Replication and Failover</a>.</p>
+<p>A Domain Controller is the central management control point for the collection of servers in the &#8216;domain&#8217;. More details about starting WildFly in managed domain mode, server topology and central management is explained in <a href="#clustering">[clustering]</a>.</p>
 </div>
 </li>
 </ol>
@@ -693,7 +666,7 @@ This document is a work in progress.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./bin/standalone.sh</code></pre>
+<pre class="highlight"><code>standalone.sh</code></pre>
 </div>
 </div>
 <div class="sect2">
@@ -702,10 +675,10 @@ This document is a work in progress.
 <p>Deploying archives such as war, ear, and rar files using file system is as simple as copying to <code>standalone/deployments</code> directory. The deployment can be configured for auto-deploy or manual mode.</p>
 </div>
 <div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to auto-deploy a Java EE 7 application to WildFly using filesystem commands.</p>
+<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using filesystem commands.</p>
 </div>
 <div class="paragraph">
-<p>Any archive can be placed in <code>standalone/deployments</code> directory and is automatically deployed to the server.This is the default behavior.</p>
+<p>Any archive can be placed in <code>standalone/deployments</code> directory and is automatically deployed to the server. This is the default behavior.</p>
 </div>
 <div class="admonitionblock caution">
 <table>
@@ -714,37 +687,186 @@ This document is a work in progress.
 <div class="title">Caution</div>
 </td>
 <td class="content">
-This deployment mode is only intended to be used during development phase. Other modes are recommended if running production systems.
+This deployment mode is only intended to be used during development phase. Managed domain mode is recommended if running production systems.
 </td>
 </tr>
 </table>
 </div>
-<div class="paragraph">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download a Java EE 7 sample application from ADD LINK.</p>
+</li>
+<li>
 <p>Copy the war file to <code>standalone/deployments</code> directory using the following command:</p>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>cp target/javaee7-1.0-SNAPSHOT.war /Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/deployments</code></pre>
 </div>
 </div>
-<div class="paragraph">
+</li>
+<li>
 <p>Verify the deployed application by accessing the webpage <a href="http://localhost:8080/javaee7-1.0-SNAPSHOT/EmployeeList">http://localhost:8080/javaee7-1.0-SNAPSHOT/EmployeeList</a> and see the output as:</p>
-</div>
 <div class="imageblock">
 <div class="content">
 <img src="images/deploy-javaee7-sample-output.png" alt="Java EE 7 Sample Application Output">
 </div>
 </div>
+</li>
+</ol>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_command_line_interface">2.2. Command Line Interface</h3>
+<h3 id="_administration_console">2.2. Administration Console</h3>
 <div class="paragraph">
-<p><strong>Purpose</strong>: This section discusses different ways to deploy an application to WildFly using Command Line Interface.</p>
+<p>The Admin Console is a web-based administration console and available at <a href="http://localhost:9990/console">http://localhost:9990/console</a>.</p>
 </div>
-<div class="sect3">
-<h4 id="_jboss_cli">2.2.1. jboss-cli</h4>
 <div class="paragraph">
-<p><code>bin/jboss-cli.sh</code> or <code>bin/jboss-cli.bat</code> is Command Line Interface management tool for a standalone server or a managed domain. It allows a user to connect to a standalone server or domain controller and execute management operations.</p>
+<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using web-based Administration Console.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>A new user in the management realm needs to be added before the admin console can be accessed.</p>
+<div class="paragraph">
+<p>A new user can be added in the management realm using <code>add-user.sh</code> script. This can be done non-interactively by giving the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>add-user.sh -u sheldon -p bazinga</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The output of the command looks like:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
+Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The directory names &#8216;standalone&#8217; and &#8216;domain&#8217; indicate that the user is added to both standalone instance and managed domain. The file name indicates that it is added to the management realm.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+A user can be added to application realm by including <code>-a</code> switch.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Alternatively, the user can be added interactively by invoking the script and entering the values on the prompt as shown:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>add-user.sh
+
+What type of user do you wish to add?
+ a) Management User (mgmt-users.properties)
+ b) Application User (application-users.properties)
+(a): &lt;take default&gt;
+
+Enter the details of the new user to add.
+Using realm 'ManagementRealm' as discovered from the existing property files.
+Username : &lt;sheldon&gt;
+Password requirements are listed below. To modify these restrictions edit the add-user.properties configuration file.
+ - The password must not be one of the following restricted values {root, admin, administrator}
+ - The password must contain at least 8 characters, 1 alphanumeric character(s), 1 digit(s), 1 non-alphanumeric symbol(s)
+ - The password must be different from the username
+Password : &lt;bazinga&gt;
+JBAS015269: Password must have at least 8 characters!
+Are you sure you want to use the password entered yes/no? &lt;yes&gt;
+Re-enter Password : &lt;bazinga&gt;
+What groups do you want this user to belong to? (Please enter a comma separated list, or leave blank for none)[  ]:
+About to add user 'sheldon' for realm 'ManagementRealm'
+Is this correct yes/no? &lt;yes&gt;
+Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
+Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
+Added user 'sheldon' with groups  to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-groups.properties'
+Added user 'sheldon' with groups  to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-groups.properties'
+Is this new user going to be used for one AS process to connect to another AS process?
+e.g. for a slave host controller connecting to the master or for a Remoting connection for server to server EJB calls.
+yes/no? &lt;no&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Now accessing the console at <a href="http://localhost:9990/console">http://localhost:9990/console</a> prompts for a username and password. Enter the username &#8216;sheldon&#8217; and password &#8216;bazinga&#8217; and then the console is shown as:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/deploy-admin-console.png" alt="Admin Console">
+</div>
+</div>
+<div class="paragraph">
+<p>The added user can be disabled by giving the following command:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>add-user.sh -u sheldon -d</code></pre>
+</div>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+User can be deleted by deleting the corresponding line from <code>domain/configuration/mgmt-users.properties</code> and <code>standalone/configuration/mgmt-users.properties</code> files.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Click on &#8216;Manage Deployments&#8217; to see the output as:</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/deploy-admin-console-deployments-first.png" alt="Admin Console Deployments">
+</div>
+</div>
+</li>
+<li>
+<p>Click on &#8216;Add&#8217; button to see:</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/deploy-admin-console-add-first.png" alt="Add a Deployment">
+</div>
+</div>
+</li>
+<li>
+<p>Click on &#8216;Choose File&#8217; button and select the war file.</p>
+<div class="paragraph">
+<p>Click on &#8216;Next &gt;&gt;&#8217; button. Take the defaults and click &#8216;Save&#8217;.</p>
+</div>
+</li>
+<li>
+<p>By default the application is not enabled and the console shows:</p>
+<div class="imageblock">
+<div class="content">
+<img src="images/deploy-enable-disable-app.png" alt="En/Disable Button">
+</div>
+</div>
+<div class="paragraph">
+<p>Click on &#8216;En/Disable&#8217; button, click on &#8216;Confirm&#8217; and now the app is ready to be used. Access the application <a href="http://localhost:8080/javaee7-1.0-SNAPSHOT.war/EmployeeList">http://localhost:8080/javaee7-1.0-SNAPSHOT.war/EmployeeList</a>.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_command_line_interface_jboss_cli">2.3. Command Line Interface (jboss-cli)</h3>
+<div class="paragraph">
+<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using jboss-cli.</p>
+</div>
+<div class="paragraph">
+<p><code>jboss-cli.sh</code> or <code>jboss-cli.bat</code> is Command Line Interface management tool for a standalone server or a managed domain. It allows a user to connect to a standalone server or domain controller and execute management operations.</p>
 </div>
 <div class="paragraph">
 <p>More details about using jboss-cli for managing the server are available in <a href="#jboss-cli">Management using Command Line Interface (jboss-cli)</a>.</p>
@@ -755,8 +877,8 @@ This deployment mode is only intended to be used during development phase. Other
 <div class="paragraph">
 <p>&#8216;jboss-cli&#8217; can be used to deploy applications using the interactive console or in a non-interactive manner.</p>
 </div>
-<div class="sect4">
-<h5 id="_interactive">Interactive</h5>
+<div class="sect3">
+<h4 id="_interactive">2.3.1. Interactive</h4>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -767,7 +889,7 @@ This deployment mode is only intended to be used during development phase. Other
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>-c</code> switch connects using the default host (&#8216;localhost&#8217;) and management port (&#8216;9990&#8217;). These values are specified in &#8216;bin/jboss-cli.xml&#8217; and can be updated.</p>
+<p>The <code>-c</code> switch connects using the default host (&#8216;localhost&#8217;) and management port (&#8216;9990&#8217;). These values are specified in &#8216;jboss-cli.xml&#8217; and can be updated.</p>
 </div>
 <div class="paragraph">
 <p>This opens up the &#8216;jboss-cli&#8217; interactive console and shows the following prompt:</p>
@@ -838,8 +960,8 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </ol>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_non_interactive">Non-interactive</h5>
+<div class="sect3">
+<h4 id="_non_interactive">2.3.2. Non-interactive</h4>
 <div class="paragraph">
 <p>Non-interactive mode allows to support scripts and other types of command line or batch processing.</p>
 </div>
@@ -863,7 +985,7 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 <p>Verify the deployment status by giving the following command:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./bin/jboss-cli.sh --connect --command=deployment-info</code></pre>
+<pre class="highlight"><code>jboss-cli.sh --connect --command=deployment-info</code></pre>
 </div>
 </div>
 </li>
@@ -871,7 +993,7 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 <p>Undeploy the application by giving the following command:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./bin/jboss-cli.sh --connect --command="undeploy javaee7-1.0-SNAPSHOT.war"</code></pre>
+<pre class="highlight"><code>jboss-cli.sh --connect --command="undeploy javaee7-1.0-SNAPSHOT.war"</code></pre>
 </div>
 </div>
 </li>
@@ -879,8 +1001,8 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_curl">2.2.2. Curl</h4>
+<div class="sect2">
+<h3 id="_curl">2.4. Curl</h3>
 <div class="paragraph">
 <p>curl is a free and popular command line tool for transfering data using URL syntax. If you don&#8217;t have it installed on your machine then it can be downloaded from <a href="http://curl.haxx.se/download.html">http://curl.haxx.se/download.html</a>.</p>
 </div>
@@ -896,7 +1018,7 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 <p>Upload your archive to WildFly using the following command</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>curl -F "file=@target/javaee7-1.0-SNAPSHOT.war" --digest http://u1:p1@localhost:9990/management/add-content</code></pre>
+<pre class="highlight"><code>curl -F "file=@target/javaee7-1.0-SNAPSHOT.war" --digest http://sheldon:bazinga@localhost:9990/management/add-content</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -911,7 +1033,7 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 <p><code>target/javaee7-1.0-SNAPSHOT.war</code> is the location of the WAR file</p>
 </li>
 <li>
-<p><code>u1</code> is the administrative user with password <code>p1</code></p>
+<p><code>sheldon</code> is the administrative user with password <code>bazinga</code></p>
 </li>
 <li>
 <p><code>localhost:9090</code> is the default management host and port for WildFly instance</p>
@@ -934,7 +1056,7 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 <p>Deploy the uploaded archive using the following command:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>curl -S -H "Content-Type: application/json" -d '{"content":[{"hash": {"BYTES_VALUE" : "+Dg9u1ALXacrndNdLrT3DQSaqjw="}}], "address": [{"deployment":"javaee7-1.0-SNAPSHOT.war"}], "operation":"add", "enabled":"true"}' --digest http://u1:p1@localhost:9990/management</code></pre>
+<pre class="highlight"><code>curl -S -H "Content-Type: application/json" -d '{"content":[{"hash": {"BYTES_VALUE" : "+Dg9u1ALXacrndNdLrT3DQSaqjw="}}], "address": [{"deployment":"javaee7-1.0-SNAPSHOT.war"}], "operation":"add", "enabled":"true"}' --digest http://sheldon:bazinga@localhost:9990/management</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -946,10 +1068,10 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 <p>Sends a POST request (<code>-d</code>) with JSON payload</p>
 </li>
 <li>
-<p>The value assigned to <code>result</code> name in the JSON response of previous command is used in this command</p>
+<p>Value assigned to <code>result</code> name in the JSON response of previous command is assigned to <code>hash</code> name in this command</p>
 </li>
 <li>
-<p>Content type of the payload is explicitly specified to be <code>application/json</code></p>
+<p>Content type of the payload is explicitly specified to be <code>application/json</code> using <code>-H</code></p>
 </li>
 <li>
 <p><code>add</code> command triggers the deployment of the archive</p>
@@ -958,7 +1080,7 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 <p>Application archive is enabled as well, as opposed to not by default</p>
 </li>
 <li>
-<p>As in previous command, <code>u1</code> is the administrative user with password <code>p1</code></p>
+<p>As in previous command, <code>sheldon</code> is the administrative user with password <code>bazinga</code></p>
 </li>
 <li>
 <p>As in previous command, <code>localhost:9090</code> is the default management host and port for WildFly instance</p>
@@ -972,8 +1094,8 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </ol>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_http_apis_tbd">2.2.3. HTTP APIs (TBD)</h4>
+<div class="sect2">
+<h3 id="_http_apis_tbd">2.5. HTTP APIs (TBD)</h3>
 <div class="paragraph">
 <p><a href="http://localhost:9990/management?operation=deploy">http://localhost:9990/management?operation=deploy</a></p>
 </div>
@@ -981,151 +1103,8 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 <p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using HTTP API.</p>
 </div>
 </div>
-</div>
 <div class="sect2">
-<h3 id="_admin_console">2.3. Admin Console</h3>
-<div class="paragraph">
-<p>The Admin Console is a web-based administration console and available at <a href="http://localhost:9990/console">http://localhost:9990/console</a>.</p>
-</div>
-<div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using web-based Administration Console.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>A new user in the management realm needs to be added before the admin console can be accessed.</p>
-<div class="paragraph">
-<p>A new user can be added in the management realm using <code>bin/add-user.sh</code> script. This can be done non-interactively by giving the following command:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>./bin/add-user.sh -u sheldon -p bazinga</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The output of the command looks like:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
-Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The directory names &#8216;standalone&#8217; and &#8216;domain&#8217; indicate that the user is added to both standalone instance and managed domain. The file name indicates that it is added to the management realm.</p>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-A user can be added to application realm by including <code>-a</code> switch.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Alternatively, the user can be added interactively by invoking the script and entering the values on the prompt as shown:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>./bin/add-user.sh
-
-What type of user do you wish to add?
- a) Management User (mgmt-users.properties)
- b) Application User (application-users.properties)
-(a):
-
-Enter the details of the new user to add.
-Using realm 'ManagementRealm' as discovered from the existing property files.
-Username : sheldon
-Password requirements are listed below. To modify these restrictions edit the add-user.properties configuration file.
- - The password must not be one of the following restricted values {root, admin, administrator}
- - The password must contain at least 8 characters, 1 alphanumeric character(s), 1 digit(s), 1 non-alphanumeric symbol(s)
- - The password must be different from the username
-Password : baz1ngaa!
-Re-enter Password : baz1ngaa!
-What groups do you want this user to belong to? (Please enter a comma separated list, or leave blank for none)[  ]:
-About to add user 'sheldon' for realm 'ManagementRealm'
-Is this correct yes/no? *yes*
-Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-users.properties'
-Added user 'sheldon' to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-users.properties'
-Added user 'sheldon' with groups  to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/configuration/mgmt-groups.properties'
-Added user 'sheldon' with groups  to file '/Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/domain/configuration/mgmt-groups.properties'
-Is this new user going to be used for one AS process to connect to another AS process?
-e.g. for a slave host controller connecting to the master or for a Remoting connection for server to server EJB calls.
-yes/no? no</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Now accessing the console at <a href="http://localhost:9990/console">http://localhost:9990/console</a> prompts for a username and password. Enter the username &#8216;sheldon&#8217; and password &#8216;bazinga&#8217; and then the console is shown as:</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="images/deploy-admin-console.png" alt="Admin Console">
-</div>
-</div>
-<div class="paragraph">
-<p>The added user can be disabled by giving the following command:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight"><code>./bin/add-user.sh -u sheldon -d</code></pre>
-</div>
-</div>
-<div class="admonitionblock tip">
-<table>
-<tr>
-<td class="icon">
-<div class="title">Tip</div>
-</td>
-<td class="content">
-User can be deleted by deleting the corresponding line from <code>domain/configuration/mgmt-users.properties</code> and <code>standalone/configuration/mgmt-users.properties</code> files.
-</td>
-</tr>
-</table>
-</div>
-</li>
-<li>
-<p>Click on &#8216;Manage Deployments&#8217; to see the output as:</p>
-<div class="imageblock">
-<div class="content">
-<img src="images/deploy-admin-console-deployments-first.png" alt="Admin Console Deployments">
-</div>
-</div>
-</li>
-<li>
-<p>Click on &#8216;Add&#8217; button to see:</p>
-<div class="imageblock">
-<div class="content">
-<img src="images/deploy-admin-console-add-first.png" alt="Add a Deployment">
-</div>
-</div>
-</li>
-<li>
-<p>Click on &#8216;Choose File&#8217; button and select the war file.</p>
-<div class="paragraph">
-<p>Click on &#8216;Next &gt;&gt;&#8217; button. Take the defaults and click &#8216;Save&#8217;.</p>
-</div>
-</li>
-<li>
-<p>By default the application is not enabled and the console shows:</p>
-<div class="imageblock">
-<div class="content">
-<img src="images/deploy-enable-disable-app.png" alt="En/Disable Button">
-</div>
-</div>
-<div class="paragraph">
-<p>Click on &#8216;En/Disable&#8217; button, click on &#8216;Confirm&#8217; and now the app is ready to be used. Access the application <a href="http://localhost:8080/javaee7-1.0-SNAPSHOT.war/EmployeeList">http://localhost:8080/javaee7-1.0-SNAPSHOT.war/EmployeeList</a>.</p>
-</div>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_maven_plugin">2.4. Maven plugin</h3>
+<h3 id="_maven_plugin">2.6. Maven plugin</h3>
 <div class="paragraph">
 <p>The wildfly-maven-plugin is used to deploy, redeploy, undeploy or run your application. You can also deploy or undeploy artifacts, such as JDBC drivers, and add or remove resources. There is also the ability to execute CLI commands.</p>
 </div>
@@ -1164,7 +1143,7 @@ User can be deleted by deleting the corresponding line from <code>domain/configu
 <p>Start a WildFly instance as:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>./bin/standalone.sh</code></pre>
+<pre class="highlight"><code>standalone.sh</code></pre>
 </div>
 </div>
 </li>
@@ -1196,16 +1175,22 @@ User can be deleted by deleting the corresponding line from <code>domain/configu
 </div>
 </div>
 <div class="sect2">
-<h3 id="_java_tbd">2.5. Java (TBD)</h3>
-
+<h3 id="_java_tbd">2.7. Java (TBD)</h3>
+<div class="paragraph">
+<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using Management APIs.</p>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_ruby_tbd">2.6. Ruby (TBD)</h3>
-
+<h3 id="_ruby_tbd">2.8. Ruby (TBD)</h3>
+<div class="paragraph">
+<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using Ruby.</p>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_perl_tbd">2.7. Perl (TBD)</h3>
-
+<h3 id="_perl_tbd">2.9. Perl (TBD)</h3>
+<div class="paragraph">
+<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using Perl.</p>
+</div>
 </div>
 </div>
 </div>
@@ -1896,7 +1881,7 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 <p>Role Based Access Control (RBAC) is the ability to restrict access to system or certain portions of it to authorized users. For JBoss AS 7.x, the web-based administrative console had an all-or-nothing approach. This means user authenticated with management security realm will have all the privileges. This may not be appropriate for mission-critical deployments and a finer-grained control may be required. WildFly 8 introduces RBAC using different roles.</p>
 </div>
 <div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to configure RBAC for WildFly 8.</p>
+<p><strong>Purpose</strong>: This section explains how to configure and use RBAC for WildFly.</p>
 </div>
 <div class="paragraph">
 <p>There are seven pre-defined roles in two different categories. First four roles are where users are locked out of sensitive data and the next three level roles where users are allowed to deal with sensitive data.</p>
@@ -2787,129 +2772,47 @@ Try some other commands and see which ones are accessible or not.
 }</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Similarly deploying an application as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>[standalone@localhost:9990 /] deploy javaee7-1.0-SNAPSHOT.war --force</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>shows the following audit log record:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>{
+    "type" : "core",
+    "r/o" : false,
+    "booting" : false,
+    "version" : "8.0.0.Final-SNAPSHOT",
+    "user" : "sheldon",
+    "domainUUID" : null,
+    "access" : "NATIVE",
+    "remote-address" : "127.0.0.1/127.0.0.1",
+    "success" : true,
+    "ops" : [{
+        "operation" : "full-replace-deployment",
+        "name" : "javaee7-1.0-SNAPSHOT.war",
+        "content" : [{"input-stream-index" : 0}],
+        "operation-headers" : {
+            "caller-type" : "user",
+            "access-mechanism" : "NATIVE"
+        },
+        "address" : null
+    }]
+}</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="clustering">6. Clustering, Replication and Failover</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Domains can span multiple physical (or virtual) machines with all WildFly instances on a given host under the control of a Host Controller process. The Host Controllers interact with the Domain Controller to control the lifecycle of the WildFly instances running on that host and to assist the Domain Controller in managing them.</p>
-</div>
-<div class="sect2">
-<h3 id="_http">6.1. HTTP</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_ejb">6.2. EJB</h3>
-
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_configure_logging">7. Configure Logging</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>WildFly provides comprehensive logging output from different subsystems. User applications can also leverage the same framework to generate logging output.</p>
-</div>
-<div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to use and configure logging in WildFly.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Change log levels of existing subsystems</p>
-</li>
-<li>
-<p>Change logging format of existing logger</p>
-</li>
-<li>
-<p>Create custom logger</p>
-</li>
-<li>
-<p>Where to copy custom logging handler ? (class loading)</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_undertow">8. Undertow</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>Undertow is the default web server in the Wildfly Application Server.</p>
-</div>
-<div class="paragraph">
-<p>Undertow is a flexible performant web server written in java, providing both blocking and non-blocking API’s based on NIO.</p>
-</div>
-<div class="paragraph">
-<p>Undertow has a composition based architecture that allows you to build a web server by combining small single purpose handlers. The gives you the flexibility to choose between a full Java EE servlet 3.1 container, or a low level non-blocking handler, to anything in between.</p>
-</div>
-<div class="paragraph">
-<p>Undertow is designed to be fully embeddable, with easy to use fluent builder APIs. Undertow’s lifecycle is completely controlled by the embeding application.</p>
-</div>
-<div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to build applications using Undertow.</p>
-</div>
-<div class="sect2">
-<h3 id="_simple_http">8.1. Simple HTTP</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_servlet">8.2. Servlet</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_websocket">8.3. WebSocket</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_server_container_initializer">8.4. Server Container Initializer</h3>
-
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_realms">9. Realms</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_jdbc">9.1. JDBC</h3>
-
-</div>
-<div class="sect2">
-<h3 id="_security">9.2. Security</h3>
-
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_jboss_modules">10. JBoss Modules</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>JBoss Modules is a standalone implementation of a modular (non-hierarchical) class loading and execution environment for Java.</p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_jruby_on_rails">11. JRuby-on-Rails</h2>
-<div class="sectionbody">
-
-</div>
-</div>
-<div class="sect1">
-<h2 id="_forge">12. Forge</h2>
-<div class="sectionbody">
-
-</div>
-</div>
-<div class="sect1">
-<h2 id="_arquillian">13. Arquillian</h2>
-<div class="sectionbody">
-
-</div>
-</div>
-<div class="sect1">
-<h2 id="_acknowledgements">14. Acknowledgements</h2>
+<h2 id="_acknowledgements">6. Acknowledgements</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The following JBoss community members graciously reviewed and contributed to this hands-on lab:</p>
@@ -2924,13 +2827,16 @@ Try some other commands and see which ones are accessible or not.
 <div class="paragraph">
 <p>Thank you very much for providing the valuable feedback!</p>
 </div>
+<div class="paragraph">
+<p>Please send pull requests at <a href="http://github.com/arun-gupta/wildfly-lab">http://github.com/arun-gupta/wildfly-lab</a> to contribute or file issues.</p>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 0.3<br>
-Last updated 2014-01-17 16:36:50 PST
+Version 0.5<br>
+Last updated 2014-01-24 19:12:11 EST
 </div>
 </div>
 </body>

@@ -2,7 +2,7 @@
 
 Role Based Access Control (RBAC) is the ability to restrict access to system or certain portions of it to authorized users. For JBoss AS 7.x, the web-based administrative console had an all-or-nothing approach. This means user authenticated with management security realm will have all the privileges. This may not be appropriate for mission-critical deployments and a finer-grained control may be required. WildFly 8 introduces RBAC using different roles.
 
-*Purpose*: This section explains how to configure RBAC for WildFly 8.
+*Purpose*: This section explains how to configure and use RBAC for WildFly.
 
 There are seven pre-defined roles in two different categories. First four roles are where users are locked out of sensitive data and the next three level roles where users are allowed to deal with sensitive data.
 
