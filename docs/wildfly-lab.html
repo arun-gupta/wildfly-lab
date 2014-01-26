@@ -415,7 +415,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_curl">2.4. Curl</a></li>
 <li><a href="#_http_apis_tbd">2.5. HTTP APIs (TBD)</a></li>
 <li><a href="#_maven_plugin">2.6. Maven plugin</a></li>
-<li><a href="#_java_tbd">2.7. Java (TBD)</a></li>
+<li><a href="#_java">2.7. Java</a></li>
 <li><a href="#_ruby_tbd">2.8. Ruby (TBD)</a></li>
 <li><a href="#_perl_tbd">2.9. Perl (TBD)</a></li>
 </ul>
@@ -1175,9 +1175,127 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </div>
 </div>
 <div class="sect2">
-<h3 id="_java_tbd">2.7. Java (TBD)</h3>
+<h3 id="_java">2.7. Java</h3>
 <div class="paragraph">
 <p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using Management APIs.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a Java class and name it <code>MyDeployer</code>.</p>
+</li>
+<li>
+<p>In that Java class, create a method as shown:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>ModelControllerClient createClient(final InetAddress host, final int port,
+            final String username, final String password) {
+
+   final CallbackHandler callbackHandler = new CallbackHandler() {
+
+       @Override
+       public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+           for (Callback current : callbacks) {
+               if (current instanceof NameCallback) {
+                   NameCallback ncb = (NameCallback) current;
+                   ncb.setName(username);
+               } else if (current instanceof PasswordCallback) {
+                   PasswordCallback pcb = (PasswordCallback) current;
+                   pcb.setPassword(password.toCharArray());
+               } else {
+                   throw new UnsupportedCallbackException(current);
+               }
+           }
+       }
+    };
+
+    return ModelControllerClient.Factory.create(host, port, callbackHandler);
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this code:</p>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p><code>ModelControllerClient</code> is client for an application server management model controller.</p>
+</li>
+<li>
+<p>A new instance is created by specifying host, port, and a Callback handler to obtain authentication information for the call.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Add another method to this class as:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>private void deploy() throws IOException, InterruptedException, ExecutionException {
+    // create client
+    ModelControllerClient client = createClient(InetAddress.getByName("localhost"),
+        9999,
+        "sheldon",
+        "bazinga");.
+.
+    // connect
+    ServerDeploymentManager manager = ServerDeploymentManager.Factory.create(client);
+
+    // build a deployment plan
+    DeploymentPlan plan = manager
+        .newDeploymentPlan()
+        .add(new File("/Users/arungupta/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war"))
+        .andDeploy()
+        .build();
+
+    // run it
+    ServerDeploymentPlanResult result = manager.execute(plan).get();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Deployment, as earlier, is a two-step process. First step require to upload the archive to content repository. Second step involves deploying that archive to the application server instance.
+In this code:</p>
+</div>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>A new instance of client for controlling application server management model is created by specifying the correct host, port, username, and password. Note that the username and password are the ones specified earlier.</p>
+</li>
+<li>
+<p><code>ServerDeploymentManager</code> is the primary deployment interface for a standalone instance. A new instance is created by using the previously created <code>ModelControllerClient</code>.</p>
+</li>
+<li>
+<p><code>newDeploymentPlan</code> initiates the creation of a new <code>DeploymentPlan</code>. Archive is added to the repository using <code>add</code> method and deployed using <code>andDeploy</code> method. Finally the deployment plan is built using <code>build</code> method. Note the location of archive may be different in your environment.</p>
+</li>
+<li>
+<p>Finally the deployment plan is executed using <code>execute</code> method.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Check the server log to ensure that the application is deployed. The following server log entries should be visible:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>14:08:57,052 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-9) JBAS017534: Register web context: /javaee7-1.0-SNAPSHOT
+14:08:57,063 INFO  [org.jboss.as.server] (management-handler-thread - 17) JBAS018559: Deployed "javaee7-1.0-SNAPSHOT.war" (runtime-name : "javaee7-1.0-SNAPSHOT.war")</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<div class="title">Tip</div>
+</td>
+<td class="content">
+<code>addDeploy</code> method may be replaced with <code>andReplace</code> to replace a previously deployed archive.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -2836,7 +2954,7 @@ Try some other commands and see which ones are accessible or not.
 <div id="footer">
 <div id="footer-text">
 Version 0.5<br>
-Last updated 2014-01-24 19:12:11 EST
+Last updated 2014-01-25 05:42:11 IST
 </div>
 </div>
 </body>

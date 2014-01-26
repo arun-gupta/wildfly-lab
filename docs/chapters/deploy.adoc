@@ -328,14 +328,98 @@ mvn install
 +
 image::images/deploy-javaee7-sample-output.png[Java EE 7 Sample Application Output]
 
-=== Java (TBD)
+=== Java
 
 *Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using Management APIs.
+
+. Create a Java class and name it `MyDeployer`.
++
+. In that Java class, create a method as shown:
++
+[source]
+----
+ModelControllerClient createClient(final InetAddress host, final int port,
+            final String username, final String password) {
+
+   final CallbackHandler callbackHandler = new CallbackHandler() {
+
+       @Override
+       public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
+           for (Callback current : callbacks) {
+               if (current instanceof NameCallback) {
+                   NameCallback ncb = (NameCallback) current;
+                   ncb.setName(username);
+               } else if (current instanceof PasswordCallback) {
+                   PasswordCallback pcb = (PasswordCallback) current;
+                   pcb.setPassword(password.toCharArray());
+               } else {
+                   throw new UnsupportedCallbackException(current);
+               }
+           }
+       }
+    };
+
+    return ModelControllerClient.Factory.create(host, port, callbackHandler);
+}
+----
++
+In this code:
++
+.. `ModelControllerClient` is client for an application server management model controller.
+.. A new instance is created by specifying host, port, and a Callback handler to obtain authentication information for the call.
++
+. Add another method to this class as:
++
+[source]
+----
+private void deploy() throws IOException, InterruptedException, ExecutionException {
+    // create client
+    ModelControllerClient client = createClient(InetAddress.getByName("localhost"),
+        9999,
+        "sheldon",
+        "bazinga");.
+.
+    // connect
+    ServerDeploymentManager manager = ServerDeploymentManager.Factory.create(client);
+
+    // build a deployment plan
+    DeploymentPlan plan = manager
+        .newDeploymentPlan()
+        .add(new File("/Users/arungupta/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war"))
+        .andDeploy()
+        .build();
+
+    // run it
+    ServerDeploymentPlanResult result = manager.execute(plan).get();
+}
+----
++
+Deployment, as earlier, is a two-step process. First step require to upload the archive to content repository. Second step involves deploying that archive to the application server instance.
+In this code:
++
+.. A new instance of client for controlling application server management model is created by specifying the correct host, port, username, and password. Note that the username and password are the ones specified earlier.
+.. `ServerDeploymentManager` is the primary deployment interface for a standalone instance. A new instance is created by using the previously created `ModelControllerClient`.
+.. `newDeploymentPlan` initiates the creation of a new `DeploymentPlan`. Archive is added to the repository using `add` method and deployed using `andDeploy` method. Finally the deployment plan is built using `build` method. Note the location of archive may be different in your environment.
+.. Finally the deployment plan is executed using `execute` method.
++
+. Check the server log to ensure that the application is deployed. The following server log entries should be visible:
++
+[source]
+----
+14:08:57,052 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-9) JBAS017534: Register web context: /javaee7-1.0-SNAPSHOT
+14:08:57,063 INFO  [org.jboss.as.server] (management-handler-thread - 17) JBAS018559: Deployed "javaee7-1.0-SNAPSHOT.war" (runtime-name : "javaee7-1.0-SNAPSHOT.war")
+----
+
+TIP: `addDeploy` method may be replaced with `andReplace` to replace a previously deployed archive.
 
 === Ruby (TBD)
 
 *Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using Ruby.
 
+Send a pull request ?
+
 === Perl (TBD)
 
 *Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using Perl.
+
+Send a pull request ?
