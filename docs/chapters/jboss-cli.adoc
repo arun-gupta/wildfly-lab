@@ -1,10 +1,9 @@
 [[jboss-cli]]
 == Management using Command Line Interface (jboss-cli)
 
-WildFly comes with a Command Line Interface management tool for a standalone server or a managed domain. It allows a user to connect to a standalone server or domain controller and execute management operations available through the management model.
-
 *Purpose*: This section explains how to manage WildFly using jboss-cli.
 
+WildFly comes with a Command Line Interface management tool for a standalone server or a managed domain. This script is in the `bin` directory of WildFly distrbution and can be invoked by calling `jboss-cli.sh` for Mac/Linux based systems or `jboss-cli.bat` for Windows. It allows a user to connect to a standalone server or domain controller and execute management operations available through the management model.
 
 === Connecting to a server
 
@@ -60,7 +59,7 @@ This opens up the `jboss-cli' interactive console and shows the following prompt
 +
 The prompt indicates that `jboss-cli' is connected to a standalone instance on port `19990'.
 +
-.. Type `exit' or `quit' in the console to exit out of it.
+.. Type `exit' or `quit' in the console to exit.
 
 === Resources, Operations, and Commands
 

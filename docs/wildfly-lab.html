@@ -1177,12 +1177,61 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 <div class="sect2">
 <h3 id="_java">2.7. Java</h3>
 <div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using Management APIs.</p>
+<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using Java Management APIs.</p>
+</div>
+<div class="paragraph">
+<p>A standalone WildFly process or a managed domain can be configured to listen for remote management requests using its &#8220;native management interface&#8221;. This interface uses an open protocol based on the JBoss Remoting library. JBoss Remoting is used to establish a communication channel from the client to the process being managed. Once the communication channel is established the primary traffic over the channel is management requests initiated by the client and asynchronous responses from the target process.</p>
+</div>
+<div class="paragraph">
+<p>Deployment using a custom Java class is a two-step process:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Create a Java class and name it <code>MyDeployer</code>.</p>
+<p>First step is to build a deployment plan that describe the steps of uploading the archive to the content repository and deploying it.</p>
+</li>
+<li>
+<p>Second step involves executing the deployment plan on the application server instance.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Lets create an application that will allow us to deploy a Java EE 7 application using a Java-based class.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Create a maven project as:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>The custom client must have maven artifact &#8216;org.jboss.as:jboss-as-controller-client&#8217; and its dependencies on the classpath. &#8216;org.jboss:jboss-dmr&#8217; is maven artifact for detyped representation of the management model and must be added to the list of maven dependencies as well.</p>
+<div class="paragraph">
+<p>This can be achieved by adding the following dependencies in <code>pom.xml</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>&lt;dependency&gt;
+    &lt;groupId&gt;org.jboss.as&lt;/groupId&gt;
+    &lt;artifactId&gt;jboss-as-controller-client&lt;/artifactId&gt;
+    &lt;version&gt;7.2.0.Final&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.jboss&lt;/groupId&gt;
+    &lt;artifactId&gt;jboss-dmr&lt;/artifactId&gt;
+    &lt;version&gt;1.2.0.Final&lt;/version&gt;
+    &lt;scope&gt;test&lt;/scope&gt;
+&lt;/dependency&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that both the dependencies are added in &#8216;test&#8217; scope.</p>
+</div>
 </li>
 <li>
 <p>In that Java class, create a method as shown:</p>
@@ -1219,10 +1268,10 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p><code>ModelControllerClient</code> is client for an application server management model controller.</p>
+<p><code>ModelControllerClient</code> is used to manage a WildFly server instance or a Domain Controller or slave Host Controller.</p>
 </li>
 <li>
-<p>A new instance is created by specifying host, port, and a Callback handler to obtain authentication information for the call.</p>
+<p>A new instance is created by specifying host, port, and a Callback handler to obtain authentication information for the call. Typically these credentials are obtained from a dialog box, such as a GUI-base client. In our case the credentials will be passed when this method is invoked.</p>
 </li>
 </ol>
 </div>
@@ -1236,8 +1285,8 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
     ModelControllerClient client = createClient(InetAddress.getByName("localhost"),
         9999,
         "sheldon",
-        "bazinga");.
-.
+        "bazinga");
+
     // connect
     ServerDeploymentManager manager = ServerDeploymentManager.Factory.create(client);
 
@@ -1254,8 +1303,7 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </div>
 </div>
 <div class="paragraph">
-<p>Deployment, as earlier, is a two-step process. First step require to upload the archive to content repository. Second step involves deploying that archive to the application server instance.
-In this code:</p>
+<p>In this code:</p>
 </div>
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
@@ -1272,6 +1320,21 @@ In this code:</p>
 <p>Finally the deployment plan is executed using <code>execute</code> method.</p>
 </li>
 </ol>
+</div>
+</li>
+<li>
+<p>Call this methods as:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>public static void main(String[] args) {
+    try {
+        MyDeployer myDeployer = new MyDeployer();
+        myDeployer.deploy();
+    } catch (IOException | InterruptedException | ExecutionException ex) {
+        Logger.getLogger(MyDeployer.class.getName()).log(Level.SEVERE, null, ex);
+    }
+}</code></pre>
+</div>
 </div>
 </li>
 <li>
@@ -1292,7 +1355,7 @@ In this code:</p>
 <div class="title">Tip</div>
 </td>
 <td class="content">
-<code>addDeploy</code> method may be replaced with <code>andReplace</code> to replace a previously deployed archive.
+<code>addDeploy</code> method may be replaced with <code>andReplace("javaee7-1.0-SNAPSHOT.war")</code> to replace a previously deployed archive.
 </td>
 </tr>
 </table>
@@ -1303,11 +1366,17 @@ In this code:</p>
 <div class="paragraph">
 <p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using Ruby.</p>
 </div>
+<div class="paragraph">
+<p>Send a pull request ?</p>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_perl_tbd">2.9. Perl (TBD)</h3>
 <div class="paragraph">
 <p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using Perl.</p>
+</div>
+<div class="paragraph">
+<p>Send a pull request ?</p>
 </div>
 </div>
 </div>
@@ -1316,10 +1385,10 @@ In this code:</p>
 <h2 id="jboss-cli">3. Management using Command Line Interface (jboss-cli)</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>WildFly comes with a Command Line Interface management tool for a standalone server or a managed domain. It allows a user to connect to a standalone server or domain controller and execute management operations available through the management model.</p>
+<p><strong>Purpose</strong>: This section explains how to manage WildFly using jboss-cli.</p>
 </div>
 <div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to manage WildFly using jboss-cli.</p>
+<p>WildFly comes with a Command Line Interface management tool for a standalone server or a managed domain. This script is in the <code>bin</code> directory of WildFly distrbution and can be invoked by calling <code>jboss-cli.sh</code> for Mac/Linux based systems or <code>jboss-cli.bat</code> for Windows. It allows a user to connect to a standalone server or domain controller and execute management operations available through the management model.</p>
 </div>
 <div class="sect2">
 <h3 id="_connecting_to_a_server">3.1. Connecting to a server</h3>
@@ -1390,7 +1459,7 @@ In this code:</p>
 </div>
 </li>
 <li>
-<p>Type &#8216;exit&#8217; or &#8216;quit&#8217; in the console to exit out of it.</p>
+<p>Type &#8216;exit&#8217; or &#8216;quit&#8217; in the console to exit.</p>
 </li>
 </ol>
 </div>
