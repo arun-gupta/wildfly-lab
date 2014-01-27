@@ -19,7 +19,7 @@ Any archive can be placed in `standalone/deployments` directory and is automatic
 
 CAUTION: This deployment mode is only intended to be used during development phase. Managed domain mode is recommended if running production systems.
 
-. Download a Java EE 7 sample application from ADD LINK.
+. Download a Java EE 7 sample application from https://github.com/arun-gupta/wildfly-lab/blob/master/samples/javaee7/javaee7-1.0-SNAPSHOT.war?raw=true.
 +
 . Copy the war file to `standalone/deployments` directory using the following command:
 +
