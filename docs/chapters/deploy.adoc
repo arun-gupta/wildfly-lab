@@ -28,6 +28,8 @@ CAUTION: This deployment mode is only intended to be used during development pha
 cp target/javaee7-1.0-SNAPSHOT.war /Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/deployments
 ----
 +
+Make sure to change the directory name to match your filesystem.
++
 . Verify the deployed application by accessing the webpage http://localhost:8080/javaee7-1.0-SNAPSHOT/EmployeeList and see the output as:
 +
 image::images/deploy-javaee7-sample-output.png[Java EE 7 Sample Application Output]
@@ -430,7 +432,7 @@ public void testApp() throws IOException, InterruptedException, ExecutionExcepti
 }
 ----
 +
-Make sure to resolve imports from `org.jboss.as.controller.client.helpers.standalone.*` package.
+Make sure to resolve imports from `org.jboss.as.controller.client.helpers.standalone.*` package. Also change the directory name to match your filesystem.
 +
 In this code:
 +
