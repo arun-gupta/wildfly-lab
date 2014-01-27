@@ -704,6 +704,9 @@ This deployment mode is only intended to be used during development phase. Manag
 <pre class="highlight"><code>cp target/javaee7-1.0-SNAPSHOT.war /Users/arungupta/workspaces/wildfly/build/target/wildfly-8.0.0.Final-SNAPSHOT/standalone/deployments</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>Make sure to change the directory name to match your filesystem.</p>
+</div>
 </li>
 <li>
 <p>Verify the deployed application by accessing the webpage <a href="http://localhost:8080/javaee7-1.0-SNAPSHOT/EmployeeList">http://localhost:8080/javaee7-1.0-SNAPSHOT/EmployeeList</a> and see the output as:</p>
@@ -1164,7 +1167,7 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </div>
 </li>
 <li>
-<p>Access the web page at <a href="http://localhost:8080/javaee7/TestServlet">http://localhost:8080/javaee7/TestServlet</a> and see the output as:</p>
+<p>Access the web page at <a href="http://localhost:8080/javaee7/EmployeeList">http://localhost:8080/javaee7/EmployeeList</a> and see the output as:</p>
 <div class="imageblock">
 <div class="content">
 <img src="images/deploy-javaee7-sample-output.png" alt="Java EE 7 Sample Application Output">
@@ -1303,7 +1306,7 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </div>
 </div>
 <div class="paragraph">
-<p>Make sure to resolve imports from <code>org.jboss.as.controller.client.helpers.standalone.*</code> package.</p>
+<p>Make sure to resolve imports from <code>org.jboss.as.controller.client.helpers.standalone.*</code> package. Also change the directory name to match your filesystem.</p>
 </div>
 <div class="paragraph">
 <p>In this code:</p>
