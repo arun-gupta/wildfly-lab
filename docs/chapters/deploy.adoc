@@ -326,7 +326,7 @@ or
 mvn install
 ----
 +
-. Access the web page at http://localhost:8080/javaee7/TestServlet and see the output as:
+. Access the web page at http://localhost:8080/javaee7/EmployeeList and see the output as:
 +
 image::images/deploy-javaee7-sample-output.png[Java EE 7 Sample Application Output]
 
