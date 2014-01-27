@@ -198,7 +198,7 @@ Click on `Save'.
 NOTE: Multiple roles may be assigned to each user.
 . Assign `Administrator' role to user `leonard'. The updated admin console looks like as shown:
 +
-image:images/rbac-admin-users-role-assigned.png[Roles assigned to users]
+image::images/rbac-admin-users-role-assigned.png[Roles assigned to users]
 +
 TIP: Groups, and thus all users in that group, can be assigned one or more roles by clicking on `GROUPS' tab.
 

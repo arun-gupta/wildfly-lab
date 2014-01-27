@@ -2,7 +2,7 @@
 
 WildFly 8 (nee JBoss Application Server 7) is a lightweight, flexible, Java EE 7 compliant, polyglot, and open source application server.
 
-This self-paced hands-on lab gets you introduced to the basic administrative features of WildFly 8. A comprehensive lab that covers Java EE 7 development using WildFly is available at: https://github.com/javaee-samples/javaee7-hol.
+This self-paced hands-on lab introduces the basic administrative features of WildFly 8. A comprehensive lab that covers Java EE 7 development using WildFly is available at: https://github.com/javaee-samples/javaee7-hol.
 
 NOTE: This document is a work in progress. The latest version of this document is available at http://github.com/arun-gupta/wildfly-lab. Please send pull requests to contribute or file issues.
 
@@ -77,7 +77,7 @@ This starts WildFly standalone instance server in web profile. By default it ref
 +
 Access http://localhost:8080 and see the following page to make sure the server is running correctly.
 +
-image::images/intro-wildfly-welcome.png[]
+image::images/intro-wildfly-welcome.png[Welcome screen]
 +
 Use Ctrl+C to stop the running server.
 +
