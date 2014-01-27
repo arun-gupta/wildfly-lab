@@ -1204,12 +1204,12 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 <p>Create a maven project as:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code></code></pre>
+<pre class="highlight"><code>mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DgroupId=org.wildfly.samples -DartifactId=deployment -DinteractiveMode=false</code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>The custom client must have maven artifact &#8216;org.jboss.as:jboss-as-controller-client&#8217; and its dependencies on the classpath. &#8216;org.jboss:jboss-dmr&#8217; is maven artifact for detyped representation of the management model and must be added to the list of maven dependencies as well.</p>
+<p>Open the created Maven project in NetBeans, Eclipse, IntelliJ or any other editor of your choice. The custom client must have maven artifact &#8216;org.jboss.as:jboss-as-controller-client&#8217; and its dependencies on the classpath. &#8216;org.jboss:jboss-dmr&#8217; is maven artifact for detyped representation of the management model and must be added to the list of maven dependencies as well.</p>
 <div class="paragraph">
 <p>This can be achieved by adding the following dependencies in <code>pom.xml</code>:</p>
 </div>
@@ -1234,7 +1234,7 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </div>
 </li>
 <li>
-<p>In that Java class, create a method as shown:</p>
+<p>Edit the <code>src/test/java/org/wildfly/samples/AppTest.java</code> file and add a method as shown:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>ModelControllerClient createClient(final InetAddress host, final int port,
@@ -1277,10 +1277,10 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </div>
 </li>
 <li>
-<p>Add another method to this class as:</p>
+<p>Update <code>testApp</code> method such that it looks like:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>private void deploy() throws IOException, InterruptedException, ExecutionException {
+<pre class="highlight"><code>public void testApp() throws IOException, InterruptedException, ExecutionException {
     // create client
     ModelControllerClient client = createClient(InetAddress.getByName("localhost"),
         9999,
@@ -1303,6 +1303,9 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </div>
 </div>
 <div class="paragraph">
+<p>Make sure to resolve imports from <code>org.jboss.as.controller.client.helpers.standalone.*</code> package.</p>
+</div>
+<div class="paragraph">
 <p>In this code:</p>
 </div>
 <div class="olist loweralpha">
@@ -1323,17 +1326,10 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </div>
 </li>
 <li>
-<p>Call this methods as:</p>
+<p>Perform the deployment by running the test as:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>public static void main(String[] args) {
-    try {
-        MyDeployer myDeployer = new MyDeployer();
-        myDeployer.deploy();
-    } catch (IOException | InterruptedException | ExecutionException ex) {
-        Logger.getLogger(MyDeployer.class.getName()).log(Level.SEVERE, null, ex);
-    }
-}</code></pre>
+<pre class="highlight"><code>mvn test</code></pre>
 </div>
 </div>
 </li>
@@ -1344,6 +1340,17 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 <pre class="highlight"><code>14:08:57,052 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-9) JBAS017534: Register web context: /javaee7-1.0-SNAPSHOT
 14:08:57,063 INFO  [org.jboss.as.server] (management-handler-thread - 17) JBAS018559: Deployed "javaee7-1.0-SNAPSHOT.war" (runtime-name : "javaee7-1.0-SNAPSHOT.war")</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>You may see the error message as:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>JBAS014616: Operation ("add") failed - address: ([("deployment" =&gt; "javaee7-1.0-SNAPSHOT.war")]) - failure description: "JBAS014803: Duplicate resource [(\"deployment\" =&gt; \"javaee7-1.0-SNAPSHOT.war\")]"</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This occurs if the archive has been previously deployed.</p>
 </div>
 </li>
 </ol>

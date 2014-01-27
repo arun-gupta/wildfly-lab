@@ -345,9 +345,10 @@ Lets create an application that will allow us to deploy a Java EE 7 application 
 +
 [source]
 ----
+mvn archetype:generate -DarchetypeGroupId=org.apache.maven.archetypes -DgroupId=org.wildfly.samples -DartifactId=deployment -DinteractiveMode=false
 ----
 +
-. The custom client must have maven artifact `org.jboss.as:jboss-as-controller-client' and its dependencies on the classpath. `org.jboss:jboss-dmr' is maven artifact for detyped representation of the management model and must be added to the list of maven dependencies as well.
+. Open the created Maven project in NetBeans, Eclipse, IntelliJ or any other editor of your choice. The custom client must have maven artifact `org.jboss.as:jboss-as-controller-client' and its dependencies on the classpath. `org.jboss:jboss-dmr' is maven artifact for detyped representation of the management model and must be added to the list of maven dependencies as well.
 +
 This can be achieved by adding the following dependencies in `pom.xml`:
 +
@@ -369,7 +370,7 @@ This can be achieved by adding the following dependencies in `pom.xml`:
 +
 Note that both the dependencies are added in `test' scope.
 +
-. In that Java class, create a method as shown:
+. Edit the `src/test/java/org/wildfly/samples/AppTest.java` file and add a method as shown:
 +
 [source]
 ----
@@ -403,11 +404,11 @@ In this code:
 .. `ModelControllerClient` is used to manage a WildFly server instance or a Domain Controller or slave Host Controller.
 .. A new instance is created by specifying host, port, and a Callback handler to obtain authentication information for the call. Typically these credentials are obtained from a dialog box, such as a GUI-base client. In our case the credentials will be passed when this method is invoked.
 +
-. Add another method to this class as:
+. Update `testApp` method such that it looks like:
 +
 [source]
 ----
-private void deploy() throws IOException, InterruptedException, ExecutionException {
+public void testApp() throws IOException, InterruptedException, ExecutionException {
     // create client
     ModelControllerClient client = createClient(InetAddress.getByName("localhost"),
         9999,
@@ -429,6 +430,8 @@ private void deploy() throws IOException, InterruptedException, ExecutionExcepti
 }
 ----
 +
+Make sure to resolve imports from `org.jboss.as.controller.client.helpers.standalone.*` package.
++
 In this code:
 +
 .. A new instance of client for controlling application server management model is created by specifying the correct host, port, username, and password. Note that the username and password are the ones specified earlier.
@@ -436,18 +439,11 @@ In this code:
 .. `newDeploymentPlan` initiates the creation of a new `DeploymentPlan`. Archive is added to the repository using `add` method and deployed using `andDeploy` method. Finally the deployment plan is built using `build` method. Note the location of archive may be different in your environment.
 .. Finally the deployment plan is executed using `execute` method.
 +
-. Call this methods as:
+. Perform the deployment by running the test as:
 +
 [source]
 ----
-public static void main(String[] args) {
-    try {
-        MyDeployer myDeployer = new MyDeployer();
-        myDeployer.deploy();
-    } catch (IOException | InterruptedException | ExecutionException ex) {
-        Logger.getLogger(MyDeployer.class.getName()).log(Level.SEVERE, null, ex);
-    }
-}
+mvn test
 ----
 +
 . Check the server log to ensure that the application is deployed. The following server log entries should be visible:
@@ -457,6 +453,15 @@ public static void main(String[] args) {
 14:08:57,052 INFO  [org.wildfly.extension.undertow] (MSC service thread 1-9) JBAS017534: Register web context: /javaee7-1.0-SNAPSHOT
 14:08:57,063 INFO  [org.jboss.as.server] (management-handler-thread - 17) JBAS018559: Deployed "javaee7-1.0-SNAPSHOT.war" (runtime-name : "javaee7-1.0-SNAPSHOT.war")
 ----
++
+You may see the error message as:
++
+[source]
+----
+JBAS014616: Operation ("add") failed - address: ([("deployment" => "javaee7-1.0-SNAPSHOT.war")]) - failure description: "JBAS014803: Duplicate resource [(\"deployment\" => \"javaee7-1.0-SNAPSHOT.war\")]"
+----
++
+This occurs if the archive has been previously deployed.
 
 TIP: `addDeploy` method may be replaced with `andReplace("javaee7-1.0-SNAPSHOT.war")` to replace a previously deployed archive.
 
