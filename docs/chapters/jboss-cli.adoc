@@ -491,20 +491,20 @@ standalone.sh --gui
 +
 The complete domain model is shown in a separate window as:
 +
-image::images/jboss-cli-gui.png[jboss-cli GUI]
+image::images/jboss-cli-gui.png[title="jboss-cli GUI"]
 +
 . Right-click on any node to see the list of supported operations as shown:
 +
-image::images/jboss-cli-gui-operations.png[Operations on Nodes]
+image::images/jboss-cli-gui-operations.png[title="Operations on nodes"]
 +
 The command is dynamically created and populated in the `cmd>' text box.
 +
 . This command can be submitted to the server by clicking on `Submit' button. Command output is shown:
 +
-image::images/jboss-cli-gui-output.png[GUI Output]
+image::images/jboss-cli-gui-output.png[title="jboss-cli GUI output"]
 +
 . Type `serv' in `Filter' box to search for any nodes and attributes that contains this phrase. The output is shown as:
 +
-image::images/jboss-cli-gui-filter.png[Filter]
+image::images/jboss-cli-gui-filter.png[title="Filter on GUI"]
 
 

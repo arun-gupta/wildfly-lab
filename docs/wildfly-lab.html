@@ -383,7 +383,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <h1>WildFly 8 Hands-on Lab</h1>
 <span id="author" class="author">Arun Gupta</span><br>
 <span id="revnumber">version 1.0,</span>
-<span id="revdate">Jan 27, 2014</span>
+<span id="revdate">Jan 28, 2014</span>
 <div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
@@ -413,11 +413,10 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 </ul>
 </li>
 <li><a href="#_curl">2.4. Curl</a></li>
-<li><a href="#_http_apis_tbd">2.5. HTTP APIs (TBD)</a></li>
-<li><a href="#_maven_plugin">2.6. Maven plugin</a></li>
-<li><a href="#_java">2.7. Java</a></li>
-<li><a href="#_ruby_tbd">2.8. Ruby (TBD)</a></li>
-<li><a href="#_perl_tbd">2.9. Perl (TBD)</a></li>
+<li><a href="#_maven_plugin">2.5. Maven plugin</a></li>
+<li><a href="#_java">2.6. Java</a></li>
+<li><a href="#_ruby_tbd">2.7. Ruby (TBD)</a></li>
+<li><a href="#_perl_tbd">2.8. Perl (TBD)</a></li>
 </ul>
 </li>
 <li><a href="#jboss-cli">3. Management using Command Line Interface (jboss-cli)</a></li>
@@ -582,7 +581,7 @@ This document is a work in progress. The latest version of this document is avai
 <p>Java EE defines <em>profiles</em> that represent a configuration of the full platform suited to a particular class of applications. The Java EE Web Profile is defined as a separate specification in the platform, and is defined as a subset of technologies contained in the platform and targeted toward the developers of modern web applications.</p>
 </div>
 <div class="paragraph">
-<p>WildFly supports both Web Profile and Full Platform by defininig &#8216;configuration profiles&#8217; in different files. These profiles are defined in &#8216;standalone/configuration/*.xml&#8217; files for standalone instance and &#8216;domain/configuration/domain.xml&#8217; for managed domain.</p>
+<p>WildFly supports both Web Profile and Full Platform by defining &#8220;configuration profiles&#8221; in different files. These profiles are defined in <code>standalone/configuration/*.xml</code> files for standalone instance and <code>domain/configuration/domain.xml</code> for managed domain.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -601,22 +600,23 @@ This document is a work in progress. The latest version of this document is avai
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/intro-wildfly-welcome.png" alt="Welcome screen">
+<img src="images/intro-wildfly-welcome.png" alt="intro wildfly welcome">
 </div>
+<div class="title">Figure 1. WildFly welcome screen</div>
 </div>
 <div class="paragraph">
 <p>Use Ctrl+C to stop the running server.</p>
 </div>
 </li>
 <li>
-<p>Start in full platform by specifying the configuration as:</p>
+<p>Start WildFly in full platform by specifying the configuration as:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code>./bin/standalone.sh -c standalone-full.xml</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The name of the exact configuration file from &#8216;standalone/configuration&#8217; directory is specified as the parameter.</p>
+<p>The name of the configuration file, without <code>.xml</code> suffix, from &#8216;standalone/configuration&#8217; directory is specified as the parameter.</p>
 </div>
 <div class="paragraph">
 <p>Use Ctrl+C to stop the running server.</p>
@@ -675,9 +675,6 @@ This document is a work in progress. The latest version of this document is avai
 <p>Deploying archives such as war, ear, and rar files using file system is as simple as copying to <code>standalone/deployments</code> directory. The deployment can be configured for auto-deploy or manual mode.</p>
 </div>
 <div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using filesystem commands.</p>
-</div>
-<div class="paragraph">
 <p>Any archive can be placed in <code>standalone/deployments</code> directory and is automatically deployed to the server. This is the default behavior.</p>
 </div>
 <div class="admonitionblock caution">
@@ -695,7 +692,20 @@ This deployment mode is only intended to be used during development phase. Manag
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Download a Java EE 7 sample application from <a href="https://github.com/arun-gupta/wildfly-lab/blob/master/samples/javaee7/javaee7-1.0-SNAPSHOT.war?raw=true">https://github.com/arun-gupta/wildfly-lab/blob/master/samples/javaee7/javaee7-1.0-SNAPSHOT.war?raw=true</a>.</p>
+<p>Clone the github repo by giving the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>git clone https://github.com/arun-gupta/wildfly-lab.git</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Change directory to <code>samples/javaee7</code> and build the sample as:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>mvn install</code></pre>
+</div>
+</div>
 </li>
 <li>
 <p>Copy the war file to <code>standalone/deployments</code> directory using the following command:</p>
@@ -712,8 +722,9 @@ This deployment mode is only intended to be used during development phase. Manag
 <p>Verify the deployed application by accessing the webpage <a href="http://localhost:8080/javaee7-1.0-SNAPSHOT/EmployeeList">http://localhost:8080/javaee7-1.0-SNAPSHOT/EmployeeList</a> and see the output as:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/deploy-javaee7-sample-output.png" alt="Java EE 7 Sample Application Output">
+<img src="images/deploy-javaee7-sample-output.png" alt="deploy javaee7 sample output">
 </div>
+<div class="title">Figure 2. Java EE 7 sample application output</div>
 </div>
 </li>
 </ol>
@@ -723,9 +734,6 @@ This deployment mode is only intended to be used during development phase. Manag
 <h3 id="_administration_console">2.2. Administration Console</h3>
 <div class="paragraph">
 <p>The Admin Console is a web-based administration console and available at <a href="http://localhost:9990/console">http://localhost:9990/console</a>.</p>
-</div>
-<div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using web-based Administration Console.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -803,8 +811,9 @@ yes/no? &lt;no&gt;</code></pre>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/deploy-admin-console.png" alt="Admin Console">
+<img src="images/deploy-admin-console.png" alt="deploy admin console">
 </div>
+<div class="title">Figure 3. Admin console</div>
 </div>
 <div class="paragraph">
 <p>The added user can be disabled by giving the following command:</p>
@@ -831,16 +840,18 @@ User can be deleted by deleting the corresponding line from <code>domain/configu
 <p>Click on &#8216;Manage Deployments&#8217; to see the output as:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/deploy-admin-console-deployments-first.png" alt="Admin Console Deployments">
+<img src="images/deploy-admin-console-deployments-first.png" alt="deploy admin console deployments first">
 </div>
+<div class="title">Figure 4. Admin console deployments</div>
 </div>
 </li>
 <li>
 <p>Click on &#8216;Add&#8217; button to see:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/deploy-admin-console-add-first.png" alt="Add a Deployment">
+<img src="images/deploy-admin-console-add-first.png" alt="deploy admin console add first">
 </div>
+<div class="title">Figure 5. Add a deployment</div>
 </div>
 </li>
 <li>
@@ -853,8 +864,9 @@ User can be deleted by deleting the corresponding line from <code>domain/configu
 <p>By default the application is not enabled and the console shows:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/deploy-enable-disable-app.png" alt="En/Disable Button">
+<img src="images/deploy-enable-disable-app.png" alt="deploy enable disable app">
 </div>
+<div class="title">Figure 6. En/Disable button</div>
 </div>
 <div class="paragraph">
 <p>Click on &#8216;En/Disable&#8217; button, click on &#8216;Confirm&#8217; and now the app is ready to be used. Access the application <a href="http://localhost:8080/javaee7-1.0-SNAPSHOT.war/EmployeeList">http://localhost:8080/javaee7-1.0-SNAPSHOT.war/EmployeeList</a>.</p>
@@ -866,16 +878,10 @@ User can be deleted by deleting the corresponding line from <code>domain/configu
 <div class="sect2">
 <h3 id="_command_line_interface_jboss_cli">2.3. Command Line Interface (jboss-cli)</h3>
 <div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using jboss-cli.</p>
-</div>
-<div class="paragraph">
 <p><code>jboss-cli.sh</code> or <code>jboss-cli.bat</code> is Command Line Interface management tool for a standalone server or a managed domain. It allows a user to connect to a standalone server or domain controller and execute management operations.</p>
 </div>
 <div class="paragraph">
 <p>More details about using jboss-cli for managing the server are available in <a href="#jboss-cli">Management using Command Line Interface (jboss-cli)</a>.</p>
-</div>
-<div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using &#8216;jboss-cli&#8217;.</p>
 </div>
 <div class="paragraph">
 <p>&#8216;jboss-cli&#8217; can be used to deploy applications using the interactive console or in a non-interactive manner.</p>
@@ -1010,9 +1016,6 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 <p>curl is a free and popular command line tool for transfering data using URL syntax. If you don&#8217;t have it installed on your machine then it can be downloaded from <a href="http://curl.haxx.se/download.html">http://curl.haxx.se/download.html</a>.</p>
 </div>
 <div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using curl.</p>
-</div>
-<div class="paragraph">
 <p>Deploying applications using curl is a two-step process.</p>
 </div>
 <div class="olist arabic">
@@ -1030,13 +1033,13 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 <div class="olist loweralpha">
 <ol class="loweralpha" type="a">
 <li>
-<p>Makes a POST request using form-encoded (<code>-F</code>) data with one field (<code>file</code>) defining the location of the WAR file</p>
+<p>Makes a POST request using form-encoded (<code>-F</code>) data with one field (<code>file</code>) defining location of the WAR file</p>
 </li>
 <li>
-<p><code>target/javaee7-1.0-SNAPSHOT.war</code> is the location of the WAR file</p>
+<p><code>target/javaee7-1.0-SNAPSHOT.war</code> is location of the WAR file</p>
 </li>
 <li>
-<p><code>sheldon</code> is the administrative user with password <code>bazinga</code></p>
+<p><code>sheldon</code> is a user with administrative privileges and password <code>bazinga</code></p>
 </li>
 <li>
 <p><code>localhost:9090</code> is the default management host and port for WildFly instance</p>
@@ -1098,26 +1101,14 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </div>
 </div>
 <div class="sect2">
-<h3 id="_http_apis_tbd">2.5. HTTP APIs (TBD)</h3>
-<div class="paragraph">
-<p><a href="http://localhost:9990/management?operation=deploy">http://localhost:9990/management?operation=deploy</a></p>
-</div>
-<div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using HTTP API.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_maven_plugin">2.6. Maven plugin</h3>
+<h3 id="_maven_plugin">2.5. Maven plugin</h3>
 <div class="paragraph">
 <p>The wildfly-maven-plugin is used to deploy, redeploy, undeploy or run your application. You can also deploy or undeploy artifacts, such as JDBC drivers, and add or remove resources. There is also the ability to execute CLI commands.</p>
-</div>
-<div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to deploy Java EE 7 applications to WildFly use the maven plugin.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Add the following fragment to samples/javaee7/pom.xml:</p>
+<p>Note that <code>samples/javaee7/pom.xml</code> contains the following fragment:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight"><code class="xml language-xml">&lt;plugin&gt;
@@ -1136,10 +1127,7 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </div>
 </div>
 <div class="paragraph">
-<p>along with other &lt;plugin&gt; elements.</p>
-</div>
-<div class="paragraph">
-<p>This adds the &#8216;wildfly-maven-plugin&#8217; description to &#8216;pom.xml&#8217;. It also invokes the plugin &#8216;deploy&#8217; target during the standard maven &#8216;install&#8217; phase.</p>
+<p>This specifies the &#8216;wildfly-maven-plugin&#8217; description to &#8216;pom.xml&#8217;. It also invokes the plugin &#8216;deploy&#8217; target during the standard maven &#8216;install&#8217; phase.</p>
 </div>
 </li>
 <li>
@@ -1170,18 +1158,16 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 <p>Access the web page at <a href="http://localhost:8080/javaee7/EmployeeList">http://localhost:8080/javaee7/EmployeeList</a> and see the output as:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/deploy-javaee7-sample-output.png" alt="Java EE 7 Sample Application Output">
+<img src="images/deploy-javaee7-sample-output.png" alt="deploy javaee7 sample output">
 </div>
+<div class="title">Figure 7. Java EE 7 sample application output</div>
 </div>
 </li>
 </ol>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_java">2.7. Java</h3>
-<div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using Java Management APIs.</p>
-</div>
+<h3 id="_java">2.6. Java</h3>
 <div class="paragraph">
 <p>A standalone WildFly process or a managed domain can be configured to listen for remote management requests using its &#8220;native management interface&#8221;. This interface uses an open protocol based on the JBoss Remoting library. JBoss Remoting is used to establish a communication channel from the client to the process being managed. Once the communication channel is established the primary traffic over the channel is management requests initiated by the client and asynchronous responses from the target process.</p>
 </div>
@@ -1372,19 +1358,13 @@ javaee7-1.0-SNAPSHOT.war javaee7-1.0-SNAPSHOT.war true       true    OK</code></
 </div>
 </div>
 <div class="sect2">
-<h3 id="_ruby_tbd">2.8. Ruby (TBD)</h3>
-<div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using Ruby.</p>
-</div>
+<h3 id="_ruby_tbd">2.7. Ruby (TBD)</h3>
 <div class="paragraph">
 <p>Send a pull request ?</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_perl_tbd">2.9. Perl (TBD)</h3>
-<div class="paragraph">
-<p><strong>Purpose</strong>: This section explains how to deploy a Java EE 7 application to WildFly using Perl.</p>
-</div>
+<h3 id="_perl_tbd">2.8. Perl (TBD)</h3>
 <div class="paragraph">
 <p>Send a pull request ?</p>
 </div>
@@ -2035,16 +2015,18 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/jboss-cli-gui.png" alt="jboss-cli GUI">
+<img src="images/jboss-cli-gui.png" alt="jboss cli gui">
 </div>
+<div class="title">Figure 8. jboss-cli GUI</div>
 </div>
 </li>
 <li>
 <p>Right-click on any node to see the list of supported operations as shown:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/jboss-cli-gui-operations.png" alt="Operations on Nodes">
+<img src="images/jboss-cli-gui-operations.png" alt="jboss cli gui operations">
 </div>
+<div class="title">Figure 9. Operations on nodes</div>
 </div>
 <div class="paragraph">
 <p>The command is dynamically created and populated in the &#8216;cmd&gt;&#8217; text box.</p>
@@ -2054,16 +2036,18 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 <p>This command can be submitted to the server by clicking on &#8216;Submit&#8217; button. Command output is shown:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/jboss-cli-gui-output.png" alt="GUI Output">
+<img src="images/jboss-cli-gui-output.png" alt="jboss cli gui output">
 </div>
+<div class="title">Figure 10. jboss-cli GUI output</div>
 </div>
 </li>
 <li>
 <p>Type &#8216;serv&#8217; in &#8216;Filter&#8217; box to search for any nodes and attributes that contains this phrase. The output is shown as:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/jboss-cli-gui-filter.png" alt="Filter">
+<img src="images/jboss-cli-gui-filter.png" alt="jboss cli gui filter">
 </div>
+<div class="title">Figure 11. Filter on GUI</div>
 </div>
 </li>
 </ol>
@@ -2222,16 +2206,18 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 <p>Access Admin Console at <a href="http://localhost:9990/console">http://localhost:9990/console</a>. This prompts for authentication as shown:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/rbac-authentication-required.png" alt="Authentication Required">
+<img src="images/rbac-authentication-required.png" alt="rbac authentication required">
 </div>
+<div class="title">Figure 12. Authentication for Admin Console</div>
 </div>
 <div class="paragraph">
 <p>Enter the user name &#8216;sheldon&#8217; and password &#8216;bazinga&#8217; (as created earlier). Admin console should look like:</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/rbac-admin-console-superuser-default.png" alt="Super User Default View">
+<img src="images/rbac-admin-console-superuser-default.png" alt="rbac admin console superuser default">
 </div>
+<div class="title">Figure 13. Super user default view</div>
 </div>
 <div class="paragraph">
 <p>This view shows:</p>
@@ -2245,8 +2231,9 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 <p>Information about the logged in user is shown on top-right as:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/rbac-superuser-information.png" alt="Super User">
+<img src="images/rbac-superuser-information.png" alt="rbac superuser information">
 </div>
+<div class="title">Figure 14. Super user menu</div>
 </div>
 <div class="paragraph">
 <p>Notice the logged in user name is shown.</p>
@@ -2256,8 +2243,9 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 <p>A user in &#8216;Super User&#8217;' role can act to run in any role by clicking on &#8216;Run as&#8217;. Click on &#8216;Run as&#8217; and select drop-down list box to see the list of available roles as:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/rbac-run-as-roles.png" alt="Run As Roles">
+<img src="images/rbac-run-as-roles.png" alt="rbac run as roles">
 </div>
+<div class="title">Figure 15. Run as roles</div>
 </div>
 </li>
 <li>
@@ -2267,8 +2255,9 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/rbac-run-as-monitor.png" alt="Run As Monitor">
+<img src="images/rbac-run-as-monitor.png" alt="rbac run as monitor">
 </div>
+<div class="title">Figure 16. Run as monitor</div>
 </div>
 <div class="olist lowerroman">
 <ol class="lowerroman" type="i">
@@ -2276,24 +2265,27 @@ deploy ~/workspaces/wildfly-lab/samples/javaee7/target/javaee7-1.0-SNAPSHOT.war<
 <p>Click on &#8216;Manage Deployments&#8217; and check that &#8216;Add&#8217;, &#8216;Remove&#8217;, and similar buttons are not present as shown:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/rbac-run-as-monitor-deployments.png" alt="Manage Deployments as Monitor">
+<img src="images/rbac-run-as-monitor-deployments.png" alt="rbac run as monitor deployments">
 </div>
+<div class="title">Figure 17. Manage deployments as monitor</div>
 </div>
 </li>
 <li>
 <p>Click on &#8216;Profile&#8217;, &#8216;Data Sources&#8217; and check that all data sources are visible but not editable. This is identified by the fact that &#8216;Add&#8217;, &#8216;Remove&#8217;, and &#8216;Disable&#8217; buttons are not available as shown.</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/rbac-run-as-monitor-data-sources.png" alt="Data Sources as Monitor">
+<img src="images/rbac-run-as-monitor-data-sources.png" alt="rbac run as monitor data sources">
 </div>
+<div class="title">Figure 18. Data sources as monitor</div>
 </div>
 </li>
 <li>
 <p>Click on &#8216;Administration&#8217; tab and make sure the user does not have access to it as shown:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/rbac-run-as-monitor-administration.png" alt="Administration as Monitor">
+<img src="images/rbac-run-as-monitor-administration.png" alt="rbac run as monitor administration">
 </div>
+<div class="title">Figure 19. Administration as monitor</div>
 </div>
 </li>
 </ol>
@@ -2461,8 +2453,9 @@ Added user 'leonard' with groups geek to file '/Users/arungupta/workspaces/wildf
 <p>Click on &#8216;Administration&#8217; tab to see an output as:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/rbac-admin-users-default.png" alt="Administration Tab in Admin Console">
+<img src="images/rbac-admin-users-default.png" alt="rbac admin users default">
 </div>
+<div class="title">Figure 20. Administration tab in admin console</div>
 </div>
 <div class="paragraph">
 <p>Previously assigned user/role mapping is already shown here.</p>
@@ -2472,8 +2465,9 @@ Added user 'leonard' with groups geek to file '/Users/arungupta/workspaces/wildf
 <p>Click on &#8216;Add&#8217; to assign a new role to user mapping. Type &#8216;penny&#8217; in &#8216;User&#8217; textbox and select &#8216;Monitor&#8217; role as shown:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/rbac-admin-users-penny.png" alt="Assigning role to Penny">
+<img src="images/rbac-admin-users-penny.png" alt="rbac admin users penny">
 </div>
+<div class="title">Figure 21. Assigning role to Penny</div>
 </div>
 <div class="paragraph">
 <p>Click on &#8216;Save&#8217;.</p>
@@ -2495,8 +2489,9 @@ Multiple roles may be assigned to each user.
 <p>Assign &#8216;Administrator&#8217; role to user &#8216;leonard&#8217;. The updated admin console looks like as shown:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/rbac-admin-users-role-assigned.png" alt="Roles assigned to users">
+<img src="images/rbac-admin-users-role-assigned.png" alt="rbac admin users role assigned">
 </div>
+<div class="title">Figure 22. Roles assigned to users</div>
 </div>
 <div class="admonitionblock tip">
 <table>
@@ -2525,8 +2520,9 @@ Groups, and thus all users in that group, can be assigned one or more roles by c
 <p>Top-right of admin console shows the logged in user name.</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/rbac-penny-information.png" alt="Information about Penny">
+<img src="images/rbac-penny-information.png" alt="rbac penny information">
 </div>
+<div class="title">Figure 23. Information about Penny</div>
 </div>
 <div class="paragraph">
 <p>Note that &#8216;Run as&#8217; is not available any more.</p>
@@ -2536,8 +2532,9 @@ Groups, and thus all users in that group, can be assigned one or more roles by c
 <p>Click on &#8216;Manage Deployments&#8217; to see the output as shown:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/rbac-run-as-monitor-deployments.png" alt="Deployments for user Penny">
+<img src="images/rbac-run-as-monitor-deployments.png" alt="rbac run as monitor deployments">
 </div>
+<div class="title">Figure 24. Deployments for user Penny</div>
 </div>
 <div class="paragraph">
 <p>This role permits only monitoring and &#8216;Add&#8217;, &#8216;Remove&#8217;, &#8216;En/Disable&#8217;, and &#8216;Replace&#8217; buttons are not available.</p>
@@ -2547,8 +2544,9 @@ Groups, and thus all users in that group, can be assigned one or more roles by c
 <p>Click on &#8216;Administration&#8217; tab to see a permissiond denied output as:</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/rbac-run-as-monitor-administration.png" alt="Administration for user Penny">
+<img src="images/rbac-run-as-monitor-administration.png" alt="rbac run as monitor administration">
 </div>
+<div class="title">Figure 25. Administration for user Penny</div>
 </div>
 </li>
 <li>
@@ -2558,8 +2556,9 @@ Groups, and thus all users in that group, can be assigned one or more roles by c
 <p>Top-right of admin console shows the logged in user name.</p>
 <div class="imageblock">
 <div class="content">
-<img src="images/rbac-leonard-information.png" alt="Information about Leonard">
+<img src="images/rbac-leonard-information.png" alt="rbac leonard information">
 </div>
+<div class="title">Figure 26. Information about Leonard</div>
 </div>
 <div class="paragraph">
 <p>Note that &#8216;Run as&#8217; is not available any more.</p>
@@ -3035,7 +3034,7 @@ Try some other commands and see which ones are accessible or not.
 <div id="footer">
 <div id="footer-text">
 Version 1.0<br>
-Last updated 2014-01-27 12:25:55 IST
+Last updated 2014-01-29 16:22:44 IST
 </div>
 </div>
 </body>

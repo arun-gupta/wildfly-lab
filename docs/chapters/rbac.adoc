@@ -60,11 +60,11 @@ By default, any user added to the management realm and not belonging to a group 
 +
 . Access Admin Console at http://localhost:9990/console. This prompts for authentication as shown:
 +
-image::images/rbac-authentication-required.png[Authentication Required]
+image::images/rbac-authentication-required.png[title="Authentication for Admin Console"]
 +
 Enter the user name `sheldon' and password `bazinga' (as created earlier). Admin console should look like:
 +
-image::images/rbac-admin-console-superuser-default.png[Super User Default View]
+image::images/rbac-admin-console-superuser-default.png[title="Super user default view"]
 +
 This view shows:
 +
@@ -72,31 +72,31 @@ This view shows:
 +
 .. Information about the logged in user is shown on top-right as:
 +
-image::images/rbac-superuser-information.png[Super User]
+image::images/rbac-superuser-information.png[title="Super user menu"]
 +
 Notice the logged in user name is shown.
 +
 .. A user in `Super User'' role can act to run in any role by clicking on `Run as'. Click on `Run as' and select drop-down list box to see the list of available roles as:
 +
-image::images/rbac-run-as-roles.png[Run As Roles]
+image::images/rbac-run-as-roles.png[title="Run as roles"]
 +
 .. Select the `Monitor' role and click on `Run As'.
 +
 The application has to be reloaded for changes to take effect. Click on `Confirm' to reload the application. After the reload, clicking on the user on top-right in admin console will display the selected role as `Run as Monitor' as shown:
 +
-image::images/rbac-run-as-monitor.png[Run As Monitor]
+image::images/rbac-run-as-monitor.png[title="Run as monitor"]
 +
 ... Click on `Manage Deployments' and check that `Add', `Remove', and similar buttons are not present as shown:
 +
-image::images/rbac-run-as-monitor-deployments.png[Manage Deployments as Monitor]
+image::images/rbac-run-as-monitor-deployments.png[title="Manage deployments as monitor"]
 +
 ... Click on `Profile', `Data Sources' and check that all data sources are visible but not editable. This is identified by the fact that `Add', `Remove', and `Disable' buttons are not available as shown.
 +
-image::images/rbac-run-as-monitor-data-sources.png[Data Sources as Monitor]
+image::images/rbac-run-as-monitor-data-sources.png[title="Data sources as monitor"]
 +
 ... Click on `Administration' tab and make sure the user does not have access to it as shown:
 +
-image::images/rbac-run-as-monitor-administration.png[Administration as Monitor]
+image::images/rbac-run-as-monitor-administration.png[title="Administration as monitor"]
 +
 .. Feel free to select other roles and observe how different options are enabled/disabled.
 
@@ -186,19 +186,19 @@ Both users are added for standalone instance and managed domain.
 +
 . Click on `Administration' tab to see an output as:
 +
-image::images/rbac-admin-users-default.png[Administration Tab in Admin Console]
+image::images/rbac-admin-users-default.png[title="Administration tab in admin console"]
 +
 Previously assigned user/role mapping is already shown here.
 . Click on `Add' to assign a new role to user mapping. Type `penny' in `User' textbox and select `Monitor' role as shown:
 +
-image::images/rbac-admin-users-penny.png[Assigning role to Penny]
+image::images/rbac-admin-users-penny.png[title="Assigning role to Penny"]
 +
 Click on `Save'.
 +
 NOTE: Multiple roles may be assigned to each user.
 . Assign `Administrator' role to user `leonard'. The updated admin console looks like as shown:
 +
-image::images/rbac-admin-users-role-assigned.png[Roles assigned to users]
+image::images/rbac-admin-users-role-assigned.png[title="Roles assigned to users"]
 +
 TIP: Groups, and thus all users in that group, can be assigned one or more roles by clicking on `GROUPS' tab.
 
@@ -208,24 +208,24 @@ TIP: Groups, and thus all users in that group, can be assigned one or more roles
 +
 . Top-right of admin console shows the logged in user name.
 +
-image::images/rbac-penny-information.png[Information about Penny]
+image::images/rbac-penny-information.png[title="Information about Penny"]
 +
 Note that `Run as' is not available any more.
 +
 . Click on `Manage Deployments' to see the output as shown:
 +
-image::images/rbac-run-as-monitor-deployments.png[Deployments for user Penny]
+image::images/rbac-run-as-monitor-deployments.png[title="Deployments for user Penny"]
 +
 This role permits only monitoring and `Add', `Remove', `En/Disable', and `Replace' buttons are not available.
 . Click on `Administration' tab to see a permissiond denied output as:
 +
-image::images/rbac-run-as-monitor-administration.png[Administration for user Penny]
+image::images/rbac-run-as-monitor-administration.png[title="Administration for user Penny"]
 +
 . Click on top-right and select `Logout' to log out of admin console. Login again by using the username `leonard' and password `leonard1'. Note that this user was assigned `Administrator' role.
 +
 . Top-right of admin console shows the logged in user name.
 +
-image::images/rbac-leonard-information.png[Information about Leonard]
+image::images/rbac-leonard-information.png[title="Information about Leonard"]
 +
 Note that `Run as' is not available any more.
 +

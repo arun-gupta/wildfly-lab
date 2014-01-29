@@ -10,7 +10,7 @@ echo "Converting to PDF ..."
 ~/tools/asciidoctor-fopub/fopub wildfly-lab.xml
 echo "done"
 
-# Giving error https://github.com/opendevise/asciidoctor-pdf/issues/3
+## Giving error https://github.com/opendevise/asciidoctor-pdf/issues/3
 #echo "Converting to PDF ..."
 #ruby ~/workspaces/asciidoctor-pdf/bin/asciidoctor-pdf wildfly-lab.adoc
 #echo "done"

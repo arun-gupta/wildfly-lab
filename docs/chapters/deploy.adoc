@@ -13,13 +13,23 @@ standalone.sh
 
 Deploying archives such as war, ear, and rar files using file system is as simple as copying to `standalone/deployments` directory. The deployment can be configured for auto-deploy or manual mode.
 
-*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using filesystem commands.
-
 Any archive can be placed in `standalone/deployments` directory and is automatically deployed to the server. This is the default behavior.
 
 CAUTION: This deployment mode is only intended to be used during development phase. Managed domain mode is recommended if running production systems.
 
-. Download a Java EE 7 sample application from https://github.com/arun-gupta/wildfly-lab/blob/master/samples/javaee7/javaee7-1.0-SNAPSHOT.war?raw=true.
+. Clone the github repo by giving the following command:
++
+[source]
+----
+git clone https://github.com/arun-gupta/wildfly-lab.git
+----
++
+. Change directory to `samples/javaee7` and build the sample as:
++
+[source]
+----
+mvn install
+----
 +
 . Copy the war file to `standalone/deployments` directory using the following command:
 +
@@ -32,13 +42,11 @@ Make sure to change the directory name to match your filesystem.
 +
 . Verify the deployed application by accessing the webpage http://localhost:8080/javaee7-1.0-SNAPSHOT/EmployeeList and see the output as:
 +
-image::images/deploy-javaee7-sample-output.png[Java EE 7 Sample Application Output]
+image::images/deploy-javaee7-sample-output.png[title="Java EE 7 sample application output"]
 
 === Administration Console
 
 The Admin Console is a web-based administration console and available at http://localhost:9990/console.
-
-*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using web-based Administration Console.
 
 . A new user in the management realm needs to be added before the admin console can be accessed.
 +
@@ -97,7 +105,7 @@ yes/no? <no>
 +
 Now accessing the console at http://localhost:9990/console prompts for a username and password. Enter the username `sheldon' and password `bazinga' and then the console is shown as:
 +
-image::images/deploy-admin-console.png[Admin Console]
+image::images/deploy-admin-console.png[title="Admin console"]
 +
 The added user can be disabled by giving the following command:
 +
@@ -110,11 +118,11 @@ TIP: User can be deleted by deleting the corresponding line from `domain/configu
 +
 . Click on `Manage Deployments' to see the output as:
 +
-image::images/deploy-admin-console-deployments-first.png[Admin Console Deployments]
+image::images/deploy-admin-console-deployments-first.png[title="Admin console deployments"]
 +
 . Click on `Add' button to see:
 +
-image::images/deploy-admin-console-add-first.png[Add a Deployment]
+image::images/deploy-admin-console-add-first.png[title="Add a deployment"]
 +
 . Click on `Choose File' button and select the war file.
 +
@@ -122,19 +130,15 @@ Click on `Next >>' button. Take the defaults and click `Save'.
 +
 . By default the application is not enabled and the console shows:
 +
-image::images/deploy-enable-disable-app.png[En/Disable Button]
+image::images/deploy-enable-disable-app.png[title="En/Disable button"]
 +
 Click on `En/Disable' button, click on `Confirm' and now the app is ready to be used. Access the application http://localhost:8080/javaee7-1.0-SNAPSHOT.war/EmployeeList.
 
 === Command Line Interface (jboss-cli)
 
-*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using jboss-cli.
-
 `jboss-cli.sh` or `jboss-cli.bat` is Command Line Interface management tool for a standalone server or a managed domain. It allows a user to connect to a standalone server or domain controller and execute management operations.
 
 More details about using jboss-cli for managing the server are available in <<jboss-cli>>.
-
-*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using `jboss-cli'.
 
 `jboss-cli' can be used to deploy applications using the interactive console or in a non-interactive manner.
 
@@ -228,8 +232,6 @@ jboss-cli.sh --connect --command="undeploy javaee7-1.0-SNAPSHOT.war"
 
 curl is a free and popular command line tool for transfering data using URL syntax. If you don't have it installed on your machine then it can be downloaded from http://curl.haxx.se/download.html.
 
-*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using curl.
-
 Deploying applications using curl is a two-step process.
 
 . Upload your archive to WildFly using the following command
@@ -241,9 +243,9 @@ curl -F "file=@target/javaee7-1.0-SNAPSHOT.war" --digest http://sheldon:bazinga@
 +
 This command:
 +
-.. Makes a POST request using form-encoded (`-F`) data with one field (`file`) defining the location of the WAR file
-.. `target/javaee7-1.0-SNAPSHOT.war` is the location of the WAR file
-.. `sheldon` is the administrative user with password `bazinga`
+.. Makes a POST request using form-encoded (`-F`) data with one field (`file`) defining location of the WAR file
+.. `target/javaee7-1.0-SNAPSHOT.war` is location of the WAR file
+.. `sheldon` is a user with administrative privileges and password `bazinga`
 .. `localhost:9090` is the default management host and port for WildFly instance
 .. WildFly management port uses digest authentication and that is defined using `–digest`
 .. Prints the output as something like:
@@ -271,19 +273,11 @@ This command:
 .. As in previous command, `localhost:9090` is the default management host and port for WildFly instance
 .. As in previous command, WildFly management port uses digest authentication and that is defined using `–digest`
 
-=== HTTP APIs (TBD)
-
-http://localhost:9990/management?operation=deploy
-
-*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using HTTP API.
-
 === Maven plugin
 
 The wildfly-maven-plugin is used to deploy, redeploy, undeploy or run your application. You can also deploy or undeploy artifacts, such as JDBC drivers, and add or remove resources. There is also the ability to execute CLI commands.
 
-*Purpose*: This section explains how to deploy Java EE 7 applications to WildFly use the maven plugin.
-
-. Add the following fragment to samples/javaee7/pom.xml:
+. Note that `samples/javaee7/pom.xml` contains the following fragment:
 +
 [source, xml]
 ----
@@ -301,9 +295,8 @@ The wildfly-maven-plugin is used to deploy, redeploy, undeploy or run your appli
     </executions>
 </plugin>
 ----
-along with other <plugin> elements.
 +
-This adds the `wildfly-maven-plugin' description to `pom.xml'. It also invokes the plugin `deploy' target during the standard maven `install' phase.
+This specifies the `wildfly-maven-plugin' description to `pom.xml'. It also invokes the plugin `deploy' target during the standard maven `install' phase.
 +
 . Start a WildFly instance as:
 +
@@ -328,11 +321,9 @@ mvn install
 +
 . Access the web page at http://localhost:8080/javaee7/EmployeeList and see the output as:
 +
-image::images/deploy-javaee7-sample-output.png[Java EE 7 Sample Application Output]
+image::images/deploy-javaee7-sample-output.png[title="Java EE 7 sample application output"]
 
 === Java
-
-*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using Java Management APIs.
 
 A standalone WildFly process or a managed domain can be configured to listen for remote management requests using its ``native management interface''. This interface uses an open protocol based on the JBoss Remoting library. JBoss Remoting is used to establish a communication channel from the client to the process being managed. Once the communication channel is established the primary traffic over the channel is management requests initiated by the client and asynchronous responses from the target process.
 
@@ -469,12 +460,8 @@ TIP: `addDeploy` method may be replaced with `andReplace("javaee7-1.0-SNAPSHOT.w
 
 === Ruby (TBD)
 
-*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using Ruby.
-
 Send a pull request ?
 
 === Perl (TBD)
-
-*Purpose*: This section explains how to deploy a Java EE 7 application to WildFly using Perl.
 
 Send a pull request ?
